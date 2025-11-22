@@ -1,0 +1,608 @@
+/* =========================================
+   STYLE COMPLET : THÈME BLANC & MINIMALISTE
+   ========================================= */
+
+/* --- 0. Variables (Configuration Globale) --- */
+:root {
+    --color-bg: #ffffff;
+    --color-text-main: #333333;
+    --color-text-light: #666666;
+    --color-accent: #000000; /* Pour les titres et boutons */
+    --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --spacing-gutter: 20px;
+}
+
+/* --- 1. Réinitialisation et Base (Nouvelles Polices) --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    /* Police principale pour le texte courant (Menu, paragraphes) */
+    font-family: 'Montserrat', sans-serif; 
+    background-color: #ffffff;
+    color: #333333;
+    line-height: 1.6;
+    font-weight: 300; /* Rendu plus fin et élégant */
+}
+
+/* --- On applique la police "Luxe" aux titres --- */
+h1, h2, h3, .section-title, .site-branding h1 {
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 2px; /* Les polices Serif respirent mieux avec de l'espace */
+}
+
+/* Ajustement spécifique pour le grand titre du Header */
+.site-branding h1 {
+    font-weight: 400; /* Pas trop gras pour rester chic */
+    font-style: italic; /* OPTIONNEL : Mettez en italique pour un effet très "Mode" */
+}
+
+/* --- 2. Entête Plein Écran (HERO) --- */
+.hero-header {
+    height: 100vh;
+    width: 100%;
+    background-image: url('../images/hero-photo-accueil.jpg'); 
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Parallaxe (voir media query pour mobile) */
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; 
+    align-items: center;
+    
+    padding-top: 60px;
+    position: relative;
+    color: #ffffff; 
+    z-index: 1;
+}
+
+.hero-header::before {
+    content: '';
+    position: absolute;
+    inset: 0; /* Remplaçant moderne de top:0, left:0, right:0, bottom:0 */
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: -1;
+}
+
+/* --- 3. Branding --- */
+.site-branding {
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.site-branding h1 {
+    font-size: clamp(2.2em, 5vw, 3.5em); /* TAILLE FLUIDE : s'adapte sans media query */
+    font-weight: 300;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.site-branding h2 {
+    font-size: 1em;
+    font-weight: 400;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
+/* --- 4. Navigation --- */
+.main-nav {
+    text-align: center;
+    width: 100%;
+}
+
+.main-nav a {
+    color: #ffffff;
+    text-decoration: none;
+    margin: 0 20px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid transparent;
+    transition: all 0.3s ease;
+    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+}
+
+.main-nav a:hover, .main-nav a.active {
+    border-bottom-color: #ffffff; /* Optimisation syntaxe */
+    opacity: 1;
+}
+
+/* --- 5. Contenu Principal --- */
+.content-wrapper {
+    background-color: var(--color-bg);
+    min-height: 100vh;
+    padding: 80px var(--spacing-gutter);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 60px;
+    font-weight: 300;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 4px;
+}
+
+/* --- 6. Galerie (Grille & Animation Survol) --- */
+.best-of-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Colonnes un peu plus larges */
+    gap: 30px;
+}
+
+.gallery-item {
+    position: relative; /* Important pour placer le texte par-dessus */
+    display: block;     /* Important pour que le lien fonctionne bien */
+    overflow: hidden;   /* Pour que l'image ne dépasse pas si on zoome */
+    cursor: pointer;
+    
+    /* C'EST ICI : On force le format PAYSAGE (Ratio 3/2) */
+    aspect-ratio: 4 / 5; 
+    background-color: #f0f0f0; /* Gris clair pendant le chargement */
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* L'image est recadrée automatiquement pour remplir le rectangle */
+    transition: transform 0.6s ease; /* Animation douce du zoom */
+}
+
+/* Le calque noir et le texte (Cachés par défaut) */
+.overlay-hover {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0; /* Prend toute la place */
+    background-color: rgba(0, 0, 0, 0.4); /* Fond noir transparent */
+    display: flex;
+    align-items: center; /* Centre verticalement */
+    justify-content: center; /* Centre horizontalement */
+    opacity: 0; /* Invisible au départ */
+    transition: opacity 0.4s ease;
+}
+
+.cat-title {
+    color: #fff;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8em;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 5px;
+    transform: translateY(20px); /* Le texte arrive d'un peu plus bas */
+    transition: transform 0.4s ease;
+}
+
+/* --- L'ANIMATION AU SURVOL (HOVER) --- */
+
+/* 1. On montre le calque noir */
+.gallery-item:hover .overlay-hover {
+    opacity: 1; 
+}
+
+/* 2. On zoome l'image derrière */
+.gallery-item:hover img {
+    transform: scale(1.1);
+}
+
+/* 3. Le texte remonte doucement à sa place */
+.gallery-item:hover .cat-title {
+    transform: translateY(0);
+    border-bottom: 1px solid #fff; /* Petite ligne de soulignement blanche */
+}
+
+/* --- 7. Formulaire Style "Fini & Structuré" --- */
+
+.contact-page {
+    max-width: 700px; /* Un peu plus large pour respirer */
+    margin: 50px auto; /* On décolle bien du header */
+    padding: 60px;     /* Beaucoup d'espace intérieur */
+    
+    /* C'EST ICI LA TOUCHE "FINIE" : Une ombre très douce et une bordure invisible */
+    background-color: #ffffff; 
+    box-shadow: 0 20px 50px rgba(0,0,0,0.05); /* Ombre diffuse "Luxe" */
+    border: 1px solid #f5f5f5; /* Bordure quasi invisible pour délimiter */
+    border-radius: 4px; /* Coins très légèrement adoucis */
+}
+
+.intro-text {
+    text-align: center;
+    margin-bottom: 50px;
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: #444;
+    font-weight: 400;
+}
+
+.contact-form label {
+    display: block;
+    margin-top: 30px;
+    color: #000; /* Label NOIR pour plus de caractère */
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.75em;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    /* Ligne plus visible par défaut pour structurer */
+    border-bottom: 2px solid #e0e0e0; 
+    background-color: transparent;
+    color: #333;
+    font-family: inherit;
+    font-size: 1.1em;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.contact-form textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Animation : Quand on clique, la ligne devient noire */
+.contact-form input:focus,
+.contact-form textarea:focus {
+    border-bottom: 2px solid #000;
+    background-color: #fafafa; /* Léger fond gris pour montrer qu'on écrit */
+}
+
+/* Bouton "Plein" pour plus d'impact visuel */
+.submit-button {
+    background-color: #000; /* Fond Noir */
+    color: #fff; /* Texte Blanc */
+    padding: 18px 50px;
+    border: none;
+    cursor: pointer;
+    margin-top: 50px;
+    width: 100%; /* Bouton large pour finir la structure */
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+    background-color: #333; /* Gris foncé au survol */
+}
+
+/* Responsive : Sur mobile, on enlève l'ombre pour gagner de la place */
+@media (max-width: 768px) {
+    .contact-page {
+        box-shadow: none;
+        border: none;
+        padding: 20px;
+    }
+}
+
+
+/* --- 8. Pied de page et Réseaux Sociaux (Le "Fini") --- */
+
+/* Le conteneur des liens sociaux */
+.social-links {
+    text-align: center; /* Tout centrer */
+    margin-top: 80px;   /* Espace aéré après le bouton */
+    padding-top: 40px;
+    border-top: 1px solid #eeeeee; /* Une ligne fine grise pour séparer proprement */
+    width: 100%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Le petit texte "Suivez-moi" */
+.social-links p {
+    font-size: 0.8em;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #999;
+    margin-bottom: 20px;
+}
+
+/* Les liens Instagram / LinkedIn */
+.social-links a {
+    display: inline-block;
+    text-decoration: none; /* Enlève le soulignement moche */
+    color: #000000; /* Texte Noir */
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    letter-spacing: 1px;
+    margin: 0 15px; /* Espace entre les liens */
+    padding-bottom: 5px;
+    border-bottom: 1px solid transparent;
+    transition: all 0.3s;
+}
+
+/* Effet au survol des liens */
+.social-links a:hover {
+    color: #666;
+    border-bottom: 1px solid #000; /* Petite ligne qui apparait au survol */
+}
+
+/* Copyright tout en bas */
+footer {
+    text-align: center;
+    padding: 40px 0;
+    font-size: 0.7em;
+    color: #ccc; /* Gris très clair discret */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* --- Modification Spéciale pour les pages internes --- */
+.header-mini {
+    height: 65vh !important;
+    min-height: 300px; 
+    
+    background-image: url('../images/contact-bg.jpg') !important; 
+    
+    /* 1. IMAGE : Positionnement vertical (ici 25% = entre le haut et le milieu) */
+    background-position: center 80% !important; 
+
+    /* 2. TEXTE : Positionnement "entre le haut et le milieu" */
+    justify-content: flex-start !important; /* On colle tout en haut */
+    padding-top: 10vh !important; /* On pousse le texte vers le bas (ajustez ce chiffre si besoin) */
+}
+
+/* Logo dans le pied de page */
+.footer-logo {
+    width: 80px; /* Petit et discret */
+    height: auto;
+    margin-bottom: 20px;
+    opacity: 0.8; /* Légèrement transparent pour ne pas être agressif */
+}
+
+/* --- Style spécifique Page Galeries --- */
+.category-title {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5em;
+    margin-top: 15px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #000;
+}
+
+/* --- Style Page Services / Tarifs --- */
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.pricing-card {
+    border: 1px solid #eee;
+    padding: 40px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    background: #fff;
+}
+
+.pricing-card:hover {
+    transform: translateY(-5px); /* La carte monte un peu au survol */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* Style spécifique pour l'offre du milieu (Mariage) */
+.pricing-card.featured {
+    border: 1px solid #000; /* Bordure noire pour la mettre en avant */
+    background-color: #fafafa;
+}
+
+.pricing-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8em;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.pricing-card .price {
+    font-size: 1.2em;
+    color: #C17E47; /* Couleur Rouille/Or de votre logo */
+    font-weight: bold;
+    margin-bottom: 30px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.pricing-card ul {
+    list-style: none;
+    margin-bottom: 30px;
+    padding: 0;
+}
+
+.pricing-card li {
+    margin-bottom: 15px;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.btn-reserver {
+    display: inline-block;
+    padding: 10px 25px;
+    border: 1px solid #000;
+    text-decoration: none;
+    color: #000;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+}
+
+.btn-reserver:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+/* --- Style Page À Propos --- */
+.about-section {
+    display: flex;
+    align-items: center; /* Centre verticalement */
+    gap: 60px; /* Espace entre la photo et le texte */
+    margin-top: 40px;
+}
+
+.about-image {
+    flex: 1; /* Prend la moitié de la place */
+}
+
+.about-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    /* Petite ombre portée élégante sous la photo */
+    box-shadow: 20px 20px 0px #f5f5f5; 
+}
+
+.about-text {
+    flex: 1; /* Prend l'autre moitié */
+    font-size: 1.05em;
+    color: #555;
+    line-height: 1.8; /* Texte aéré pour la lecture */
+}
+
+.about-text p {
+    margin-bottom: 20px;
+}
+
+.signature {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.5em;
+    margin-top: 30px;
+    color: #000;
+}
+
+.btn-contact {
+    display: inline-block;
+    margin-top: 20px;
+    padding-bottom: 5px;
+    color: #000;
+    text-decoration: none;
+    border-bottom: 1px solid #000;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    letter-spacing: 1px;
+    transition: opacity 0.3s;
+}
+
+.btn-contact:hover {
+    opacity: 0.6;
+}
+
+/* Responsive Mobile : On empile tout */
+@media (max-width: 768px) {
+    .about-section {
+        flex-direction: column; /* Image en haut, texte en bas */
+        gap: 30px;
+    }
+    
+    .about-text .section-title {
+        text-align: center !important;
+    }
+    
+    .about-image img {
+        box-shadow: 10px 10px 0px #f5f5f5;
+    }
+}
+
+/* --- STYLE GALERIE "MASONRY" (Type Pinterest) --- */
+.masonry-grid {
+    /* On crée des colonnes comme dans un journal */
+    column-count: 3; 
+    column-gap: 15px; /* Espace entre les colonnes */
+}
+
+.masonry-item {
+    /* Empêche une image d'être coupée entre deux colonnes */
+    break-inside: avoid; 
+    margin-bottom: 15px; /* Espace sous chaque image */
+    position: relative;
+    cursor: zoom-in;
+}
+
+.masonry-item img {
+    width: 100%;
+    height: auto; /* Garde les proportions exactes (pas de déformation) */
+    display: block;
+    border-radius: 4px;
+    transition: opacity 0.3s;
+}
+
+.masonry-item:hover img {
+    opacity: 0.9;
+}
+
+/* Responsive : 2 colonnes sur tablette, 1 sur mobile */
+@media (max-width: 1024px) {
+    .masonry-grid { column-count: 2; }
+}
+@media (max-width: 600px) {
+    .masonry-grid { column-count: 1; }
+}
+
+/* --- STYLE GALERIE AUTOMATIQUE (MASONRY) --- */
+
+/* Le conteneur principal : il crée les colonnes */
+.masonry-grid {
+    column-count: 3; /* 3 colonnes sur ordinateur */
+    column-gap: 20px; /* Espace entre les colonnes */
+    padding: 0 10px;
+}
+
+/* Chaque image (la brique) */
+.masonry-item {
+    break-inside: avoid; /* Interdiction de couper une image en deux */
+    margin-bottom: 20px; /* Espace sous l'image */
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: zoom-in; /* Le curseur devient une loupe */
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* L'image elle-même */
+.masonry-item img {
+    width: 100%;
+    height: auto; /* Indispensable pour ne pas déformer l'image ! */
+    display: block;
+}
+
+/* Petit effet sympa au survol */
+.masonry-item:hover {
+    transform: translateY(-5px); /* L'image monte un petit peu */
+    opacity: 0.9;
+}
+
+/* --- RESPONSIVE (Adaptation Mobile) --- */
+
+/* Sur Tablette (moins de 1024px) : 2 Colonnes */
+@media (max-width: 1024px) {
+    .masonry-grid {
+        column-count: 2;
+    }
+}
+
+/* Sur Mobile (moins de 600px) : 1 Colonne */
+@media (max-width: 600px) {
+    .masonry-grid {
+        column-count: 1;
+    }
+}
