@@ -6,8 +6,7 @@
     
     // --- 1. EFFET D'APPARITION AU SCROLL (SCROLL REVEAL) ---
     // On cible tous les éléments qu'on veut animer
-    const elementsToReveal = document.querySelectorAll('.gallery-item, .section-title, .about-text, .pricing-card');
-
+        const elementsToReveal = document.querySelectorAll('.gallery-item, .masonry-item, .section-title, .about-text, .pricing-card');
     // On configure l'observateur (l'oeil du navigateur)
     const observerOptions = {
         threshold: 0.1 // L'animation se lance quand 10% de l'objet est visible
