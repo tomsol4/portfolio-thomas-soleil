@@ -51,19 +51,19 @@
     </div>
 
     <script>
-        // ================= CONFIGURATION =================
+        // ================= CONFIGURATION CORRIGÉE =================
         
-        // 1. Mettez le VRAI nombre de photos ici
-        const nombrePhotos = 22; 
+        // 1. J'ai vu sur ta capture que tu as au moins 29 photos
+        const nombrePhotos = 29; 
 
-        // 2. Nom du dossier (Créer le dossier 'bapteme' dans 'images')
-        // ATTENTION : Pas d'accent ici pour éviter les bugs
+        // 2. Le dossier est bon
         const dossier = "images/bapteme";
 
-        // 3. Nom des fichiers (Quand vous renommez, écrivez "Bapteme")
-        const debutNom = "Bapteme (";
-        const finNom = ").jpg";
-
+        // 3. C'EST ICI QUE ÇA BLOQUAIT :
+        // Tes fichiers s'appellent "bapteme-1.jpg", donc :
+        const debutNom = "bapteme-";  // Minuscule et tiret (pas de parenthèse)
+        const finNom = ".jpg";        // Juste l'extension
+        
         // =================================================
 
         const container = document.getElementById('galerie-container');
