@@ -9,7 +9,7 @@
         const elementsToReveal = document.querySelectorAll('.gallery-item, .masonry-item, .section-title, .about-text, .pricing-card');
     // On configure l'observateur (l'oeil du navigateur)
     const observerOptions = {
-        threshold: 0.1 // L'animation se lance quand 10% de l'objet est visible
+        threshold: 0.3 // L'animation se lance quand 10% de l'objet est visible
     };
 
     const observer = new IntersectionObserver((entries) => {
@@ -34,7 +34,7 @@
     const nav = document.querySelector('.main-nav');
     
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 100) {
+        if (window.scrollY > 200) {
             nav.classList.add('scrolled');
         } else {
             nav.classList.remove('scrolled');
