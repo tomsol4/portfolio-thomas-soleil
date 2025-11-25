@@ -579,3 +579,31 @@ footer {
     /* Optionnel : Réduire aussi la taille minimum sur mobile */
     min-height: 250px !important;
 }
+
+/* --- Bouton "Voir Plus" (Accueil) --- */
+
+.cta-container {
+    text-align: center; /* Pour centrer le bouton */
+    margin-top: 50px;   /* Espace entre les photos et le bouton */
+    margin-bottom: 20px;
+}
+
+.btn-see-more {
+    display: inline-block;
+    padding: 15px 40px;       /* Taille du bouton */
+    border: 1px solid #000;   /* Bordure noire fine */
+    color: #000;              /* Texte noir */
+    text-decoration: none;    /* Pas de soulignement */
+    text-transform: uppercase; /* Majuscules */
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9em;
+    letter-spacing: 2px;      /* Espace entre les lettres (Style Luxe) */
+    transition: all 0.3s ease; /* Animation douce */
+}
+
+/* Effet au survol de la souris */
+.btn-see-more:hover {
+    background-color: #000;   /* Le fond devient noir */
+    color: #fff;              /* Le texte devient blanc */
+    padding: 15px 50px;       /* Petit effet d'étirement sympa */
+}
