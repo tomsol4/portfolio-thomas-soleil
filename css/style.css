@@ -573,7 +573,7 @@ footer {
     /* Mettez le nom de votre nouvelle image ici */
     background-image: url('../images/mon-image-apropos.jpg') !important;
     /* Optionnel : ajuster le cadrage si besoin */
-    background-position: center center !important;
+    background-position: center !important;  
     /* AJOUTEZ CETTE LIGNE POUR RÉDUIRE LA TAILLE : */
     height: 40vh !important; /* 40% de l'écran (au lieu de 65%) */  
     /* Optionnel : Réduire aussi la taille minimum sur mobile */
