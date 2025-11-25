@@ -9,7 +9,7 @@
         const elementsToReveal = document.querySelectorAll('.gallery-item, .masonry-item, .section-title, .about-text, .pricing-card');
     // On configure l'observateur (l'oeil du navigateur)
     const observerOptions = {
-        threshold: 0.3 // L'animation se lance quand 10% de l'objet est visible
+        threshold: 0.2 // L'animation se lance quand 10% de l'objet est visible
     };
 
     const observer = new IntersectionObserver((entries) => {
