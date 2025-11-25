@@ -565,3 +565,17 @@ footer {
     color: #000;
     text-decoration: underline;
 }
+
+/* --- Bannières Spécifiques par Page --- */
+
+/* Image pour la page À Propos */
+.bg-apropos {
+    /* Mettez le nom de votre nouvelle image ici */
+    background-image: url('../images/mon-image-apropos.jpg') !important;
+    /* Optionnel : ajuster le cadrage si besoin */
+    background-position: center center !important;
+    /* AJOUTEZ CETTE LIGNE POUR RÉDUIRE LA TAILLE : */
+    height: 40vh !important; /* 40% de l'écran (au lieu de 65%) */  
+    /* Optionnel : Réduire aussi la taille minimum sur mobile */
+    min-height: 250px !important;
+}
