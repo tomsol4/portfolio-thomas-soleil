@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galeries | Thomas Soleil</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="icon" type="image/png" href="images/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
@@ -19,20 +19,19 @@
         <nav class="main-nav">
             <a href="index.html">Accueil</a>
             <a href="galeries.html" class="active">Galeries</a>
-            <!-- <a href="services.html">Services</a>  -->
             <a href="a-propos.html">À Propos</a>
             <a href="contact.html">Contact</a>
         </nav>
     </header>
 
     <main class="content-wrapper">
+        
         <h3 class="section-title">Exploration par Thème</h3>
         
         <section class="best-of-gallery">
             
             <a href="galerie-chartres.html" class="gallery-item">
                 <img src="images/chartres/Chartres (12).jpg" alt="Galerie Chartres">
-                
                 <div class="overlay-hover">
                     <span class="cat-title">Chartres</span>
                 </div>
@@ -46,7 +45,7 @@
             </a>
             
             <a href="galerie-bapteme.html" class="gallery-item">
-                <img src="images/bapteme-01.jpg" alt="Bapteme">
+                <img src="images/bapteme-01.jpg" alt="Bapteme"> 
                 <div class="overlay-hover">
                     <span class="cat-title">Espace privé 🔒</span>
                 </div>
@@ -59,7 +58,14 @@
                 </div>
             </a>
 
-        </section>
+        </section> 
+        <hr style="margin: 80px 0; border: 0; border-top: 1px solid #eee;">
+
+
+        <h3 class="section-title">Portfolio</h3>
+        
+        <div class="masonry-grid" id="vrac-container"></div>
+
 
         <div class="social-links">
             <p>Suivez-moi</p>
@@ -75,6 +81,47 @@
             </p>
         </footer>
     </main>
+
+    <div id="lightbox" onclick="this.style.display='none'" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; align-items:center; justify-content:center; cursor:zoom-out;">
+        <img id="lightbox-img" src="" style="max-width:95%; max-height:95%; border:2px solid white;">
+    </div>
+
+    <script>
+        // --- CONFIGURATION ---
+        const nbrPhotosVrac = 20; // METTEZ LE BON NOMBRE
+        const dossierVrac = "images/vrac";
+        
+        // Configuration pour les noms avec parenthèses : "vrac (1).jpg"
+        const debutNomVrac = "vrac ("; 
+        const finNomVrac = ").jpg";
+
+        const containerVrac = document.getElementById('vrac-container');
+
+        if (containerVrac) {
+            for (let i = 1; i <= nbrPhotosVrac; i++) {
+                let div = document.createElement('div');
+                div.className = 'masonry-item';
+                
+                let img = document.createElement('img');
+                // Construit le chemin : images/vrac/vrac (i).jpg
+                img.src = `${dossierVrac}/${debutNomVrac}${i}${finNomVrac}`;
+                img.alt = "Photo Portfolio " + i;
+                img.loading = "lazy"; // Chargement différé pour la rapidité
+
+                // Clic pour zoomer
+                div.onclick = function() {
+                    document.getElementById('lightbox-img').src = img.src;
+                    document.getElementById('lightbox').style.display = 'flex';
+                };
+
+                // Si une image n'existe pas, on cache la case pour ne pas faire moche
+                img.onerror = function() { this.parentNode.style.display = 'none'; };
+
+                div.appendChild(img);
+                containerVrac.appendChild(div);
+            }
+        }
+    </script>
 
     <script src="js/script.js"></script>
 
