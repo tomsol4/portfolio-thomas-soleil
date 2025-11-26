@@ -1,28 +1,30 @@
 /* =========================================
-   STYLE COMPLET : THÈME BLANC & MINIMALISTE
-   Refactorisé & Optimisé
+   STYLE COMPLET : THOMAS SOLEIL - PHOTOGRAPHIE
+   Version : Optimisée & Refactorisée
    ========================================= */
 
-/* --- 0. Variables (Configuration Globale) --- */
+/* --- 0. VARIABLES & CONFIGURATION --- */
 :root {
-    /* Couleurs */
+    /* Palette de couleurs */
     --color-bg: #ffffff;
-    --color-bg-alt: #fafafa;
-    --color-text-main: #333333;
-    --color-text-light: #666666;
-    --color-accent: #000000; /* Titres, boutons */
+    --color-bg-alt: #fafafa;      /* Gris très clair pour les fonds alternatifs */
+    --color-text-main: #333333;   /* Gris foncé pour le texte */
+    --color-text-light: #666666;  /* Gris moyen pour les détails */
+    --color-accent: #000000;      /* Noir pur pour les titres/boutons */
     --color-white: #ffffff;
-    
+    --color-gold: #C17E47;        /* Couleur accent pour les prix */
+
     /* Typographie */
     --font-main: 'Montserrat', sans-serif;
     --font-title: 'Playfair Display', serif;
-    
-    /* Espacement */
+
+    /* Dimensions & Espacement */
     --spacing-gutter: 20px;
     --border-radius: 4px;
+    --max-width: 1200px;
 }
 
-/* --- 1. Réinitialisation et Base --- */
+/* --- 1. BASE & RESET --- */
 * {
     margin: 0;
     padding: 0;
@@ -30,17 +32,12 @@
 }
 
 body {
-    font-family: var(--font-main); 
+    font-family: var(--font-main);
     background-color: var(--color-bg);
     color: var(--color-text-main);
     line-height: 1.6;
     font-weight: 300;
-}
-
-/* Typographie "Luxe" */
-h1, h2, h3, h4, .section-title, .site-branding h1, .cat-title, .signature {
-    font-family: var(--font-title);
-    letter-spacing: 2px;
+    -webkit-font-smoothing: antialiased; /* Rendu plus net sur Mac */
 }
 
 a {
@@ -49,81 +46,16 @@ a {
     transition: all 0.3s ease;
 }
 
-/* --- 2. Composants UI (Boutons, Inputs) --- */
-
-/* Boutons génériques */
-.submit-button, .btn-see-more, .btn-reserver {
-    display: inline-block;
-    background-color: var(--color-accent);
-    color: var(--color-white);
-    border: 1px solid var(--color-accent);
-    padding: 15px 40px;
-    text-transform: uppercase;
-    font-size: 0.9em;
-    font-weight: 600;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
+/* Typographie Titres */
+h1, h2, h3, h4, .section-title, .site-branding h1, .cat-title, .signature {
+    font-family: var(--font-title);
+    letter-spacing: 1px;
 }
 
-.submit-button:hover, .btn-see-more:hover {
-    background-color: #333;
-    color: var(--color-white);
-}
-
-/* Variantes boutons (Outline) */
-.btn-see-more, .btn-reserver {
-    background-color: transparent;
-    color: var(--color-accent);
-}
-
-.btn-see-more:hover, .btn-reserver:hover {
-    background-color: var(--color-accent);
-    color: var(--color-white);
-}
-
-/* Formulaires */
-.contact-form label {
-    display: block;
-    margin-top: 30px;
-    color: var(--color-accent);
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 0.75em;
-    letter-spacing: 2px;
-    margin-bottom: 10px;
-}
-
-.contact-form input,
-.contact-form textarea {
-    width: 100%;
-    padding: 12px 0;
-    border: none;
-    border-bottom: 2px solid #e0e0e0; 
-    background-color: transparent;
-    color: var(--color-text-main);
-    font-family: inherit;
-    font-size: 1.1em;
-    outline: none;
-    transition: all 0.3s;
-}
-
-.contact-form textarea {
-    resize: vertical;
-    min-height: 120px;
-}
-
-.contact-form input:focus,
-.contact-form textarea:focus {
-    border-bottom: 2px solid var(--color-accent);
-    background-color: var(--color-bg-alt);
-}
-
-/* --- 3. Entête Plein Écran (HERO) --- */
+/* --- 2. HEADER & NAV (HERO) --- */
 .hero-header {
-    height: 100vh;
     width: 100%;
+    /* Image par défaut (Accueil) */
     background-image: url('../images/hero-photo-accueil.jpg'); 
     background-size: cover;
     background-position: center;
@@ -131,34 +63,45 @@ a {
     
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; 
     align-items: center;
     
     padding-top: 60px;
     position: relative;
-    color: var(--color-white); 
+    color: var(--color-white);
     z-index: 1;
+    
+    /* Hauteur par défaut (Accueil) */
+    height: 100vh;
+    justify-content: flex-start;
 }
 
+/* Masque sombre sur l'image */
 .hero-header::before {
     content: '';
     position: absolute;
-    inset: 0; /* Remplr top/bottom/left/right: 0 */
+    inset: 0;
     background-color: rgba(0, 0, 0, 0.3);
     z-index: -1;
 }
 
-/* Headers Spécifiques (Pages internes) */
-.header-mini {
+/* HEADER MINI (Pages internes) */
+.hero-header.header-mini {
     height: 65vh !important;
-    min-height: 300px; 
-    background-image: url('../images/contact-bg.jpg') !important; 
-    background-position: center 80% !important; 
-    justify-content: flex-start !important;
-    padding-top: 10vh !important;
+    min-height: 300px;
+    background-image: url('../images/contact-bg.jpg'); /* Image par défaut pages internes */
+    background-position: center 80%;
+    justify-content: flex-start;
+    padding-top: 10vh;
 }
 
-/* Branding */
+/* Override spécifique pour la page À Propos */
+.hero-header.bg-apropos {
+    background-image: url('../images/mon-image-apropos.jpg') !important;
+    background-position: center !important;
+    height: 50vh !important;
+}
+
+/* Branding (Logo texte) */
 .site-branding {
     text-align: center;
     margin-bottom: 30px;
@@ -166,7 +109,7 @@ a {
 }
 
 .site-branding h1 {
-    font-size: clamp(2.2em, 5vw, 3.5em); /* Responsive font size */
+    font-size: clamp(2.2em, 5vw, 3.5em); /* Responsive text */
     font-weight: 300;
     letter-spacing: 5px;
     text-transform: uppercase;
@@ -181,7 +124,7 @@ a {
     letter-spacing: 3px;
 }
 
-/* Navigation */
+/* Menu de Navigation */
 .main-nav {
     text-align: center;
     width: 100%;
@@ -191,7 +134,7 @@ a {
 
 .main-nav a {
     color: var(--color-white);
-    margin: 0 20px;
+    margin: 0 15px;
     font-size: 0.9em;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -205,21 +148,21 @@ a {
     opacity: 1;
 }
 
-/* Navigation Scrolled (JS) */
+/* Menu Scroll (Géré par JS si tu l'actives) */
 .main-nav.scrolled {
-    background-color: rgba(0, 0, 0, 0.9); 
-    position: fixed; 
+    background-color: rgba(0, 0, 0, 0.9);
+    position: fixed;
     top: 0;
-    padding: 15px 0; 
+    padding: 15px 0;
     box-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
-/* --- 4. Contenu Principal --- */
+/* --- 3. CONTENU PRINCIPAL --- */
 .content-wrapper {
     background-color: var(--color-bg);
-    min-height: 100vh;
+    min-height: 80vh; /* Évite que le footer remonte trop si peu de contenu */
     padding: 80px var(--spacing-gutter);
-    max-width: 1200px;
+    max-width: var(--max-width);
     margin: 0 auto;
 }
 
@@ -233,7 +176,53 @@ a {
     letter-spacing: 4px;
 }
 
-/* --- 5. Galerie Standard (Grille Cartes) --- */
+/* --- 4. COMPOSANTS (Boutons, Liens) --- */
+.link-back {
+    text-decoration: none;
+    color: var(--color-text-light);
+    text-transform: uppercase;
+    font-size: 0.8em;
+    display: inline-block;
+    margin-bottom: 30px;
+}
+.link-back:hover { color: var(--color-accent); }
+
+/* Boutons Standards */
+.submit-button, .btn-see-more, .btn-reserver, .btn-contact {
+    display: inline-block;
+    padding: 15px 40px;
+    border: 1px solid var(--color-accent);
+    text-transform: uppercase;
+    font-size: 0.9em;
+    letter-spacing: 2px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    background: transparent;
+    color: var(--color-accent);
+}
+
+.submit-button {
+    background-color: var(--color-accent);
+    color: var(--color-white);
+    width: 100%;
+    margin-top: 30px;
+}
+
+.submit-button:hover {
+    background-color: #333;
+    border-color: #333;
+}
+
+.btn-see-more:hover, .btn-reserver:hover, .btn-contact:hover {
+    background-color: var(--color-accent);
+    color: var(--color-white);
+}
+
+/* --- 5. GALERIE & MASONRY --- */
+
+/* Galerie "Best Of" (Page Accueil / Galeries) */
 .best-of-gallery {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -245,8 +234,8 @@ a {
     display: block;
     overflow: hidden;
     cursor: pointer;
-    aspect-ratio: 4 / 5; 
-    background-color: #f0f0f0;
+    aspect-ratio: 4 / 5;
+    background-color: #eee;
     border-radius: var(--border-radius);
 }
 
@@ -257,21 +246,16 @@ a {
     transition: transform 0.6s ease;
 }
 
-.gallery-item:hover img { 
-    transform: scale(1.1); 
-}
+.gallery-item:hover img { transform: scale(1.1); }
 
-/* Overlay Texte */
+/* Texte sur image */
 .overlay-hover {
     position: absolute;
     bottom: 0; left: 0; width: 100%;
     padding: 30px 20px;
-    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-    opacity: 1; 
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end; 
-    align-items: flex-start;
+    align-items: flex-end;
 }
 
 .cat-title {
@@ -281,36 +265,33 @@ a {
     text-shadow: 0 2px 5px rgba(0,0,0,0.5);
 }
 
-/* --- 6. Galerie Masonry (Vrac / Portfolio) --- */
+/* Grille Masonry (Pages Albums) */
 .masonry-grid {
-    column-count: 3; 
+    column-count: 3;
     column-gap: 20px;
     padding: 0 10px;
     margin-bottom: 50px;
 }
 
 .masonry-item {
-    break-inside: avoid; 
+    break-inside: avoid;
     margin-bottom: 20px;
-    position: relative;
     border-radius: var(--border-radius);
     overflow: hidden;
     cursor: zoom-in;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition: opacity 0.3s ease;
 }
 
 .masonry-item img {
     width: 100%;
     height: auto;
-    display: block; /* Supprime les espaces fantômes */
+    display: block;
+    transition: transform 0.3s ease;
 }
 
-.masonry-item:hover {
-    transform: translateY(-5px);
-    opacity: 0.9;
-}
+.masonry-item:hover { opacity: 0.9; transform: translateY(-3px); }
 
-/* --- 7. Carrousel Horizontal (Hybride) --- */
+/* --- 6. CARROUSEL HORIZONTAL --- */
 .horizontal-section {
     width: 100%;
     padding-bottom: 50px;
@@ -323,69 +304,112 @@ a {
     overflow-x: auto;
     padding: 20px 0;
     scroll-behavior: smooth;
-    
-    /* Cache scrollbar */
     scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE/Edge */
+    -ms-overflow-style: none; /* IE */
 }
 .horizontal-scroll-wrapper::-webkit-scrollbar { display: none; }
 
 .horizontal-card {
-    flex: 0 0 300px;
+    flex: 0 0 300px; /* Largeur fixe carte */
     height: 450px;
     position: relative;
     border-radius: var(--border-radius);
     overflow: hidden;
-    transition: transform 0.3s ease;
 }
 
 .horizontal-card img { width: 100%; height: 100%; object-fit: cover; }
 
 .card-info {
-    position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px;
-    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); 
+    position: absolute; bottom: 0; left: 0; width: 100%;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
     color: var(--color-white);
 }
 
-.card-info h4 { font-size: 1.4em; margin: 0; text-transform: uppercase; }
-
-/* Boutons Navigation Carrousel */
 .scroll-btn {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.9);
     border: none;
-    width: 50px; height: 50px; border-radius: 50%;
-    font-size: 24px; cursor: pointer; z-index: 10;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    transition: transform 0.3s;
+    width: 40px; height: 40px; border-radius: 50%;
+    font-size: 20px; cursor: pointer; z-index: 10;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    transition: all 0.3s;
 }
 .scroll-btn:hover { background: #fff; transform: translateY(-50%) scale(1.1); }
-.scroll-btn.left { left: 20px; }
-.scroll-btn.right { right: 20px; }
+.scroll-btn.left { left: 10px; }
+.scroll-btn.right { right: 10px; }
 
-/* --- 8. Sections Spécifiques (A propos, Contact, Tarifs) --- */
-
-/* Contact Page Box */
+/* --- 7. FORMULAIRES & CONTACT --- */
 .contact-page {
     max-width: 700px;
-    margin: 50px auto;
-    padding: 60px;
-    background-color: var(--color-white); 
-    box-shadow: 0 20px 50px rgba(0,0,0,0.05);
-    border: 1px solid #f5f5f5;
+    margin: 0 auto;
+    padding: 40px;
+    background-color: var(--color-white);
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
     border-radius: var(--border-radius);
 }
 
-.intro-text {
-    text-align: center;
-    margin-bottom: 50px;
-    font-size: 1.1em;
-    color: #444;
+.contact-form label {
+    display: block;
+    margin-top: 25px;
+    color: var(--color-accent);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75em;
+    letter-spacing: 1px;
 }
 
-/* Tarifs */
+.contact-form input, .contact-form textarea {
+    width: 100%;
+    padding: 10px 0;
+    border: none;
+    border-bottom: 2px solid #eee;
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.contact-form input:focus, .contact-form textarea:focus {
+    border-bottom-color: var(--color-accent);
+}
+
+/* --- 8. PAGE À PROPOS --- */
+.about-section {
+    display: flex;
+    align-items: flex-start;
+    gap: 60px;
+    margin-top: 40px;
+}
+
+.about-image { flex: 1; }
+.about-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--border-radius);
+    box-shadow: 15px 15px 0px var(--color-bg-alt);
+}
+
+.about-text {
+    flex: 1;
+    font-size: 1.05em;
+    color: #555;
+    text-align: left;
+}
+.about-text p { margin-bottom: 20px; }
+
+.signature {
+    font-size: 1.8em;
+    margin-top: 30px;
+    color: var(--color-accent);
+    margin-bottom: 30px;
+}
+
+/* --- 9. SERVICES & TARIFS --- */
 .pricing-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -395,96 +419,30 @@ a {
 
 .pricing-card {
     border: 1px solid #eee;
-    padding: 40px;
+    padding: 40px 20px;
     text-align: center;
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: transform 0.3s;
     background: var(--color-white);
+    border-radius: var(--border-radius);
 }
-
-.pricing-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-}
+.pricing-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
 
 .pricing-card.featured {
     border: 1px solid var(--color-accent);
-    background-color: var(--color-bg-alt);
+    background-color: #fafafa;
 }
 
-.pricing-card h4 {
-    font-size: 1.8em;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-}
+.pricing-card h4 { font-size: 1.6em; margin-bottom: 10px; text-transform: uppercase; }
+.pricing-card .price { font-size: 1.2em; color: var(--color-gold); font-weight: bold; margin-bottom: 20px; }
+.pricing-card ul { list-style: none; margin-bottom: 30px; color: var(--color-text-light); font-size: 0.9em; }
+.pricing-card li { margin-bottom: 10px; }
 
-.pricing-card .price {
-    font-size: 1.2em;
-    color: #C17E47; /* Couleur Dorée/Bronze spécifique */
-    font-weight: bold;
-    margin-bottom: 30px;
-}
-
-.pricing-card ul {
-    list-style: none;
-    margin-bottom: 30px;
-    padding: 0;
-}
-
-.pricing-card li {
-    margin-bottom: 15px;
-    color: var(--color-text-light);
-    font-size: 0.9em;
-}
-
-/* A Propos */
-.about-section {
-    display: flex;
-    align-items: center;
-    gap: 60px;
-    margin-top: 40px;
-}
-
-.bg-apropos {
-    background-image: url('../images/mon-image-apropos.jpg') !important;
-    background-position: center !important;  
-    height: 40vh !important;
-    min-height: 250px !important;
-}
-
-.about-image { flex: 1; }
-.about-image img {
-    width: 100%;
-    height: auto;
-    display: block;
-    box-shadow: 20px 20px 0px var(--color-bg-alt); 
-}
-
-.about-text {
-    flex: 1;
-    font-size: 1.05em;
-    color: #555;
-    line-height: 1.8;
-}
-
-.signature {
-    font-style: italic;
-    font-size: 1.5em;
-    margin-top: 30px;
-    color: var(--color-accent);
-}
-
-.cta-container {
-    text-align: center;
-    margin-top: 50px;
-    margin-bottom: 20px;
-}
-
-/* --- 9. Footer --- */
+/* --- 10. FOOTER & SOCIAL --- */
 .social-links {
     text-align: center;
     margin-top: 80px;
     padding-top: 40px;
-    border-top: 1px solid #eeeeee;
+    border-top: 1px solid #eee;
     width: 100%;
     max-width: 600px;
     margin-left: auto;
@@ -495,8 +453,8 @@ a {
     font-size: 0.8em;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: #999;
-    margin-bottom: 20px;
+    color: #aaa;
+    margin-bottom: 15px;
 }
 
 .social-links a {
@@ -505,73 +463,76 @@ a {
     font-weight: bold;
     text-transform: uppercase;
     font-size: 0.9em;
-    letter-spacing: 1px;
     margin: 0 15px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid transparent;
 }
-
-.social-links a:hover {
-    color: var(--color-text-light);
-    border-bottom: 1px solid var(--color-accent);
-}
+.social-links a:hover { color: var(--color-text-light); }
 
 footer {
     text-align: center;
     padding: 40px 0;
-    font-size: 0.7em;
+    font-size: 0.75em;
     color: #ccc;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
-.footer-logo {
-    width: 80px;
-    height: auto;
-    margin-bottom: 20px;
-    opacity: 0.8;
+/* --- 11. LIGHTBOX (ZOOM IMAGE) --- */
+#lightbox {
+    display: none; /* Géré par JS */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.95);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    cursor: zoom-out;
 }
 
-/* --- 10. Animations & Utilitaires --- */
-.reveal-hidden {
-    opacity: 0;
-    transform: translateY(30px); 
-    transition: all 0.8s ease-out; 
+#lightbox-img {
+    max-width: 90%;
+    max-height: 90%;
+    border: 2px solid var(--color-white);
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
 }
 
-.visible {
-    opacity: 1;
-    transform: translateY(0); 
-}
+/* --- 12. UTILS --- */
+.cta-container { text-align: center; margin: 40px 0; }
+.text-center { text-align: center; }
+.text-left { text-align: left; }
 
-/* --- 11. Responsive Design (Media Queries) --- */
+/* --- 13. RESPONSIVE --- */
 
-/* Desktop Moyen */
-@media (min-width: 768px) {
+/* Desktop */
+@media (min-width: 1024px) {
     .horizontal-card { flex: 0 0 400px; height: 550px; }
 }
 
-/* Tablettes & Petits écrans */
+/* Tablette */
 @media (max-width: 1024px) {
     .masonry-grid { column-count: 2; }
 }
 
-/* Mobiles (Tablette portrait & Téléphone) */
+/* Mobile */
 @media (max-width: 768px) {
+    /* Header */
+    .hero-header { background-attachment: scroll; /* Fix perf mobile */ }
+    .site-branding h1 { letter-spacing: 2px; }
+    
     /* Layout */
     .about-section { flex-direction: column; gap: 30px; }
-    
-    /* Composants */
-    .scroll-btn { display: none; } /* On cache les flèches, le swipe suffit */
-    .contact-page { box-shadow: none; border: none; padding: 20px; }
-    
-    /* Style */
     .about-image img { box-shadow: 10px 10px 0px var(--color-bg-alt); }
-    .about-text .section-title { text-align: center !important; }
+    .section-title { font-size: 1.8em; margin-bottom: 40px; }
+    
+    /* Contact */
+    .contact-page { padding: 20px; box-shadow: none; border: none; }
+    
+    /* Carousel */
+    .scroll-btn { display: none; } /* Cache flèches, utilise le swipe */
 }
 
-/* Très petits mobiles */
+/* Petit Mobile */
 @media (max-width: 600px) {
     .masonry-grid { column-count: 1; }
-    .hero-header { background-attachment: scroll; /* Parallaxe désactivé sur mobile pour perf */ }
+    .main-nav a { display: block; margin: 10px 0; } /* Menu empilé */
 }
