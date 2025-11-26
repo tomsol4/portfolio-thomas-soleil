@@ -607,3 +607,91 @@ footer {
     color: #fff;              /* Le texte devient blanc */
     padding: 15px 50px;       /* Petit effet d'étirement sympa */
 }
+
+/* --- CARROUSEL HORIZONTAL --- */
+
+.horizontal-section {
+    width: 100%;
+    overflow: hidden; /* Empêche la page entière de bouger */
+    padding-bottom: 50px;
+}
+
+.horizontal-scroll-wrapper {
+    display: flex; /* Met les éléments côte à côte */
+    overflow-x: auto; /* Active le scroll horizontal */
+    scroll-snap-type: x mandatory; /* Force l'image à se centrer quand on lâche */
+    gap: 20px;
+    padding: 20px 5%; /* Marge sur les côtés */
+    -webkit-overflow-scrolling: touch; /* Fluidité sur iPhone */
+    
+    /* Cache la barre de scroll (plus joli) */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE 10+ */
+}
+
+/* Cache la barre de scroll (Chrome/Safari) */
+.horizontal-scroll-wrapper::-webkit-scrollbar { 
+    display: none; 
+}
+
+.horizontal-card {
+    /* Taille fixe des cartes */
+    flex: 0 0 80vw; /* Sur mobile : prend 80% de l'écran (on voit qu'il y a une suite) */
+    height: 400px;
+    position: relative;
+    text-decoration: none;
+    border-radius: 4px;
+    overflow: hidden;
+    scroll-snap-align: center; /* S'aligne au centre au scroll */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.horizontal-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+/* Info sur la carte (Titre) */
+.card-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); /* Dégradé noir */
+    color: #fff;
+}
+
+.card-info h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5em;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.card-info span {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8em;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+/* Animation au survol */
+.horizontal-card:hover {
+    transform: scale(0.98); /* Petit effet de clic */
+}
+.horizontal-card:hover img {
+    transform: scale(1.1); /* Zoom image */
+}
+
+/* RESPONSIVE : Sur Ordi, les cartes sont moins larges */
+@media (min-width: 768px) {
+    .horizontal-card {
+        flex: 0 0 400px; /* Largeur fixe sur PC */
+        height: 500px;
+    }
+}
