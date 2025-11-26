@@ -715,13 +715,13 @@ footer {
     width: max-content; /* La largeur s'adapte au nombre d'images */
     
     /* L'animation infinie */
-    animation: scrollInfinite 30s linear infinite;
+    animation: scrollInfinite 50s linear infinite;
 }
 
-/* Si on passe la souris dessus, ça s'arrête (pour pouvoir cliquer tranquillement) */
+/* Si on passe la souris dessus, ça s'arrête (pour pouvoir cliquer tranquillement)
 .infinite-track:hover {
     animation-play-state: paused;
-}
+} */
 
 /* DÉFINITION DE L'ANIMATION */
 @keyframes scrollInfinite {
