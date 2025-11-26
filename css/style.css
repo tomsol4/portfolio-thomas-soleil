@@ -1,121 +1,143 @@
 /* =========================================
-   STYLE COMPLET : THÈME BLANC & MINIMALISTE (NETTOYÉ)
+   STYLE COMPLET : THÈME BLANC & MINIMALISTE
+   Version Pédagogique (Commentée)
    ========================================= */
 
-/* --- 0. Variables (Configuration Globale) --- */
+/* --- 0. VARIABLES (Le "Panneau de Contrôle") --- */
+/* Si vous changez une couleur ici, elle change sur tout le site ! */
 :root {
-    --color-bg: #ffffff;
-    --color-text-main: #333333;
-    --color-text-light: #666666;
-    --color-accent: #000000; /* Pour les titres et boutons */
-    --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    --spacing-gutter: 20px;
+    --color-bg: #ffffff;           /* Fond du site (Blanc) */
+    --color-text-main: #333333;    /* Texte principal (Gris foncé, moins agressif que le noir pur) */
+    --color-text-light: #666666;   /* Texte secondaire (Gris clair) */
+    --color-accent: #000000;       /* Couleur pour les titres et boutons importants */
+    --font-main: 'Montserrat', sans-serif; /* Police pour le texte courant */
+    --spacing-gutter: 20px;        /* Espace standard sur les côtés */
 }
 
-/* --- 1. Réinitialisation et Base --- */
+/* --- 1. RÉINITIALISATION (La base) --- */
 * {
     margin: 0;
     padding: 0;
+    /* CRUCIAL : Empêche les bordures d'agrandir les boîtes. 
+       Si une boîte fait 100px + 20px de bordure, elle reste à 100px au total. */
     box-sizing: border-box;
 }
 
 body {
-    font-family: 'Montserrat', sans-serif; 
-    background-color: #ffffff;
-    color: #333333;
-    line-height: 1.6;
-    font-weight: 300;
+    font-family: var(--font-main);
+    background-color: var(--color-bg);
+    color: var(--color-text-main);
+    line-height: 1.6; /* Espace entre les lignes de texte pour la lisibilité */
+    font-weight: 300; /* Texte fin (Style Luxe) */
 }
 
-/* Police "Luxe" pour les titres */
+/* On force la police "Luxe" (Playfair) sur tous les titres */
 h1, h2, h3, .section-title, .site-branding h1 {
     font-family: 'Playfair Display', serif;
-    letter-spacing: 2px;
+    letter-spacing: 2px; /* Espace les lettres pour faire "Magazine" */
 }
 
-/* --- 2. Entête Plein Écran (HERO) --- */
+/* --- 2. ENTÊTE PLEIN ÉCRAN (HERO) --- */
 .hero-header {
-    height: 100vh;
+    height: 100vh; /* 100% de la Hauteur de l'écran (ViewHeight) */
     width: 100%;
+    
+    /* L'image de fond */
     background-image: url('../images/hero-photo-accueil.jpg'); 
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed; /* Parallaxe */
+    background-size: cover; /* L'image couvre tout sans être déformée */
+    background-position: center; /* On centre l'image */
+    background-attachment: fixed; /* Effet PARALLAXE : l'image reste fixe quand on scrolle */
     
+    /* Flexbox : Pour aligner le texte au centre */
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start; 
-    align-items: center;
+    flex-direction: column; /* Les éléments s'empilent verticalement */
+    justify-content: flex-start; /* On commence en haut */
+    align-items: center; /* On centre horizontalement */
     
-    padding-top: 60px;
-    position: relative;
-    color: #ffffff; 
+    padding-top: 60px; /* Espace pour ne pas coller le titre au plafond */
+    position: relative; /* Nécessaire pour placer le filtre sombre par-dessus */
+    color: #ffffff; /* Texte en blanc */
     z-index: 1;
 }
 
+/* Le filtre sombre transparent sur la photo */
 .hero-header::before {
     content: '';
     position: absolute;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.3);
-    z-index: -1;
+    inset: 0; /* Raccourci pour top:0, right:0, bottom:0, left:0 */
+    background-color: rgba(0, 0, 0, 0.3); /* Noir à 30% d'opacité */
+    z-index: -1; /* Se met DERRIÈRE le texte mais DEVANT l'image */
 }
 
-/* --- 3. Branding --- */
+/* --- 3. LE TITRE (BRANDING) --- */
 .site-branding {
     text-align: center;
     margin-bottom: 30px;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Ombre portée pour lire sur la photo */
 }
 
 .site-branding h1 {
+    /* Taille intelligente : s'adapte à la taille de l'écran */
     font-size: clamp(2.2em, 5vw, 3.5em);
     font-weight: 400;
-    font-style: italic;
-    letter-spacing: 5px;
+    font-style: italic; /* Style "Signature" */
     text-transform: uppercase;
-    margin-bottom: 10px;
 }
 
 .site-branding h2 {
     font-size: 1em;
     font-weight: 400;
-    opacity: 0.9;
+    opacity: 0.9; /* Légèrement transparent */
     text-transform: uppercase;
     letter-spacing: 3px;
 }
 
-/* --- 4. Navigation --- */
+/* --- 4. NAVIGATION (MENU) --- */
 .main-nav {
+    position: fixed; /* MENU FIXE : Reste collé en haut même quand on scrolle */
+    top: 0; left: 0; width: 100%;
+    z-index: 1000; /* Toujours au-dessus de tout le reste */
+    
     text-align: center;
-    width: 100%;
+    padding: 30px 0; /* Menu aéré au départ */
+    background-color: transparent; /* Fond invisible au départ */
+    
+    /* Animation douce quand le menu change de couleur */
+    transition: background-color 0.4s ease, padding 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* Classe ajoutée par le JAVASCRIPT quand on descend */
+.main-nav.scrolled {
+    background-color: rgba(0, 0, 0, 0.95); /* Devient noir opaque */
+    padding: 15px 0; /* Devient plus petit */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3); /* Ajoute une ombre */
 }
 
 .main-nav a {
     color: #ffffff;
-    text-decoration: none;
+    text-decoration: none; /* Enlève le soulignement moche par défaut */
     margin: 0 20px;
     font-size: 0.9em;
     text-transform: uppercase;
     letter-spacing: 1px;
     padding-bottom: 5px;
-    border-bottom: 1px solid transparent;
+    border-bottom: 1px solid transparent; /* Prépare le soulignement invisible */
     transition: all 0.3s ease;
-    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
 }
 
+/* Au survol de la souris */
 .main-nav a:hover, .main-nav a.active {
-    border-bottom-color: #ffffff;
+    border-bottom-color: #ffffff; /* La ligne blanche apparaît */
     opacity: 1;
 }
 
-/* --- 5. Contenu Principal --- */
+/* --- 5. CONTENU PRINCIPAL --- */
 .content-wrapper {
     background-color: var(--color-bg);
     min-height: 100vh;
-    padding: 80px var(--spacing-gutter);
-    max-width: 1200px;
-    margin: 0 auto;
+    padding: 80px var(--spacing-gutter); /* Espace intérieur */
+    max-width: 1200px; /* Le contenu ne s'étire pas à l'infini sur les écrans géants */
+    margin: 0 auto; /* Centre le bloc au milieu de la page */
 }
 
 .section-title {
@@ -128,37 +150,40 @@ h1, h2, h3, .section-title, .site-branding h1 {
     letter-spacing: 4px;
 }
 
-/* --- 6. Galerie (Grille & Animation Survol) --- */
+/* --- 6. GALERIE STANDARD (La Grille Carrée) --- */
+/* Utilisé pour les "miniatures" de la page d'accueil */
 .best-of-gallery {
     display: grid;
+    /* Magie CSS Grid : Crée autant de colonnes que possible, minimum 350px de large */
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 30px;
+    gap: 30px; /* Espace entre les images */
 }
 
 .gallery-item {
     position: relative;
     display: block;
-    overflow: hidden;
+    overflow: hidden; /* Si l'image zoome, elle ne dépasse pas du cadre */
     cursor: pointer;
-    aspect-ratio: 4 / 5; 
-    background-color: #f0f0f0;
+    aspect-ratio: 4 / 5; /* Force le format PORTRAIT (comme Instagram) */
+    background-color: #f0f0f0; /* Gris clair pendant le chargement */
 }
 
 .gallery-item img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s ease;
+    object-fit: cover; /* L'image remplit le cadre sans être déformée (elle est rognée) */
+    transition: transform 0.6s ease; /* Animation du zoom */
 }
 
+/* Le texte par-dessus l'image (Caché par défaut) */
 .overlay-hover {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.4); /* Fond noir transparent */
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0;
+    opacity: 0; /* Invisible */
     transition: opacity 0.4s ease;
 }
 
@@ -166,299 +191,27 @@ h1, h2, h3, .section-title, .site-branding h1 {
     color: #fff;
     font-family: 'Playfair Display', serif;
     font-size: 1.8em;
-    letter-spacing: 3px;
     text-transform: uppercase;
-    border-bottom: 1px solid transparent;
-    padding-bottom: 5px;
-    transform: translateY(20px);
+    transform: translateY(20px); /* Décalé vers le bas */
     transition: transform 0.4s ease;
 }
 
-/* Animation Survol */
-.gallery-item:hover .overlay-hover { opacity: 1; }
-.gallery-item:hover img { transform: scale(1.1); }
-.gallery-item:hover .cat-title {
-    transform: translateY(0);
-    border-bottom: 1px solid #fff;
-}
+/* --- ANIMATION AU SURVOL (HOVER) --- */
+.gallery-item:hover .overlay-hover { opacity: 1; } /* Le texte apparaît */
+.gallery-item:hover img { transform: scale(1.1); } /* L'image zoome */
+.gallery-item:hover .cat-title { transform: translateY(0); } /* Le texte remonte */
 
-/* --- 7. Formulaire Style "Luxe" --- */
-.contact-page {
-    max-width: 700px;
-    margin: 50px auto;
-    padding: 60px;
-    background-color: #ffffff; 
-    box-shadow: 0 20px 50px rgba(0,0,0,0.05);
-    border: 1px solid #f5f5f5;
-    border-radius: 4px;
-}
 
-.intro-text {
-    text-align: center;
-    margin-bottom: 50px;
-    font-size: 1.1em;
-    line-height: 1.6;
-    color: #444;
-    font-weight: 400;
-}
-
-.contact-form label {
-    display: block;
-    margin-top: 30px;
-    color: #000;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 0.75em;
-    letter-spacing: 2px;
-    margin-bottom: 10px;
-}
-
-.contact-form input,
-.contact-form textarea {
-    width: 100%;
-    padding: 12px 0;
-    border: none;
-    border-bottom: 2px solid #e0e0e0; 
-    background-color: transparent;
-    color: #333;
-    font-family: inherit;
-    font-size: 1.1em;
-    outline: none;
-    transition: all 0.3s;
-}
-
-.contact-form textarea {
-    resize: vertical;
-    min-height: 120px;
-}
-
-.contact-form input:focus,
-.contact-form textarea:focus {
-    border-bottom: 2px solid #000;
-    background-color: #fafafa;
-}
-
-.submit-button {
-    background-color: #000;
-    color: #fff;
-    padding: 18px 50px;
-    border: none;
-    cursor: pointer;
-    margin-top: 50px;
-    width: 100%;
-    font-size: 0.9em;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    font-weight: 600;
-    transition: background-color 0.3s;
-}
-
-.submit-button:hover { background-color: #333; }
-
-/* --- 8. Pied de page --- */
-.social-links {
-    text-align: center;
-    margin-top: 80px;
-    padding-top: 40px;
-    border-top: 1px solid #eeeeee;
-    width: 100%;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.social-links p {
-    font-size: 0.8em;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #999;
-    margin-bottom: 20px;
-}
-
-.social-links a {
-    display: inline-block;
-    text-decoration: none;
-    color: #000000;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 0.9em;
-    letter-spacing: 1px;
-    margin: 0 15px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid transparent;
-    transition: all 0.3s;
-}
-
-.social-links a:hover {
-    color: #666;
-    border-bottom: 1px solid #000;
-}
-
-footer {
-    text-align: center;
-    padding: 40px 0;
-    font-size: 0.7em;
-    color: #ccc;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.footer-logo {
-    width: 80px;
-    height: auto;
-    margin-bottom: 20px;
-    opacity: 0.8;
-}
-
-/* --- 9. Styles Spécifiques Pages Internes --- */
-
-/* Header réduit (Contact, Services, etc.) */
-.header-mini {
-    height: 65vh !important;
-    min-height: 300px; 
-    background-image: url('../images/contact-bg.jpg') !important; 
-    background-position: center 80% !important; 
-    justify-content: flex-start !important;
-    padding-top: 10vh !important;
-}
-
-/* Titres sous les catégories */
-.category-title {
-    text-align: center;
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5em;
-    margin-top: 15px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #000;
-}
-
-/* Tarifs */
-.pricing-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-    margin-top: 40px;
-}
-
-.pricing-card {
-    border: 1px solid #eee;
-    padding: 40px;
-    text-align: center;
-    transition: transform 0.3s, box-shadow 0.3s;
-    background: #fff;
-}
-
-.pricing-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-}
-
-.pricing-card.featured {
-    border: 1px solid #000;
-    background-color: #fafafa;
-}
-
-.pricing-card h4 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.8em;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-}
-
-.pricing-card .price {
-    font-size: 1.2em;
-    color: #C17E47;
-    font-weight: bold;
-    margin-bottom: 30px;
-    font-family: 'Montserrat', sans-serif;
-}
-
-.pricing-card ul {
-    list-style: none;
-    margin-bottom: 30px;
-    padding: 0;
-}
-
-.pricing-card li {
-    margin-bottom: 15px;
-    color: #666;
-    font-size: 0.9em;
-}
-
-.btn-reserver {
-    display: inline-block;
-    padding: 10px 25px;
-    border: 1px solid #000;
-    text-decoration: none;
-    color: #000;
-    text-transform: uppercase;
-    font-size: 0.8em;
-    letter-spacing: 1px;
-    transition: all 0.3s;
-}
-
-.btn-reserver:hover { background-color: #000; color: #fff; }
-
-/* À Propos */
-.about-section {
-    display: flex;
-    align-items: center;
-    gap: 60px;
-    margin-top: 40px;
-}
-
-.about-image { flex: 1; }
-.about-image img {
-    width: 100%;
-    height: auto;
-    display: block;
-    box-shadow: 20px 20px 0px #f5f5f5; 
-}
-
-.about-text {
-    flex: 1;
-    font-size: 1.05em;
-    color: #555;
-    line-height: 1.8;
-}
-
-.about-text p { margin-bottom: 20px; }
-
-.signature {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: 1.5em;
-    margin-top: 30px;
-    color: #000;
-}
-
-.btn-contact {
-    display: inline-block;
-    margin-top: 20px;
-    padding-bottom: 5px;
-    color: #000;
-    text-decoration: none;
-    border-bottom: 1px solid #000;
-    text-transform: uppercase;
-    font-size: 0.9em;
-    letter-spacing: 1px;
-    transition: opacity 0.3s;
-}
-
-.btn-contact:hover { opacity: 0.6; }
-
-/* --- 10. STYLE GALERIE AUTOMATIQUE (MASONRY) --- */
-/* C'est la section importante pour vos galeries détaillées */
-
+/* --- 7. GALERIE MASONRY (Type Pinterest) --- */
+/* Utilisé pour les pages d'albums (Chartres, Baptême...) */
 .masonry-grid {
-    column-count: 3; /* 3 colonnes sur ordi */
+    column-count: 3; /* Divise la page en 3 colonnes de journal */
     column-gap: 20px;
     padding: 0 10px;
 }
 
 .masonry-item {
-    break-inside: avoid; /* Pas de coupure */
+    break-inside: avoid; /* Interdit de couper une photo en deux entre les colonnes */
     margin-bottom: 20px;
     position: relative;
     border-radius: 4px;
@@ -469,275 +222,38 @@ footer {
 
 .masonry-item img {
     width: 100%;
-    height: auto; /* Pas de déformation */
+    height: auto; /* L'image garde sa hauteur naturelle (Pas de rognage ici !) */
     display: block;
 }
 
 .masonry-item:hover {
-    transform: translateY(-5px);
+    transform: translateY(-5px); /* Petit saut vers le haut */
     opacity: 0.9;
 }
 
-/* --- 11. Responsive Global (Mobile) --- */
-@media (max-width: 1024px) {
-    .masonry-grid { column-count: 2; }
-}
-
-@media (max-width: 768px) {
-    .contact-page {
-        box-shadow: none;
-        border: none;
-        padding: 20px;
-    }
-    .about-section {
-        flex-direction: column;
-        gap: 30px;
-    }
-    .about-text .section-title { text-align: center !important; }
-    .about-image img { box-shadow: 10px 10px 0px #f5f5f5; }
-}
-
-@media (max-width: 600px) {
-    .masonry-grid { column-count: 1; }
-}
-
-/* =========================================
-   AJOUTS JAVASCRIPT (ANIMATIONS & INTERACTION)
-   ========================================= */
-
-/* --- 1. Animation Scroll Reveal --- */
-
-/* État de départ (Caché) */
-.reveal-hidden {
-    opacity: 0;
-    transform: translateY(30px); /* Décalé vers le bas de 30px */
-    transition: all 0.8s ease-out; /* Animation lente et douce */
-}
-
-/* État d'arrivée (Visible) - Ajouté par le JS */
-.visible {
-    opacity: 1;
-    transform: translateY(0); /* Revient à sa place */
-}
-
-/* --- 2. Menu Dynamique au Scroll --- */
-
-/* Quand on scrolle, le menu prend un fond sombre léger pour la lisibilité */
-.main-nav {
-    transition: background-color 0.3s, padding 0.3s;
-    width: 100%;
-    z-index: 1000; /* Toujours au-dessus */
-}
-
-.main-nav.scrolled {
-    background-color: rgba(0, 0, 0, 0.8); /* Fond noir transparent */
-    position: fixed; /* Le menu reste collé en haut */
-    top: 0;
-    padding: 15px 0; /* Il devient un peu plus compact */
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-}
-
-/* --- Page Mentions Légales --- */
-.legal-content {
-    max-width: 800px;
-    margin: 0 auto;
-    text-align: left; /* Texte aligné à gauche pour la lecture */
-    padding: 0 20px;
-}
-
-.legal-content h4 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3em;
-    margin-top: 40px;
-    margin-bottom: 15px;
-    color: #000;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-}
-
-.legal-content p {
-    margin-bottom: 20px;
-    color: #555;
-    font-size: 0.95em;
-}
-
-.legal-content a {
-    color: #000;
-    text-decoration: underline;
-}
-
-/* --- Bannières Spécifiques par Page --- */
-
-/* Image pour la page À Propos */
-.bg-apropos {
-    /* Mettez le nom de votre nouvelle image ici */
-    background-image: url('../images/mon-image-apropos.jpg') !important;
-    /* Optionnel : ajuster le cadrage si besoin */
-    background-position: center !important;  
-    /* AJOUTEZ CETTE LIGNE POUR RÉDUIRE LA TAILLE : */
-    height: 40vh !important; /* 40% de l'écran (au lieu de 65%) */  
-    /* Optionnel : Réduire aussi la taille minimum sur mobile */
-    min-height: 250px !important;
-}
-
-/* --- Bouton "Voir Plus" (Accueil) --- */
-
-.cta-container {
-    text-align: center; /* Pour centrer le bouton */
-    margin-top: 50px;   /* Espace entre les photos et le bouton */
-    margin-bottom: 20px;
-}
-
-.btn-see-more {
-    display: inline-block;
-    padding: 15px 40px;       /* Taille du bouton */
-    border: 1px solid #000;   /* Bordure noire fine */
-    color: #000;              /* Texte noir */
-    text-decoration: none;    /* Pas de soulignement */
-    text-transform: uppercase; /* Majuscules */
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.9em;
-    letter-spacing: 2px;      /* Espace entre les lettres (Style Luxe) */
-    transition: all 0.3s ease; /* Animation douce */
-}
-
-/* Effet au survol de la souris */
-.btn-see-more:hover {
-    background-color: #000;   /* Le fond devient noir */
-    color: #fff;              /* Le texte devient blanc */
-    padding: 15px 50px;       /* Petit effet d'étirement sympa */
-}
-
-/* --- CARROUSEL HORIZONTAL --- */
-
+/* --- 8. CARROUSEL HORIZONTAL HYBRIDE --- */
 .horizontal-section {
     width: 100%;
-    overflow: hidden; /* Empêche la page entière de bouger */
     padding-bottom: 50px;
+    position: relative;
+    overflow: hidden;
 }
 
 .horizontal-scroll-wrapper {
     display: flex; /* Met les éléments côte à côte */
-    overflow-x: auto; /* Active le scroll horizontal */
-    scroll-snap-type: x mandatory; /* Force l'image à se centrer quand on lâche */
     gap: 20px;
-    padding: 20px 5%; /* Marge sur les côtés */
-    -webkit-overflow-scrolling: touch; /* Fluidité sur iPhone */
+    overflow-x: auto; /* Active le scroll horizontal */
+    padding: 20px 0;
+    scroll-behavior: auto;
     
-    /* Cache la barre de scroll (plus joli) */
+    /* Cache la barre de défilement moche */
     scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none;  /* IE 10+ */
+    -ms-overflow-style: none;
 }
-
-/* Cache la barre de scroll (Chrome/Safari) */
-.horizontal-scroll-wrapper::-webkit-scrollbar { 
-    display: none; 
-}
+.horizontal-scroll-wrapper::-webkit-scrollbar { display: none; } /* Chrome/Safari */
 
 .horizontal-card {
-    /* Taille fixe des cartes */
-    flex: 0 0 80vw; /* Sur mobile : prend 80% de l'écran (on voit qu'il y a une suite) */
-    height: 400px;
-    position: relative;
-    text-decoration: none;
-    border-radius: 4px;
-    overflow: hidden;
-    scroll-snap-align: center; /* S'aligne au centre au scroll */
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
-}
-
-.horizontal-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-}
-
-/* Info sur la carte (Titre) */
-.card-info {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 20px;
-    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); /* Dégradé noir */
-    color: #fff;
-}
-
-.card-info h4 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5em;
-    margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.card-info span {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.8em;
-    text-transform: uppercase;
-    opacity: 0.8;
-}
-
-/* Animation au survol */
-.horizontal-card:hover {
-    transform: scale(0.98); /* Petit effet de clic */
-}
-.horizontal-card:hover img {
-    transform: scale(1.1); /* Zoom image */
-}
-
-/* RESPONSIVE : Sur Ordi, les cartes sont moins larges */
-@media (min-width: 768px) {
-    .horizontal-card {
-        flex: 0 0 400px; /* Largeur fixe sur PC */
-        height: 500px;
-    }
-}
-
-/* --- CARROUSEL INFINI (Auto-Scroll) --- */
-
-.horizontal-section {
-    width: 100%;
-    padding-bottom: 50px;
-    overflow: hidden; /* Cache ce qui dépasse de l'écran */
-}
-
-.infinite-scroll-mask {
-    width: 100%;
-    overflow: hidden;
-}
-
-.infinite-track {
-    display: flex;
-    gap: 20px; /* Espace entre les images */
-    width: max-content; /* La largeur s'adapte au nombre d'images */
-    
-    /* L'animation infinie */
-    animation: scrollInfinite 50s linear infinite;
-}
-
-/* Si on passe la souris dessus, ça s'arrête (pour pouvoir cliquer tranquillement)
-.infinite-track:hover {
-    animation-play-state: paused;
-} */
-
-/* DÉFINITION DE L'ANIMATION */
-@keyframes scrollInfinite {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        /* On déplace de 50% car on a dupliqué le contenu. 
-           Quand la 2ème série arrive au début, ça boucle invisiblement. */
-        transform: translateX(-50%);
-    }
-}
-
-/* STYLE DES CARTES */
-.horizontal-card {
-    flex: 0 0 300px; /* Largeur de l'image (Mobile) */
+    flex: 0 0 300px; /* Taille fixe des cartes */
     height: 450px;
     position: relative;
     text-decoration: none;
@@ -746,32 +262,123 @@ footer {
     transition: transform 0.3s ease;
 }
 
-.horizontal-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+.horizontal-card img { width: 100%; height: 100%; object-fit: cover; }
 
 .card-info {
-    position: absolute;
-    bottom: 0; left: 0; width: 100%;
-    padding: 20px;
-    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); /* Dégradé noir en bas */
     color: #fff;
 }
 
-.card-info h4 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4em;
-    margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+/* Boutons Flèches (Gauche/Droite) */
+.scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%); /* Centrage vertical parfait */
+    background: rgba(255,255,255,0.8);
+    border: none;
+    width: 50px; height: 50px; border-radius: 50%; /* Rond */
+    font-size: 24px; cursor: pointer; z-index: 10;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: transform 0.3s;
+}
+.scroll-btn:hover { background: #fff; transform: translateY(-50%) scale(1.1); }
+.scroll-btn.left { left: 20px; }
+.scroll-btn.right { right: 20px; }
+
+/* --- 9. PAGES INTERNES (Contact, Apropos, Services) --- */
+
+/* Header plus petit pour les pages internes */
+.header-mini {
+    height: 65vh !important; /* 65% de l'écran */
+    min-height: 300px; 
+    background-image: url('../images/contact-bg.jpg') !important; 
+    background-position: center 80% !important; 
+    justify-content: flex-start !important;
+    padding-top: 10vh !important;
 }
 
-/* RESPONSIVE : Plus large sur ordi */
+/* Exception pour la page À Propos */
+.bg-apropos {
+    background-image: url('../images/mon-image-apropos.jpg') !important;
+    background-position: center !important;  
+    height: 40vh !important;
+}
+
+/* Formulaire de contact "Luxe" */
+.contact-page {
+    max-width: 700px;
+    margin: 50px auto;
+    padding: 60px;
+    background-color: #ffffff; 
+    box-shadow: 0 20px 50px rgba(0,0,0,0.05); /* Ombre très diffuse */
+    border: 1px solid #f5f5f5;
+    border-radius: 4px;
+}
+
+.contact-form input, .contact-form textarea {
+    width: 100%; padding: 12px 0; border: none;
+    border-bottom: 2px solid #e0e0e0; /* Juste une ligne en bas */
+    background: transparent;
+    font-family: inherit; font-size: 1.1em; outline: none; transition: all 0.3s;
+}
+.contact-form input:focus, .contact-form textarea:focus {
+    border-bottom: 2px solid #000; /* La ligne devient noire quand on écrit */
+    background-color: #fafafa;
+}
+
+/* Bouton Noir */
+.submit-button {
+    background-color: #000; color: #fff; padding: 18px 50px; border: none; cursor: pointer;
+    margin-top: 50px; width: 100%; font-size: 0.9em; text-transform: uppercase; letter-spacing: 3px; font-weight: 600;
+    transition: background-color 0.3s;
+}
+.submit-button:hover { background-color: #333; }
+
+/* Mise en page "À Propos" (Photo à gauche, Texte à droite) */
+.about-section {
+    display: flex; /* Met les éléments côte à côte */
+    align-items: center;
+    gap: 60px;
+    margin-top: 40px;
+}
+.about-image { flex: 1; } /* Prend 50% */
+.about-text { flex: 1; }  /* Prend 50% */
+
+/* --- 10. FOOTER & SOCIAL --- */
+.social-links { text-align: center; margin-top: 80px; padding-top: 40px; border-top: 1px solid #eeeeee; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; }
+.social-links a { display: inline-block; text-decoration: none; color: #000000; font-weight: bold; text-transform: uppercase; font-size: 0.9em; letter-spacing: 1px; margin: 0 15px; padding-bottom: 5px; border-bottom: 1px solid transparent; transition: all 0.3s; }
+.social-links a:hover { color: #666; border-bottom: 1px solid #000; }
+footer { text-align: center; padding: 40px 0; font-size: 0.7em; color: #ccc; text-transform: uppercase; letter-spacing: 1px; }
+
+/* --- 11. ANIMATIONS (JS) --- */
+/* Ces classes sont ajoutées par le Javascript pour l'effet d'apparition */
+.reveal-hidden { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+.visible { opacity: 1; transform: translateY(0); }
+
+/* --- 12. RESPONSIVE (Pour les téléphones et tablettes) --- */
+
+/* Tablettes et Ordis (> 768px) */
 @media (min-width: 768px) {
-    .horizontal-card {
-        flex: 0 0 400px;
-        height: 550px;
-    }
+    .horizontal-card { flex: 0 0 400px; height: 550px; }
+}
+
+/* Tablettes (< 1024px) */
+@media (max-width: 1024px) {
+    .masonry-grid { column-count: 2; } /* Passe à 2 colonnes */
+}
+
+/* Mobiles (< 768px) */
+@media (max-width: 768px) {
+    .scroll-btn { display: none; } /* Cache les flèches sur mobile */
+    .contact-page { box-shadow: none; border: none; padding: 20px; } /* Simplifie le formulaire */
+    
+    /* Empile la photo et le texte sur la page À Propos */
+    .about-section { flex-direction: column; gap: 30px; } 
+    .about-text .section-title { text-align: center !important; }
+}
+
+/* Petits Mobiles (< 600px) */
+@media (max-width: 600px) {
+    .masonry-grid { column-count: 1; } /* Passe à 1 colonne */
 }
