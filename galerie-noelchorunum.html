@@ -28,7 +28,7 @@
             <a href="galeries.html" style="text-decoration: none; color: #666; text-transform: uppercase; font-size: 0.8em;">&larr; Retour aux albums</a>
         </div>
 
-        <h3 class="section-title">Rock Toulouse</h3>
+        <h3 class="section-title">Concert Noël Chor Unum</h3>
         
         <div class="masonry-grid" id="galerie-container"></div>
     </main>
@@ -45,10 +45,10 @@
         const nombrePhotos = 100; 
 
         // 2. Où sont-elles ? (Dossier "chartres" dans "images")
-        const dossier = "images/rocktoulouse";
+        const dossier = "images/noelchorunum";
 
         // 3. Comment s'appellent-elles ? (Ex: "Chartres (1).jpg")
-        const debutNom = "Rock-";
+        const debutNom = "noelchorunum-";
         const finNom = ".jpg";
 
         // =================================================
@@ -64,7 +64,7 @@
             
             // Construction du nom : images/chartres/Chartres (1).jpg
             img.src = `${dossier}/${debutNom}${i}${finNom}`;
-            img.alt = "Rock Toulouse " + i;
+            img.alt = "noelchorunum " + i;
             img.loading = "lazy"; 
 
             // Clic pour zoomer
