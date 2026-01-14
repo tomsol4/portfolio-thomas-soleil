@@ -36,7 +36,7 @@
 <script src="js/config.js"></script>
     <script>
         // --- CONFIGURATION ---
-        const BATCH_SIZE = 15; // Nombre d'images à charger à la fois
+        const BATCH_SIZE = 15; // Nombre d'images chargées par vague
 
         // 1. Récupération de l'album
         const params = new URLSearchParams(window.location.search);
@@ -44,13 +44,17 @@
         const album = siteConfig.albums.find(a => a.id === albumId);
 
         if (album) {
+            // Mise à jour des textes
             document.title = `${album.title} | Thomas Soleil`;
             document.getElementById('album-title').innerText = album.title;
             document.getElementById('album-meta').innerText = album.date;
 
             const container = document.getElementById('gallery-container');
             
-            // --- PRÉPARATION DE LA GRILLE ---
+            // On récupère l'extension définie dans config.js (ou .jpg par défaut)
+            const extension = album.ext || ".jpg"; 
+
+            // --- PRÉPARATION DE LA GRILLE STABLE ---
             container.innerHTML = ""; 
             container.className = "masonry-wrapper";
 
@@ -58,7 +62,7 @@
             const nbCols = isMobile ? 1 : 3;
             const columns = [];
 
-            // Création des colonnes
+            // Création des colonnes (A, B, C)
             for (let c = 0; c < nbCols; c++) {
                 let col = document.createElement('div');
                 col.className = 'masonry-column';
@@ -66,70 +70,90 @@
                 columns.push(col);
             }
 
-            // --- LOGIQUE INFINITE SCROLL ---
+            // --- MOTEUR DE CHARGEMENT ---
             
-            let currentIndex = 1;      // On commence à la photo 1
-            let activeColumn = 0;      // On commence par la colonne A
+            let currentIndex = 1;
+            let activeColumn = 0;
 
-            // Fonction qui ajoute un paquet d'images
             function loadBatch() {
-                // On calcule jusqu'où on doit aller (ex: de 1 à 15, puis de 16 à 30...)
+                // On calcule la fin de la vague actuelle
                 const limit = Math.min(currentIndex + BATCH_SIZE, album.count + 1);
 
-                // Si on a déjà tout affiché, on arrête
+                // Si tout est déjà chargé, on arrête
                 if (currentIndex >= limit) return;
 
                 for (let i = currentIndex; i < limit; i++) {
                     
-                    // Création de l'élément
                     const div = document.createElement('div');
                     div.className = 'photo-item';
                     
                     const img = document.createElement('img');
-                    img.src = `${album.folder}/${album.prefix}${i}.jpg`;
-                    img.alt = `${album.title} ${i}`;
-                    img.loading = "lazy"; // Double protection
                     
-                    // Apparition douce
+                    // === OPTIMISATION WEBP ===
+                    // 1. Pour la grille : On cherche "nom-1-small.webp"
+                    img.src = `${album.folder}/${album.prefix}${i}-small${extension}`;
+                    
+                    // 2. On prépare l'URL HD pour le zoom : "nom-1.webp"
+                    const highResUrl = `${album.folder}/${album.prefix}${i}${extension}`;
+
+                    img.alt = `${album.title} ${i}`;
+                    img.loading = "lazy";
+                    
+                    // Apparition en douceur
                     img.onload = () => img.classList.add('visible');
                     
-                    // Zoom Lightbox
+                    // Sécurité : Si la version "small" n'existe pas, on charge la grande
+                    img.onerror = function() { 
+                        console.warn(`Miniature manquante pour ${i}, chargement HD.`);
+                        this.src = highResUrl; 
+                    };
+
+                    // === ZOOM LIGHTBOX ===
                     div.onclick = () => {
-                        document.getElementById('lightbox-img').src = img.src;
-                        document.getElementById('lightbox').style.display = 'flex';
+                        const lightboxImg = document.getElementById('lightbox-img');
+                        const lightbox = document.getElementById('lightbox');
+                        
+                        // On affiche d'abord la petite image (floue mais immédiate)
+                        lightboxImg.src = img.src; 
+                        lightbox.style.display = 'flex';
+
+                        // En arrière-plan, on télécharge la vraie HD
+                        const bigImgLoader = new Image();
+                        bigImgLoader.src = highResUrl;
+                        bigImgLoader.onload = () => {
+                            // Quand la HD est prête, on remplace l'image
+                            lightboxImg.src = highResUrl;
+                        };
                     };
 
                     div.appendChild(img);
-
-                    // Distribution dans les colonnes
+                    
+                    // Distribution dans les colonnes (1->A, 2->B, 3->C...)
                     columns[activeColumn].appendChild(div);
                     
-                    // Colonne suivante
                     activeColumn++;
                     if (activeColumn >= nbCols) activeColumn = 0;
                 }
-
-                // On met à jour l'index pour la prochaine fois
+                // On retient où on s'est arrêté
                 currentIndex = limit;
             }
 
-            // --- L'OBSERVATEUR (Le veilleur de nuit) ---
-            // On charge le premier paquet tout de suite
+            // --- DÉTECTEUR DE SCROLL (INFINITE SCROLL) ---
+            
+            // 1. On charge les premières images tout de suite
             loadBatch();
 
-            // On crée un élément invisible en bas de page
+            // 2. On place un "espion" invisible en bas de page
             const trigger = document.createElement('div');
             trigger.style.height = "50px"; 
-            trigger.style.width = "100%";
-            // trigger.style.background = "red"; // Décommente pour le voir (debug)
             document.querySelector('main').appendChild(trigger);
 
-            // Dès que cet élément devient visible, on charge la suite
+            // 3. Dès que l'espion est visible, on charge la suite
             const observer = new IntersectionObserver((entries) => {
                 if (entries[0].isIntersecting) {
                     loadBatch();
                 }
-            }, { rootMargin: "200px" }); // On anticipe de 200px avant le bas
+            }, { rootMargin: "200px" }); // On anticipe de 200px
 
             observer.observe(trigger);
 
