@@ -5,22 +5,17 @@
 const siteConfig = {
     identity: {
         name: "Thomas Soleil",
-        tagline: "Photographe Événementiel & Portrait",
-        email: "ton-email@exemple.com",
+        email: "contact@tsoleil.fr",
         instagram: "https://www.instagram.com/tomsol_photo/"
     },
 
-    // LISTE DES ALBUMS
     albums: [
         {
             id: "noel", 
             title: "Concert Noël Chor Unum",
-            
-            // CORRECTION ICI : On met .webp
-            cover: "images/noelchorunum/noelchorunum-4.webp", 
-            
+            cover: "images/noelchorunum/chorunumnoel-4.webp", // Vérifie ce nom !
             folder: "images/noelchorunum", 
-            prefix: "chorunumnoel-", // Attention à ce nom, vérifie tes fichiers !
+            prefix: "chorunumnoel-", // Préfixe vu sur ta capture
             count: 260,
             date: "2024",
             ext: ".webp"
@@ -28,10 +23,7 @@ const siteConfig = {
         {
             id: "chartres",
             title: "Chartres",
-            
-            // CORRECTION ICI
-            cover: "images/chartres/chartres-5.webp", // Mets le nom de ta photo préférée
-            
+            cover: "images/chartres/chartres-1.webp",
             folder: "images/chartres",
             prefix: "chartres-",
             count: 22,
@@ -41,7 +33,7 @@ const siteConfig = {
         {
             id: "rock-toulouse",
             title: "Rock Toulouse",
-            cover: "images/rocktoulouse/Rock-31.webp",
+            cover: "images/rocktoulouse/Rock-1.webp",
             folder: "images/rocktoulouse",
             prefix: "Rock-",
             count: 100,
@@ -51,7 +43,7 @@ const siteConfig = {
         {
             id: "montagne",
             title: "Expédition Montagne",
-            cover: "images/Montagne/Montagne-2.webp",
+            cover: "images/Montagne/Montagne-1.webp",
             folder: "images/Montagne",
             prefix: "Montagne-",
             count: 112,

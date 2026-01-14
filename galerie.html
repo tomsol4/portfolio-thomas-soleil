@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galerie | Thomas Soleil</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -23,46 +22,43 @@
         <div class="gallery-header">
             <a href="index.html" class="back-link">← Retour aux albums</a>
             <h1 id="album-title">Chargement...</h1>
-            <p id="album-meta" style="color: #666; font-style: italic;"></p>
+            <p id="album-meta"></p>
         </div>
 
-        <div class="masonry" id="gallery-container"></div>
+        <div id="gallery-container"></div>
     </main>
 
     <div id="lightbox" onclick="this.style.display='none'">
         <img id="lightbox-img" src="">
     </div>
 
-<script src="js/config.js"></script>
+    <script src="js/config.js"></script>
     <script>
         // --- CONFIGURATION ---
-        const BATCH_SIZE = 15; // Nombre d'images chargées par vague
+        const BATCH_SIZE = 15; // Images par chargement
 
-        // 1. Récupération de l'album
         const params = new URLSearchParams(window.location.search);
         const albumId = params.get('id');
         const album = siteConfig.albums.find(a => a.id === albumId);
 
         if (album) {
-            // Mise à jour des textes
             document.title = `${album.title} | Thomas Soleil`;
             document.getElementById('album-title').innerText = album.title;
-            document.getElementById('album-meta').innerText = album.date;
+            document.getElementById('album-meta').innerText = `${album.date} — ${album.count} Photos`;
 
             const container = document.getElementById('gallery-container');
-            
-            // On récupère l'extension définie dans config.js (ou .jpg par défaut)
-            const extension = album.ext || ".jpg"; 
+            const extension = album.ext || ".webp"; 
 
-            // --- PRÉPARATION DE LA GRILLE STABLE ---
+            // --- CRÉATION DE LA GRILLE ---
             container.innerHTML = ""; 
             container.className = "masonry-wrapper";
 
+            // LOGIQUE 2 COLONNES MOBILE / 3 COLONNES PC
             const isMobile = window.innerWidth < 768;
-            const nbCols = isMobile ? 1 : 3;
+            const nbCols = isMobile ? 2 : 3; // <-- C'est ici qu'on force les 2 colonnes
+            
             const columns = [];
 
-            // Création des colonnes (A, B, C)
             for (let c = 0; c < nbCols; c++) {
                 let col = document.createElement('div');
                 col.className = 'masonry-column';
@@ -70,90 +66,63 @@
                 columns.push(col);
             }
 
-            // --- MOTEUR DE CHARGEMENT ---
-            
+            // --- CHARGEMENT INFINI ---
             let currentIndex = 1;
             let activeColumn = 0;
 
             function loadBatch() {
-                // On calcule la fin de la vague actuelle
                 const limit = Math.min(currentIndex + BATCH_SIZE, album.count + 1);
-
-                // Si tout est déjà chargé, on arrête
                 if (currentIndex >= limit) return;
 
                 for (let i = currentIndex; i < limit; i++) {
-                    
                     const div = document.createElement('div');
                     div.className = 'photo-item';
                     
                     const img = document.createElement('img');
-                    
-                    // === OPTIMISATION WEBP ===
-                    // 1. Pour la grille : On cherche "nom-1-small.webp"
+                    // Charge la miniature pour la grille
                     img.src = `${album.folder}/${album.prefix}${i}-small${extension}`;
                     
-                    // 2. On prépare l'URL HD pour le zoom : "nom-1.webp"
+                    // URL HD pour le zoom
                     const highResUrl = `${album.folder}/${album.prefix}${i}${extension}`;
 
                     img.alt = `${album.title} ${i}`;
                     img.loading = "lazy";
                     
-                    // Apparition en douceur
                     img.onload = () => img.classList.add('visible');
-                    
-                    // Sécurité : Si la version "small" n'existe pas, on charge la grande
-                    img.onerror = function() { 
-                        console.warn(`Miniature manquante pour ${i}, chargement HD.`);
-                        this.src = highResUrl; 
-                    };
+                    img.onerror = function() { this.src = highResUrl; }; // Fallback si pas de miniature
 
-                    // === ZOOM LIGHTBOX ===
+                    // Zoom au clic
                     div.onclick = () => {
-                        const lightboxImg = document.getElementById('lightbox-img');
-                        const lightbox = document.getElementById('lightbox');
+                        const lbImg = document.getElementById('lightbox-img');
+                        lbImg.src = img.src; // Affiche la petite d'abord (rapide)
+                        document.getElementById('lightbox').style.display = 'flex';
                         
-                        // On affiche d'abord la petite image (floue mais immédiate)
-                        lightboxImg.src = img.src; 
-                        lightbox.style.display = 'flex';
-
-                        // En arrière-plan, on télécharge la vraie HD
-                        const bigImgLoader = new Image();
-                        bigImgLoader.src = highResUrl;
-                        bigImgLoader.onload = () => {
-                            // Quand la HD est prête, on remplace l'image
-                            lightboxImg.src = highResUrl;
-                        };
+                        // Charge la HD
+                        const hdLoader = new Image();
+                        hdLoader.src = highResUrl;
+                        hdLoader.onload = () => lbImg.src = highResUrl;
                     };
 
                     div.appendChild(img);
-                    
-                    // Distribution dans les colonnes (1->A, 2->B, 3->C...)
                     columns[activeColumn].appendChild(div);
                     
                     activeColumn++;
                     if (activeColumn >= nbCols) activeColumn = 0;
                 }
-                // On retient où on s'est arrêté
                 currentIndex = limit;
             }
 
-            // --- DÉTECTEUR DE SCROLL (INFINITE SCROLL) ---
-            
-            // 1. On charge les premières images tout de suite
+            // --- Lancement ---
             loadBatch();
 
-            // 2. On place un "espion" invisible en bas de page
+            // Détecteur de scroll
             const trigger = document.createElement('div');
             trigger.style.height = "50px"; 
             document.querySelector('main').appendChild(trigger);
 
-            // 3. Dès que l'espion est visible, on charge la suite
             const observer = new IntersectionObserver((entries) => {
-                if (entries[0].isIntersecting) {
-                    loadBatch();
-                }
-            }, { rootMargin: "200px" }); // On anticipe de 200px
+                if (entries[0].isIntersecting) loadBatch();
+            }, { rootMargin: "300px" });
 
             observer.observe(trigger);
 

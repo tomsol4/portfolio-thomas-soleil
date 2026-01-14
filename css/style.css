@@ -1,26 +1,19 @@
 /* ============================================================
-   STYLE COMPLET : THOMAS SOLEIL - DARK CINEMATIC
+   STYLE : THOMAS SOLEIL - DARK EDITORIAL (STYLE HESTON)
    ============================================================ */
 
-/* --- 1. CONFIGURATION (Variables) --- */
+/* --- 1. CONFIGURATION --- */
 :root {
-    --bg-color: #0a0a0a;       /* Fond Noir Profond */
-    --text-main: #e0e0e0;      /* Blanc cassé (doux) */
-    --text-muted: #888888;     /* Gris pour infos secondaires */
-    --accent: #ffffff;         /* Blanc pur pour interactions */
-    
+    --bg-color: #0a0a0a;       /* Noir profond */
+    --text-main: #e0e0e0;      /* Blanc cassé */
+    --text-muted: #888888;     /* Gris secondaire */
+    --accent: #ffffff;         /* Blanc pur */
     --font-title: 'Playfair Display', serif;
     --font-body: 'Montserrat', sans-serif;
-    
-    --container-width: 1400px;
 }
 
-/* --- 2. BASE & RESET --- */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* --- 2. BASE --- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     background-color: var(--bg-color);
@@ -28,344 +21,101 @@ body {
     font-family: var(--font-body);
     font-weight: 300;
     line-height: 1.6;
-    overflow-x: hidden; /* Évite le scroll horizontal involontaire */
+    overflow-x: hidden;
 }
 
-a {
-    text-decoration: none;
-    color: inherit;
-    transition: opacity 0.3s ease, color 0.3s ease;
-}
-
+a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
 a:hover { opacity: 0.7; }
+img { max-width: 100%; display: block; }
+h1, h2, h3 { font-family: var(--font-title); font-weight: 400; }
 
-img {
-    max-width: 100%;
-    display: block;
-}
-
-/* Typographie "Luxe" */
-h1, h2, h3, .serif-font {
-    font-family: var(--font-title);
-    font-weight: 400;
-}
-
-/* --- 3. NAVIGATION (Menu) --- */
+/* --- 3. NAVIGATION --- */
 nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 30px 5%;
+    padding: 30px 4%;
     position: fixed;
-    top: 0;
-    width: 100%;
+    top: 0; width: 100%;
     z-index: 1000;
-    /* Petit dégradé pour que le texte soit lisible sur les photos */
-    background: linear-gradient(to bottom, rgba(10,10,10,0.9), transparent);
+    background: linear-gradient(to bottom, rgba(10,10,10,0.95), transparent);
 }
 
-.logo {
-    font-size: 1.5rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    font-weight: 500;
-    color: var(--accent);
-}
+.logo { font-size: 1.2rem; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); }
+.nav-links a { margin-left: 25px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); }
+.nav-links a.active { color: var(--accent); border-bottom: 1px solid var(--accent); }
 
-.nav-links a {
-    margin-left: 30px;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--text-muted);
-}
-
-.nav-links a.active, 
-.nav-links a:hover {
-    color: var(--accent);
-    border-bottom: 1px solid var(--accent);
-    padding-bottom: 5px;
-}
-
-/* --- 4. PAGE D'ACCUEIL (HERO & ALBUMS) --- */
-
-/* Section Plein Écran */
-.hero {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 0 20px;
-    
-    /* Image de fond fixe */
-    background: url('../images/hero-photo-accueil.jpg') center/cover no-repeat;
-    background-attachment: fixed; /* Effet Parallaxe */
-    position: relative;
-}
-
-/* Voile noir pour assombrir l'image de fond */
-.hero::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.5); 
-    z-index: 1;
-}
-
-.hero-content {
-    position: relative;
-    z-index: 2;
-    animation: fadeIn 2s ease forwards; /* Apparition douce */
-}
-
-.hero h1 {
-    font-size: clamp(3rem, 8vw, 6rem); /* Taille adaptative */
-    margin-bottom: 15px;
-    line-height: 1;
-    color: var(--accent);
-}
-
-.hero p {
-    font-size: 1rem;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.8);
-}
-
-/* Grille des Albums (Style Netflix) */
-.albums-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 40px;
-    padding: 100px 5%;
-    max-width: var(--container-width);
-    margin: 0 auto;
-}
-
-.album-card {
-    position: relative;
-    display: block;
-    aspect-ratio: 4/5; /* Format Portrait élégant */
-    overflow: hidden;
-    background-color: #1a1a1a;
-}
-
-.album-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.8s ease, filter 0.5s ease;
-    filter: grayscale(30%); /* Un peu gris par défaut */
-}
-
-/* Effet au survol d'un album */
-.album-card:hover img {
-    transform: scale(1.05); /* Zoom lent */
-    filter: grayscale(0%);  /* Couleurs vives */
-}
-
-.album-info {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 30px;
-    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-    z-index: 2;
-}
-
-.album-info h3 {
-    font-size: 2rem;
-    margin-bottom: 5px;
-    color: var(--accent);
-}
-
-.album-info span {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--text-muted);
-}
-
-/* --- 5. PAGE GALERIE (Le nouveau système stable) --- */
-
+/* --- 4. PAGE GALERIE (Structure Éditoriale) --- */
 .gallery-header {
-    padding: 180px 5% 60px; /* Marge haute pour le menu */
+    padding: 160px 20px 60px;
     text-align: center;
 }
 
-.gallery-header h1 {
-    font-size: clamp(2.5rem, 5vw, 4.5rem);
-    margin-bottom: 10px;
-    color: var(--accent);
-}
+.gallery-header h1 { font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 10px; color: var(--accent); }
+.gallery-header p { font-size: 0.9rem; color: var(--text-muted); letter-spacing: 1px; }
 
 .back-link {
-    display: inline-block;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    margin-bottom: 20px;
-    color: var(--text-muted);
-    border-bottom: 1px solid transparent;
+    display: inline-block; font-size: 0.7rem; text-transform: uppercase; 
+    letter-spacing: 3px; margin-bottom: 30px; color: var(--text-muted);
 }
-.back-link:hover { border-color: var(--text-muted); }
 
-/* CONTENEUR PRINCIPAL (Flexbox Wrapper) */
+/* --- 5. GRILLE "HESTON" (Le Cœur du Design) --- */
 .masonry-wrapper {
     display: flex;
-    gap: 20px;
-    max-width: 1600px;
+    gap: 15px; /* Espacement fin et élégant */
+    width: 100%;
+    max-width: 1800px; /* On utilise toute la largeur comme un magazine */
     margin: 0 auto;
-    padding: 0 20px 100px;
-    align-items: flex-start; /* Empêche l'étirement bizarre */
+    padding: 0 15px 100px;
+    align-items: flex-start;
 }
 
-/* LES COLONNES (A, B, C) */
 .masonry-column {
-    flex: 1;                /* Largeur égale */
+    flex: 1; /* Colonnes de largeur égale */
     display: flex;
-    flex-direction: column; /* Empilement vertical */
-    gap: 20px;              /* Espace vertical */
-    min-width: 0;           
+    flex-direction: column;
+    gap: 15px; /* Même écart vertical qu'horizontal */
+    min-width: 0;
 }
 
-/* LES IMAGES */
 .photo-item {
     position: relative;
-    border-radius: 2px;
+    border-radius: 0; /* Angles droits (Style Luxe/Sharp) */
     overflow: hidden;
-    background-color: #1a1a1a; /* Placeholder gris */
+    background-color: #111; /* Fond gris le temps du chargement */
     cursor: zoom-in;
 }
 
 .photo-item img {
     width: 100%;
     display: block;
-    transition: opacity 0.6s ease;
-    opacity: 0; /* Caché au chargement */
+    opacity: 0;
+    transition: opacity 0.6s ease, transform 0.5s ease;
 }
 
-.photo-item img.visible {
-    opacity: 1; /* Apparition */
-}
+.photo-item img.visible { opacity: 1; }
+.photo-item:hover img { transform: scale(1.02); } /* Zoom très subtil */
 
-.photo-item:hover img {
-    opacity: 0.8; /* Petit effet interactif */
-}
-
-/* LIGHTBOX (Zoom) */
+/* --- 6. LIGHTBOX --- */
 #lightbox {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.98);
-    z-index: 9999;
-    display: none; /* Caché par défaut */
-    justify-content: center;
-    align-items: center;
+    position: fixed; inset: 0; background: rgba(0,0,0,0.98);
+    z-index: 9999; display: none; justify-content: center; align-items: center;
     cursor: zoom-out;
 }
+#lightbox img { max-height: 95vh; max-width: 95vw; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
 
-#lightbox img {
-    max-height: 95vh;
-    max-width: 95vw;
-    box-shadow: 0 0 50px rgba(0,0,0,0.5);
-    border: 2px solid #333;
-}
-
-/* --- 6. FORMULAIRES (Contact) --- */
-
-.contact-section {
-    max-width: 700px;
-    margin: 180px auto 100px;
-    padding: 0 20px;
-}
-
-.form-group { margin-bottom: 40px; }
-
-label {
-    display: block;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 2px;
-    color: var(--text-muted);
-}
-
-input, textarea {
-    width: 100%;
-    padding: 15px 0;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid #333;
-    color: var(--text-main);
-    font-family: var(--font-body);
-    font-size: 1.1rem;
-    transition: border-color 0.3s;
-}
-
-input:focus, textarea:focus {
-    outline: none;
-    border-bottom: 1px solid var(--accent);
-}
-
-button[type="submit"] {
-    background-color: var(--accent);
-    color: #000;
-    border: none;
-    padding: 18px 50px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.3s, opacity 0.3s;
-    margin-top: 20px;
-}
-
-button[type="submit"]:hover {
-    opacity: 0.9;
-    transform: translateY(-2px);
-}
-
-/* --- 7. FOOTER --- */
-footer {
-    text-align: center;
-    padding: 50px 0;
-    color: #444;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    border-top: 1px solid #111;
-}
-
-/* --- 8. ANIMATIONS & RESPONSIVE --- */
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* MOBILE (< 768px) */
+/* --- 7. RESPONSIVE (Règle des 2 colonnes) --- */
 @media (max-width: 768px) {
-    .nav-links { display: none; } /* On pourrait faire un menu burger plus tard */
+    .nav-links { display: none; } /* (Menu burger à ajouter si besoin plus tard) */
     nav { justify-content: center; padding: 20px; }
     
-    .hero h1 { font-size: 3rem; }
-    
-    .albums-grid {
-        grid-template-columns: 1fr; /* Une seule colonne */
-        gap: 20px;
-        padding: 50px 20px;
-    }
+    .gallery-header { padding-top: 120px; }
+    .gallery-header h1 { font-size: 2.5rem; }
 
-    /* Le correctif pour la galerie mobile */
+    /* Ajustement grille mobile */
     .masonry-wrapper {
-        flex-direction: column; 
+        gap: 8px; /* Espace très fin sur mobile */
+        padding: 0 8px 50px;
     }
-    .masonry-column {
-        width: 100%;
-    }
+    .masonry-column { gap: 8px; }
 }
