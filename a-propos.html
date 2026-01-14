@@ -5,79 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>À Propos | Thomas Soleil</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" type="image/png" href="images/favicon.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <header class="hero-header header-mini bg-apropos">
-        <div class="site-branding">
-            <h1>Thomas Soleil</h1>
-            <h2>Photographe Événementiel & Portrait</h2>
-        </div>
-
-        <nav class="main-nav">
-            <a href="index.html">Accueil</a>
-            <a href="galeries.html">Galeries</a>
+    <nav>
+        <a href="index.html" class="logo">Thomas Soleil</a>
+        <div class="nav-links">
+            <a href="index.html">Albums</a>
             <a href="a-propos.html" class="active">À Propos</a>
             <a href="contact.html">Contact</a>
-        </nav>
-    </header>
-
-    <main class="content-wrapper">
-        
-        <section class="about-section">
-            
-            <div class="about-image">
-                <img src="images/portrait.jpg" alt="Thomas Soleil Photographe">
-            </div>
-
-            <div class="about-text">
-                <h3 class="section-title" style="text-align: left; margin-bottom: 30px;">À propos</h3>
-                
-                <p>
-                    <strong>Je m'appelle Thomas, j'ai 21 ans.</strong><br>
-                    La photographie est entrée dans ma vie lors d'une longue marche de trois semaines en Italie. C'est là, sac au dos, que j'ai appris à regarder le monde autrement et à capturer la lumière et les émotions qui m'entouraient.
-                </p>
-                
-                <p>
-                    Aujourd'hui en <strong>BTS Photographie à Toulouse</strong>, je me forme pour allier cette spontanéité à une vraie technique professionnelle.
-                </p>
-
-                <p>
-                    Plutôt discret de nature, j'aime saisir les instants vrais sans m'imposer. Mais mes années de scoutisme et mon engagement dans un service civique auprès des enfants m'ont appris à créer du lien facilement. J'aime que mes séances soient des moments de partage (et si besoin, j'ai toujours un tour de magie en poche pour détendre l'atmosphère !).
-                </p>
-                
-                <p>
-                    Mon but ? Que vous preniez plaisir à vous voir en photo et que vous gardiez un souvenir joyeux de ces moments.
-                </p>
-
-                <p>
-                    Basé à <strong>Toulouse et Castres</strong>.
-                </p>
-
-                <p class="signature">Thomas Soleil</p>
-                
-                <a href="contact.html" class="btn-contact">Me contacter</a>
-            </div>
-        </section> <div class="social-links">
-            <p>Suivez-moi</p>
-            <a href="https://www.instagram.com/tomsol_photo/" target="_blank">Instagram</a>
-            <a href="#" target="_blank">LinkedIn</a>
         </div>
+    </nav>
 
-        <footer>
-            <p>
-                &copy; 2025 Thomas Soleil. Tous droits réservés. 
-                <span style="margin: 0 10px;">|</span> 
-                <a href="mentions.html" style="color:#999; text-decoration:none; font-size:0.9em;">Mentions Légales</a>
-            </p>
-        </footer>
+    <main style="max-width: 1000px; margin: 150px auto; padding: 0 20px;">
+        <div class="about-container" style="display: flex; gap: 60px; align-items: center; flex-wrap: wrap;">
+            
+            <div style="flex: 1; min-width: 300px;">
+                <img src="images/portrait.jpg" alt="Thomas Soleil" style="width: 100%; border-radius: 2px; filter: grayscale(20%); box-shadow: 20px 20px 0 rgba(255,255,255,0.05);">
+            </div>
+
+            <div style="flex: 1; min-width: 300px;">
+                <h1 style="font-size: 3rem; margin-bottom: 30px; line-height: 1.1;">L'œil derrière<br>l'objectif.</h1>
+                
+                <p style="margin-bottom: 20px; font-size: 1.1rem; color: #ccc;">
+                    <strong>Je m'appelle Thomas, j'ai 21 ans.</strong><br>
+                    La photographie est entrée dans ma vie lors d'une longue marche en Italie. Sac au dos, j'ai appris à capturer la lumière et les émotions brutes.
+                </p>
+                <p style="margin-bottom: 20px; color: #999;">
+                    Aujourd'hui en <strong>BTS Photographie à Toulouse</strong>, j'allie cette spontanéité à une technique rigoureuse. Discret de nature, je saisis les instants vrais sans m'imposer, une approche héritée de mes années de scoutisme.
+                </p>
+                
+                <p style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.5rem; margin-top: 40px; color: #fff;">
+                    Thomas Soleil
+                </p>
+            </div>
+        </div>
     </main>
-
-    <script src="js/script.js"></script>
 
 </body>
 </html>
