@@ -33,7 +33,7 @@
         <img id="lightbox-img" src="">
     </div>
 
-    <script src="js/config.js"></script>
+<script src="js/config.js"></script>
     <script>
         // 1. Récupération de l'album
         const params = new URLSearchParams(window.location.search);
@@ -41,66 +41,87 @@
         const album = siteConfig.albums.find(a => a.id === albumId);
 
         if (album) {
-            // 2. Remplissage des infos (Sans le nombre de photos)
+            // Titres et Infos
             document.title = `${album.title} | Thomas Soleil`;
             document.getElementById('album-title').innerText = album.title;
-            
-            // On affiche juste la date (ex: "2024")
+            // On affiche juste l'année, plus de "100 photos"
             document.getElementById('album-meta').innerText = album.date;
 
             const container = document.getElementById('gallery-container');
             
-            // 3. FONCTION "DÉTECTIVE" (Charge les images une par une)
+            // --- CRÉATION DES COLONNES STABLES ---
+            // On vide le conteneur et on met la classe flexbox
+            container.innerHTML = ""; 
+            container.className = "masonry-wrapper";
+
+            // On détermine le nombre de colonnes (3 sur PC, 1 sur Mobile)
+            const isMobile = window.innerWidth < 768;
+            const nbCols = isMobile ? 1 : 3;
+            const columns = [];
+
+            // Création des éléments colonnes (div)
+            for (let c = 0; c < nbCols; c++) {
+                let col = document.createElement('div');
+                col.className = 'masonry-column';
+                container.appendChild(col);
+                columns.push(col);
+            }
+
+            // --- CHARGEMENT AUTOMATIQUE ---
             let index = 1;
+            let activeColumn = 0; // Pour savoir dans quelle colonne on range
 
             function loadNextImage() {
-                // On crée une image virtuelle pour tester si elle existe
                 const imgTest = new Image();
                 const src = `${album.folder}/${album.prefix}${index}.jpg`;
                 imgTest.src = src;
 
                 imgTest.onload = function() {
-                    // SUCCÈS : L'image existe !
-                    
-                    // Création de la case
+                    // SUCCÈS : L'image existe
+
+                    // 1. Création de la div photo
                     const div = document.createElement('div');
                     div.className = 'photo-item';
                     
-                    // Création de l'image affichée
                     const img = document.createElement('img');
                     img.src = src;
                     img.alt = `${album.title} ${index}`;
-                    img.loading = "lazy";
-
+                    
                     // Zoom au clic
                     div.onclick = () => {
                         document.getElementById('lightbox-img').src = src;
                         document.getElementById('lightbox').style.display = 'flex';
                     };
 
-                    // Animation d'apparition douce
-                    img.onload = () => div.classList.add('visible');
-
+                    // Animation d'apparition
+                    img.onload = () => img.classList.add('visible');
+                    
                     div.appendChild(img);
-                    container.appendChild(div);
 
-                    // On passe à la suivante
+                    // 2. DISTRIBUTION INTELLIGENTE
+                    // On ajoute l'image dans la colonne "active" (0, 1 ou 2)
+                    columns[activeColumn].appendChild(div);
+
+                    // On passe à la colonne suivante pour la prochaine photo
+                    activeColumn++;
+                    if (activeColumn >= nbCols) activeColumn = 0;
+
+                    // 3. On charge la suivante
                     index++;
                     loadNextImage();
                 };
 
                 imgTest.onerror = function() {
-                    // ERREUR : L'image n'existe pas, c'est la fin de l'album.
-                    console.log("Fin de l'album détectée après " + (index - 1) + " photos.");
+                    // ERREUR : Fin de l'album (404), on s'arrête discrètement.
+                    console.log("Album complet chargé.");
                 };
             }
 
-            // Lancer le processus avec la première image
+            // Lancement
             loadNextImage();
 
         } else {
             document.getElementById('album-title').innerText = "Album introuvable";
-            document.getElementById('album-meta').style.display = 'none';
         }
     </script>
 </body>
