@@ -35,45 +35,72 @@
 
     <script src="js/config.js"></script>
     <script>
-        // Récupérer l'ID de l'album dans l'URL (ex: galerie.html?id=chartres)
+        // 1. Récupération de l'album
         const params = new URLSearchParams(window.location.search);
         const albumId = params.get('id');
-
-        // Trouver l'album correspondant dans config.js
         const album = siteConfig.albums.find(a => a.id === albumId);
 
         if (album) {
-            // Remplir le titre
+            // 2. Remplissage des infos (Sans le nombre de photos)
             document.title = `${album.title} | Thomas Soleil`;
             document.getElementById('album-title').innerText = album.title;
-            document.getElementById('album-meta').innerText = `${album.count} Photos — ${album.date}`;
+            
+            // On affiche juste la date (ex: "2024")
+            document.getElementById('album-meta').innerText = album.date;
 
             const container = document.getElementById('gallery-container');
+            
+            // 3. FONCTION "DÉTECTIVE" (Charge les images une par une)
+            let index = 1;
 
-            // Générer les images
-            for (let i = 1; i <= album.count; i++) {
-                const div = document.createElement('div');
-                div.className = 'photo-item';
-                
-                const img = document.createElement('img');
-                img.src = `${album.folder}/${album.prefix}${i}.jpg`;
-                img.loading = "lazy";
-                img.alt = `${album.title} ${i}`;
+            function loadNextImage() {
+                // On crée une image virtuelle pour tester si elle existe
+                const imgTest = new Image();
+                const src = `${album.folder}/${album.prefix}${index}.jpg`;
+                imgTest.src = src;
 
-                // Zoom au clic
-                div.onclick = () => {
-                    document.getElementById('lightbox-img').src = img.src;
-                    document.getElementById('lightbox').style.display = 'flex';
+                imgTest.onload = function() {
+                    // SUCCÈS : L'image existe !
+                    
+                    // Création de la case
+                    const div = document.createElement('div');
+                    div.className = 'photo-item';
+                    
+                    // Création de l'image affichée
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.alt = `${album.title} ${index}`;
+                    img.loading = "lazy";
+
+                    // Zoom au clic
+                    div.onclick = () => {
+                        document.getElementById('lightbox-img').src = src;
+                        document.getElementById('lightbox').style.display = 'flex';
+                    };
+
+                    // Animation d'apparition douce
+                    img.onload = () => div.classList.add('visible');
+
+                    div.appendChild(img);
+                    container.appendChild(div);
+
+                    // On passe à la suivante
+                    index++;
+                    loadNextImage();
                 };
 
-                // Animation d'apparition au chargement
-                img.onload = () => div.classList.add('visible');
-                
-                div.appendChild(img);
-                container.appendChild(div);
+                imgTest.onerror = function() {
+                    // ERREUR : L'image n'existe pas, c'est la fin de l'album.
+                    console.log("Fin de l'album détectée après " + (index - 1) + " photos.");
+                };
             }
+
+            // Lancer le processus avec la première image
+            loadNextImage();
+
         } else {
             document.getElementById('album-title').innerText = "Album introuvable";
+            document.getElementById('album-meta').style.display = 'none';
         }
     </script>
 </body>

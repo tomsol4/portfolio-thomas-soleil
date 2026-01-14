@@ -20,7 +20,6 @@ const siteConfig = {
             cover: "images/photo-05.jpg", // Image de couverture pour l'accueil
             folder: "images/chartres", // Dossier où sont les photos
             prefix: "chartres-", // Début du nom des fichiers
-            count: 22, // Nombre de photos
             date: "2024"
         },
         {
@@ -29,7 +28,6 @@ const siteConfig = {
             cover: "images/rocktoulouse/Rock-31.jpg",
             folder: "images/rocktoulouse",
             prefix: "Rock-",
-            count: 100,
             date: "2024"
         },
         {
@@ -38,7 +36,6 @@ const siteConfig = {
             cover: "images/photo-02.jpg",
             folder: "images/Montagne",
             prefix: "Montagne-",
-            count: 112,
             date: "2023"
         },
         {
@@ -47,7 +44,6 @@ const siteConfig = {
             cover: "images/noelchorunum/noelchorunum-4.jpg",
             folder: "images/noelchorunum",
             prefix: "noelchorunum-",
-            count: 260,
             date: "2024"
         }
     ]
