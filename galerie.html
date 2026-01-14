@@ -35,31 +35,30 @@
 
 <script src="js/config.js"></script>
     <script>
+        // --- CONFIGURATION ---
+        const BATCH_SIZE = 15; // Nombre d'images à charger à la fois
+
         // 1. Récupération de l'album
         const params = new URLSearchParams(window.location.search);
         const albumId = params.get('id');
         const album = siteConfig.albums.find(a => a.id === albumId);
 
         if (album) {
-            // Titres et Infos
             document.title = `${album.title} | Thomas Soleil`;
             document.getElementById('album-title').innerText = album.title;
-            // On affiche juste l'année, plus de "100 photos"
             document.getElementById('album-meta').innerText = album.date;
 
             const container = document.getElementById('gallery-container');
             
-            // --- CRÉATION DES COLONNES STABLES ---
-            // On vide le conteneur et on met la classe flexbox
+            // --- PRÉPARATION DE LA GRILLE ---
             container.innerHTML = ""; 
             container.className = "masonry-wrapper";
 
-            // On détermine le nombre de colonnes (3 sur PC, 1 sur Mobile)
             const isMobile = window.innerWidth < 768;
             const nbCols = isMobile ? 1 : 3;
             const columns = [];
 
-            // Création des éléments colonnes (div)
+            // Création des colonnes
             for (let c = 0; c < nbCols; c++) {
                 let col = document.createElement('div');
                 col.className = 'masonry-column';
@@ -67,58 +66,72 @@
                 columns.push(col);
             }
 
-            // --- CHARGEMENT AUTOMATIQUE ---
-            let index = 1;
-            let activeColumn = 0; // Pour savoir dans quelle colonne on range
+            // --- LOGIQUE INFINITE SCROLL ---
+            
+            let currentIndex = 1;      // On commence à la photo 1
+            let activeColumn = 0;      // On commence par la colonne A
 
-            function loadNextImage() {
-                const imgTest = new Image();
-                const src = `${album.folder}/${album.prefix}${index}.jpg`;
-                imgTest.src = src;
+            // Fonction qui ajoute un paquet d'images
+            function loadBatch() {
+                // On calcule jusqu'où on doit aller (ex: de 1 à 15, puis de 16 à 30...)
+                const limit = Math.min(currentIndex + BATCH_SIZE, album.count + 1);
 
-                imgTest.onload = function() {
-                    // SUCCÈS : L'image existe
+                // Si on a déjà tout affiché, on arrête
+                if (currentIndex >= limit) return;
 
-                    // 1. Création de la div photo
+                for (let i = currentIndex; i < limit; i++) {
+                    
+                    // Création de l'élément
                     const div = document.createElement('div');
                     div.className = 'photo-item';
                     
                     const img = document.createElement('img');
-                    img.src = src;
-                    img.alt = `${album.title} ${index}`;
+                    img.src = `${album.folder}/${album.prefix}${i}.jpg`;
+                    img.alt = `${album.title} ${i}`;
+                    img.loading = "lazy"; // Double protection
                     
-                    // Zoom au clic
+                    // Apparition douce
+                    img.onload = () => img.classList.add('visible');
+                    
+                    // Zoom Lightbox
                     div.onclick = () => {
-                        document.getElementById('lightbox-img').src = src;
+                        document.getElementById('lightbox-img').src = img.src;
                         document.getElementById('lightbox').style.display = 'flex';
                     };
 
-                    // Animation d'apparition
-                    img.onload = () => img.classList.add('visible');
-                    
                     div.appendChild(img);
 
-                    // 2. DISTRIBUTION INTELLIGENTE
-                    // On ajoute l'image dans la colonne "active" (0, 1 ou 2)
+                    // Distribution dans les colonnes
                     columns[activeColumn].appendChild(div);
-
-                    // On passe à la colonne suivante pour la prochaine photo
+                    
+                    // Colonne suivante
                     activeColumn++;
                     if (activeColumn >= nbCols) activeColumn = 0;
+                }
 
-                    // 3. On charge la suivante
-                    index++;
-                    loadNextImage();
-                };
-
-                imgTest.onerror = function() {
-                    // ERREUR : Fin de l'album (404), on s'arrête discrètement.
-                    console.log("Album complet chargé.");
-                };
+                // On met à jour l'index pour la prochaine fois
+                currentIndex = limit;
             }
 
-            // Lancement
-            loadNextImage();
+            // --- L'OBSERVATEUR (Le veilleur de nuit) ---
+            // On charge le premier paquet tout de suite
+            loadBatch();
+
+            // On crée un élément invisible en bas de page
+            const trigger = document.createElement('div');
+            trigger.style.height = "50px"; 
+            trigger.style.width = "100%";
+            // trigger.style.background = "red"; // Décommente pour le voir (debug)
+            document.querySelector('main').appendChild(trigger);
+
+            // Dès que cet élément devient visible, on charge la suite
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    loadBatch();
+                }
+            }, { rootMargin: "200px" }); // On anticipe de 200px avant le bas
+
+            observer.observe(trigger);
 
         } else {
             document.getElementById('album-title').innerText = "Album introuvable";
