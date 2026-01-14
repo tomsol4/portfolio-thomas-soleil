@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galerie | Thomas Soleil</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">Thomas Soleil</a>
+        <div class="nav-links">
+            <a href="index.html">Albums</a>
+            <a href="a-propos.html">À Propos</a>
+            <a href="contact.html">Contact</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="gallery-header">
+            <a href="index.html" class="back-link">← Retour aux albums</a>
+            <h1 id="album-title">Chargement...</h1>
+            <p id="album-meta" style="color: #666; font-style: italic;"></p>
+        </div>
+
+        <div class="masonry" id="gallery-container"></div>
+    </main>
+
+    <div id="lightbox" onclick="this.style.display='none'">
+        <img id="lightbox-img" src="">
+    </div>
+
+    <script src="js/config.js"></script>
+    <script>
+        // Récupérer l'ID de l'album dans l'URL (ex: galerie.html?id=chartres)
+        const params = new URLSearchParams(window.location.search);
+        const albumId = params.get('id');
+
+        // Trouver l'album correspondant dans config.js
+        const album = siteConfig.albums.find(a => a.id === albumId);
+
+        if (album) {
+            // Remplir le titre
+            document.title = `${album.title} | Thomas Soleil`;
+            document.getElementById('album-title').innerText = album.title;
+            document.getElementById('album-meta').innerText = `${album.count} Photos — ${album.date}`;
+
+            const container = document.getElementById('gallery-container');
+
+            // Générer les images
+            for (let i = 1; i <= album.count; i++) {
+                const div = document.createElement('div');
+                div.className = 'photo-item';
+                
+                const img = document.createElement('img');
+                img.src = `${album.folder}/${album.prefix}${i}.jpg`;
+                img.loading = "lazy";
+                img.alt = `${album.title} ${i}`;
+
+                // Zoom au clic
+                div.onclick = () => {
+                    document.getElementById('lightbox-img').src = img.src;
+                    document.getElementById('lightbox').style.display = 'flex';
+                };
+
+                // Animation d'apparition au chargement
+                img.onload = () => div.classList.add('visible');
+                
+                div.appendChild(img);
+                container.appendChild(div);
+            }
+        } else {
+            document.getElementById('album-title').innerText = "Album introuvable";
+        }
+    </script>
+</body>
+</html>

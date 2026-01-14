@@ -1,672 +1,160 @@
 /* =========================================
-   STYLE COMPLET : THÈME BLANC & MINIMALISTE
+   DESIGN "CINEMATIC DARK" - STYLE HESTON
    ========================================= */
 
-/* --- 0. Variables (Configuration Globale) --- */
+/* --- 1. CONFIGURATION (Variables) --- */
 :root {
-    --color-bg: #ffffff;
-    --color-text-main: #333333;
-    --color-text-light: #666666;
-    --color-accent: #000000; /* Pour les titres et boutons */
-    --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    --spacing-gutter: 20px;
+    --bg-color: #0a0a0a;       /* Noir très profond, pas pur */
+    --text-main: #e0e0e0;      /* Blanc cassé (plus doux pour les yeux) */
+    --text-muted: #888888;     /* Gris pour les textes secondaires */
+    --accent: #ffffff;         /* Blanc pur pour les interactions */
+    --font-title: 'Playfair Display', serif;
+    --font-body: 'Montserrat', sans-serif;
+    --container-width: 1400px; /* Largeur maximale du contenu */
 }
 
-/* --- 1. Réinitialisation et Base --- */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* --- 2. BASE --- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    font-family: 'Montserrat', sans-serif; 
-    background-color: #ffffff;
-    color: #333333;
-    line-height: 1.6;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: var(--font-body);
     font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden; /* Empêche le scroll horizontal */
 }
 
-/* Police "Luxe" pour les titres */
-h1, h2, h3, .section-title, .site-branding h1 {
-    font-family: 'Playfair Display', serif;
-    letter-spacing: 2px;
+a { text-decoration: none; color: inherit; transition: opacity 0.3s ease; }
+a:hover { opacity: 0.7; }
+
+/* Typographie "Luxe" */
+h1, h2, h3, .serif-font {
+    font-family: var(--font-title);
+    font-weight: 400;
 }
 
-/* --- 2. Entête Plein Écran (HERO) --- */
-.hero-header {
+/* --- 3. NAVIGATION (Minimaliste) --- */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 5%;
+    position: fixed;
+    top: 0; width: 100%;
+    z-index: 1000;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.9), transparent);
+}
+
+.logo { font-size: 1.5rem; letter-spacing: 2px; text-transform: uppercase; }
+.nav-links a { margin-left: 30px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+.nav-links a.active, .nav-links a:hover { color: var(--text-main); }
+
+/* --- 4. HERO SECTION (Accueil) --- */
+.hero {
     height: 100vh;
-    width: 100%;
-    background-image: url('../images/hero-photo-accueil.jpg'); 
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed; /* Parallaxe */
-    
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; 
+    justify-content: center;
     align-items: center;
-    
-    padding-top: 60px;
+    text-align: center;
+    padding: 0 20px;
+    background: url('../images/hero-photo-accueil.jpg') center/cover no-repeat;
     position: relative;
-    color: #ffffff; 
-    z-index: 1;
 }
 
-.hero-header::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.3);
-    z-index: -1;
+/* Voile noir pour lisibilité */
+.hero::after {
+    content: ''; position: absolute; inset: 0;
+    background: rgba(0,0,0,0.4); z-index: 1;
 }
 
-/* --- 3. Branding --- */
-.site-branding {
-    text-align: center;
-    margin-bottom: 30px;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-}
+.hero-content { position: relative; z-index: 2; opacity: 0; animation: fadeIn 2s ease forwards; }
 
-.site-branding h1 {
-    font-size: clamp(2.2em, 5vw, 3.5em);
-    font-weight: 300;
-    letter-spacing: 5px;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-}
+.hero h1 { font-size: clamp(3rem, 8vw, 6rem); margin-bottom: 10px; line-height: 1; }
+.hero p { font-size: 1rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.8); }
 
-.site-branding h2 {
-    font-size: 1em;
-    font-weight: 400;
-    opacity: 0.9;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-}
-
-/* --- 4. Navigation --- */
-.main-nav {
-    text-align: center;
-    width: 100%;
-}
-
-.main-nav a {
-    color: #ffffff;
-    text-decoration: none;
-    margin: 0 20px;
-    font-size: 0.9em;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid transparent;
-    transition: all 0.3s ease;
-    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
-}
-
-.main-nav a:hover, .main-nav a.active {
-    border-bottom-color: #ffffff;
-    opacity: 1;
-}
-
-/* --- 5. Contenu Principal --- */
-.content-wrapper {
-    background-color: var(--color-bg);
-    min-height: 100vh;
-    padding: 80px var(--spacing-gutter);
-    max-width: 1200px;
+/* --- 5. GRILLE D'ALBUMS (Accueil) --- */
+.albums-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 40px;
+    padding: 100px 5%;
+    max-width: var(--container-width);
     margin: 0 auto;
 }
 
-.section-title {
-    text-align: center;
-    font-size: 2em;
-    margin-bottom: 60px;
-    font-weight: 300;
-    color: var(--color-accent);
-    text-transform: uppercase;
-    letter-spacing: 4px;
-}
-
-/* --- 6. GALERIE STANDARD (Style Carte comme l'Accueil) --- */
-.best-of-gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 30px;
-}
-
-.gallery-item {
+.album-card {
     position: relative;
     display: block;
+    aspect-ratio: 4/5; /* Format portrait élégant */
     overflow: hidden;
-    cursor: pointer;
-    aspect-ratio: 4 / 5; 
-    background-color: #f0f0f0;
-    border-radius: 4px; /* Petit arrondi pour faire propre */
 }
 
-.gallery-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s ease;
+.album-card img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.8s ease;
+    filter: grayscale(20%); /* Touche artistique */
 }
 
-/* Le calque texte (Maintenant en bas avec dégradé) */
-.overlay-hover {
-    position: absolute;
-    top: auto;      /* On détache du haut */
-    bottom: 0;      /* On colle en bas */
-    left: 0;
-    width: 100%;
-    padding: 30px 20px; /* Espace autour du texte */
-    
-    /* Le dégradé noir transparent (Style Netflix/Luxe) */
-    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-    
-    /* On le rend TOUJOURS visible (pas besoin de survoler pour savoir ce que c'est) */
-    opacity: 1; 
-    
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end; /* Texte en bas */
-    align-items: flex-start;   /* Texte à gauche */
+.album-card:hover img { transform: scale(1.05); filter: grayscale(0%); }
+
+.album-info {
+    position: absolute; bottom: 20px; left: 20px;
+    z-index: 2;
 }
 
-.cat-title {
-    color: #fff;
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5em; /* Taille ajustée */
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transform: translateY(0); /* Pas de décalage */
-    border-bottom: none; /* Pas de soulignement */
-    text-shadow: 0 2px 5px rgba(0,0,0,0.5); /* Ombre pour lisibilité */
-}
+.album-info h3 { font-size: 2rem; margin-bottom: 5px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+.album-info span { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; }
 
-/* --- ANIMATION AU SURVOL --- */
-/* Juste un zoom élégant de l'image, le texte reste fixe */
-.gallery-item:hover img { 
-    transform: scale(1.1); 
-}
-
-/* --- 7. Formulaire Style "Luxe" --- */
-.contact-page {
-    max-width: 700px;
-    margin: 50px auto;
-    padding: 60px;
-    background-color: #ffffff; 
-    box-shadow: 0 20px 50px rgba(0,0,0,0.05);
-    border: 1px solid #f5f5f5;
-    border-radius: 4px;
-}
-
-.intro-text {
+/* --- 6. PAGE GALERIE (Masonry) --- */
+.gallery-header {
+    padding: 150px 5% 50px;
     text-align: center;
-    margin-bottom: 50px;
-    font-size: 1.1em;
-    line-height: 1.6;
-    color: #444;
-    font-weight: 400;
+}
+.gallery-header h1 { font-size: 4rem; margin-bottom: 20px; }
+.back-link { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid var(--text-muted); padding-bottom: 5px; }
+
+.masonry {
+    column-count: 3;
+    column-gap: 20px;
+    padding: 0 20px 100px;
+    max-width: 1600px;
+    margin: 0 auto;
 }
 
-.contact-form label {
-    display: block;
-    margin-top: 30px;
-    color: #000;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 0.75em;
-    letter-spacing: 2px;
-    margin-bottom: 10px;
-}
-
-.contact-form input,
-.contact-form textarea {
-    width: 100%;
-    padding: 12px 0;
-    border: none;
-    border-bottom: 2px solid #e0e0e0; 
-    background-color: transparent;
-    color: #333;
-    font-family: inherit;
-    font-size: 1.1em;
-    outline: none;
-    transition: all 0.3s;
-}
-
-.contact-form textarea {
-    resize: vertical;
-    min-height: 120px;
-}
-
-.contact-form input:focus,
-.contact-form textarea:focus {
-    border-bottom: 2px solid #000;
-    background-color: #fafafa;
-}
-
-.submit-button {
-    background-color: #000;
-    color: #fff;
-    padding: 18px 50px;
-    border: none;
-    cursor: pointer;
-    margin-top: 50px;
-    width: 100%;
-    font-size: 0.9em;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    font-weight: 600;
-    transition: background-color 0.3s;
-}
-
-.submit-button:hover { background-color: #333; }
-
-/* --- 8. Pied de page --- */
-.social-links {
-    text-align: center;
-    margin-top: 80px;
-    padding-top: 40px;
-    border-top: 1px solid #eeeeee;
-    width: 100%;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.social-links p {
-    font-size: 0.8em;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #999;
+.photo-item {
+    break-inside: avoid;
     margin-bottom: 20px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
 }
+.photo-item.visible { opacity: 1; transform: translateY(0); }
 
-.social-links a {
-    display: inline-block;
-    text-decoration: none;
-    color: #000000;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 0.9em;
-    letter-spacing: 1px;
-    margin: 0 15px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid transparent;
-    transition: all 0.3s;
-}
-
-.social-links a:hover {
-    color: #666;
-    border-bottom: 1px solid #000;
-}
-
-footer {
-    text-align: center;
-    padding: 40px 0;
-    font-size: 0.7em;
-    color: #ccc;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.footer-logo {
-    width: 80px;
-    height: auto;
-    margin-bottom: 20px;
-    opacity: 0.8;
-}
-
-/* --- 9. Styles Spécifiques Pages Internes --- */
-
-.header-mini {
-    height: 65vh !important;
-    min-height: 300px; 
-    background-image: url('../images/contact-bg.jpg') !important; 
-    background-position: center 80% !important; 
-    justify-content: flex-start !important;
-    padding-top: 10vh !important;
-}
-
-.bg-apropos {
-    background-image: url('../images/mon-image-apropos.jpg') !important;
-    background-position: center !important;  
-    height: 40vh !important;
-    min-height: 250px !important;
-}
-
-.category-title {
-    text-align: center;
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5em;
-    margin-top: 15px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #000;
-}
-
-.pricing-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-    margin-top: 40px;
-}
-
-.pricing-card {
-    border: 1px solid #eee;
-    padding: 40px;
-    text-align: center;
-    transition: transform 0.3s, box-shadow 0.3s;
-    background: #fff;
-}
-
-.pricing-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-}
-
-.pricing-card.featured {
-    border: 1px solid #000;
-    background-color: #fafafa;
-}
-
-.pricing-card h4 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.8em;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-}
-
-.pricing-card .price {
-    font-size: 1.2em;
-    color: #C17E47;
-    font-weight: bold;
-    margin-bottom: 30px;
-    font-family: 'Montserrat', sans-serif;
-}
-
-.pricing-card ul {
-    list-style: none;
-    margin-bottom: 30px;
-    padding: 0;
-}
-
-.pricing-card li {
-    margin-bottom: 15px;
-    color: #666;
-    font-size: 0.9em;
-}
-
-.btn-reserver {
-    display: inline-block;
-    padding: 10px 25px;
-    border: 1px solid #000;
-    text-decoration: none;
-    color: #000;
-    text-transform: uppercase;
-    font-size: 0.8em;
-    letter-spacing: 1px;
-    transition: all 0.3s;
-}
-
-.btn-reserver:hover { background-color: #000; color: #fff; }
-
-.about-section {
-    display: flex;
-    align-items: center;
-    gap: 60px;
-    margin-top: 40px;
-}
-
-.about-image { flex: 1; }
-.about-image img {
-    width: 100%;
-    height: auto;
-    display: block;
-    box-shadow: 20px 20px 0px #f5f5f5; 
-}
-
-.about-text {
-    flex: 1;
-    font-size: 1.05em;
-    color: #555;
-    line-height: 1.8;
-}
-
-.about-text p { margin-bottom: 20px; }
-
-.signature {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: 1.5em;
-    margin-top: 30px;
-    color: #000;
-}
-
-.btn-contact {
-    display: inline-block;
-    margin-top: 20px;
-    padding-bottom: 5px;
-    color: #000;
-    text-decoration: none;
-    border-bottom: 1px solid #000;
-    text-transform: uppercase;
-    font-size: 0.9em;
-    letter-spacing: 1px;
+.photo-item img {
+    width: 100%; display: block;
+    border-radius: 2px;
+    cursor: zoom-in;
     transition: opacity 0.3s;
 }
+.photo-item img:hover { opacity: 0.8; }
 
-.btn-contact:hover { opacity: 0.6; }
-
-.cta-container {
-    text-align: center;
-    margin-top: 50px;
-    margin-bottom: 20px;
+/* LIGHTBOX (Zoom) */
+#lightbox {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+    z-index: 9999; display: none; justify-content: center; align-items: center;
+    cursor: zoom-out;
 }
-
-.btn-see-more {
-    display: inline-block;
-    padding: 15px 40px;
-    border: 1px solid #000;
-    color: #000;
-    text-decoration: none;
-    text-transform: uppercase;
-    font-size: 0.9em;
-    letter-spacing: 2px;
-    transition: all 0.3s ease;
-}
-
-.btn-see-more:hover {
-    background-color: #000;
-    color: #fff;
-    padding: 15px 50px;
-}
-
-/* --- STYLE GALERIE AUTOMATIQUE (MASONRY) --- */
-.masonry-grid {
-    column-count: 3; 
-    column-gap: 20px;
-    padding: 0 10px;
-}
-
-.masonry-item {
-    break-inside: avoid; 
-    margin-bottom: 20px;
-    position: relative;
-    border-radius: 4px;
-    overflow: hidden;
-    cursor: zoom-in;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.masonry-item img {
-    width: 100%;
-    height: auto; 
-    display: block;
-}
-
-.masonry-item:hover {
-    transform: translateY(-5px);
-    opacity: 0.9;
-}
-
-/* =========================================
-   AJOUTS JAVASCRIPT & CARROUSEL
-   ========================================= */
-
-/* --- 1. Animation Scroll Reveal --- */
-.reveal-hidden {
-    opacity: 0;
-    transform: translateY(30px); 
-    transition: all 0.8s ease-out; 
-}
-
-.visible {
-    opacity: 1;
-    transform: translateY(0); 
-}
-
-/* --- 2. Menu Dynamique au Scroll --- */
-.main-nav {
-    transition: background-color 0.3s, padding 0.3s;
-    width: 100%;
-    z-index: 1000; 
-}
-
-.main-nav.scrolled {
-    background-color: rgba(0, 0, 0, 0.8); 
-    position: fixed; 
-    top: 0;
-    padding: 15px 0; 
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-}
-
-/* --- CARROUSEL HYBRIDE (CORRIGÉ POUR FONCTIONNER AVEC JS) --- */
-
-.horizontal-section {
-    width: 100%;
-    padding-bottom: 50px;
-    position: relative;
-    /* Important : on ne met PAS overflow: hidden ici sinon les boutons disparaissent */
-}
-
-.horizontal-scroll-wrapper {
-    display: flex;
-    gap: 20px;
-    overflow-x: auto; /* Permet le scroll tactile ET JS */
-    padding: 20px 0;
-    scroll-behavior: auto; /* Le JS gère la fluidité */
-    
-    /* Cache la barre de défilement */
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-.horizontal-scroll-wrapper::-webkit-scrollbar { 
-    display: none; 
-}
-
-/* Boutons Flèches */
-.scroll-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255,255,255,0.8);
-    border: none;
-    width: 50px; height: 50px; border-radius: 50%;
-    font-size: 24px; cursor: pointer; z-index: 10;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    transition: transform 0.3s;
-}
-.scroll-btn:hover { background: #fff; transform: translateY(-50%) scale(1.1); }
-.scroll-btn.left { left: 20px; }
-.scroll-btn.right { right: 20px; }
-
-/* Style des cartes */
-.horizontal-card {
-    flex: 0 0 300px;
-    height: 450px;
-    position: relative;
-    text-decoration: none;
-    border-radius: 4px;
-    overflow: hidden;
-    transition: transform 0.3s ease;
-}
-
-.horizontal-card img { width: 100%; height: 100%; object-fit: cover; }
-
-.card-info {
-    position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px;
-    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); color: #fff;
-}
-.card-info h4 { font-family: 'Playfair Display', serif; font-size: 1.4em; margin: 0; text-transform: uppercase; }
-
+#lightbox img { max-height: 90vh; max-width: 90vw; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
 
 /* --- RESPONSIVE --- */
-@media (min-width: 768px) {
-    .horizontal-card { flex: 0 0 400px; height: 550px; }
-}
-
-@media (max-width: 1024px) {
-    .masonry-grid { column-count: 2; }
-}
-
 @media (max-width: 768px) {
-    .scroll-btn { display: none; } /* Cache les flèches sur mobile */
-    .contact-page { box-shadow: none; border: none; padding: 20px; }
-    .about-section { flex-direction: column; gap: 30px; }
-    .about-text .section-title { text-align: center !important; }
-    .about-image img { box-shadow: 10px 10px 0px #f5f5f5; }
+    .albums-grid { grid-template-columns: 1fr; gap: 20px; padding: 50px 20px; }
+    .masonry { column-count: 1; }
+    .hero h1 { font-size: 3.5rem; }
+    nav { padding: 20px; }
+    .logo { font-size: 1.2rem; }
 }
 
-@media (max-width: 600px) {
-    .masonry-grid { column-count: 1; }
-}
-
-/* =========================================
-   STYLE POUR LE PORTFOLIO VRAC (MASONRY)
-   À JOUTER À LA FIN DE STYLE.CSS
-   ========================================= */
-
-/* La grille qui contient les images */
-.masonry-grid {
-    column-count: 3; /* 3 colonnes sur PC */
-    column-gap: 20px; /* Espace entre les colonnes */
-    padding: 0 10px;
-    margin-bottom: 50px; /* Espace avant le pied de page */
-}
-
-/* Chaque bloc image */
-.masonry-item {
-    break-inside: avoid; /* Empêche de couper une image en deux */
-    margin-bottom: 20px; /* Espace sous chaque image */
-    position: relative;
-    border-radius: 4px;
-    overflow: hidden;
-    cursor: zoom-in; /* Curseur loupe */
-    transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-/* L'IMAGE ELLE-MÊME (C'est ça qui règle le problème de taille !) */
-.masonry-item img {
-    width: 100%;     /* Force l'image à prendre toute la largeur de sa colonne */
-    height: auto;    /* Garde les proportions d'origine (ne déforme pas) */
-    display: block;  /* Supprime les petits espaces blancs fantômes */
-}
-
-/* Effet au survol */
-.masonry-item:hover {
-    transform: translateY(-5px);
-    opacity: 0.9;
-}
-
-/* --- RESPONSIVE (Pour Tablettes et Mobiles) --- */
-
-/* Tablettes (< 1024px) -> 2 colonnes */
-@media (max-width: 1024px) {
-    .masonry-grid { column-count: 2; }
-}
-
-/* Mobiles (< 600px) -> 1 colonne */
-@media (max-width: 600px) {
-    .masonry-grid { column-count: 1; }
-}
+@keyframes fadeIn { to { opacity: 1; } }

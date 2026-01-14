@@ -54,4 +54,4 @@ function boostSpeed(speed) {
 
 function resetSpeed() {
     currentSpeed = baseSpeed;
-}
+}   
