@@ -32,101 +32,113 @@
     <div id="lightbox" onclick="this.style.display='none'">
         <img id="lightbox-img" src="">
     </div>
-    
+
 <script src="js/config.js"></script>
-    <script>
-        // --- CONFIGURATION ---
-        const BATCH_SIZE = 15; 
+<script>
+    // --- CONFIGURATION ---
+    const BATCH_SIZE = 15; 
+    let columnWrappers = []; // Pour stocker nos colonnes
 
-        // 1. Récupération de l'album
-        const params = new URLSearchParams(window.location.search);
-        const albumId = params.get('id');
-        const album = siteConfig.albums.find(a => a.id === albumId);
+    // 1. Récupération de l'album
+    const params = new URLSearchParams(window.location.search);
+    const albumId = params.get('id');
+    const album = siteConfig.albums.find(a => a.id === albumId);
 
-        if (album) {
-            document.title = `${album.title} | Thomas Soleil`;
-            document.getElementById('album-title').innerText = album.title;
-            document.getElementById('album-meta').innerText = album.date;
+    if (album) {
+        document.title = `${album.title} | Thomas Soleil`;
+        document.getElementById('album-title').innerText = album.title;
+        document.getElementById('album-meta').innerText = album.date;
 
-            const container = document.getElementById('gallery-container');
-            const extension = album.ext || ".webp"; 
+        const container = document.getElementById('gallery-container');
+        const extension = album.ext || ".webp"; 
 
-            // --- PRÉPARATION ---
-            container.innerHTML = ""; 
-            container.className = "masonry-wrapper"; // On applique le CSS magique
+        // --- PRÉPARATION DES COLONNES STABLES ---
+        container.innerHTML = ""; 
+        container.className = "masonry-wrapper";
 
-            // --- MOTEUR DE CHARGEMENT SIMPLE ---
-            let currentIndex = 1;
+        // On détermine le nombre de colonnes selon l'écran
+        // (3 sur PC, 2 sur Mobile/Tablette)
+        const isMobile = window.innerWidth <= 1024;
+        const nbColumns = isMobile ? 2 : 3;
 
-            function loadBatch() {
-                const limit = Math.min(currentIndex + BATCH_SIZE, album.count + 1);
+        // Création des colonnes HTML
+        for (let c = 0; c < nbColumns; c++) {
+            let col = document.createElement('div');
+            col.className = 'masonry-column';
+            container.appendChild(col);
+            columnWrappers.push(col);
+        }
 
-                if (currentIndex >= limit) return;
+        // --- MOTEUR DE CHARGEMENT ---
+        let currentIndex = 1;
 
-                // On crée un "fragment" pour n'écrire dans la page qu'une seule fois (Gain de perf énorme)
-                const fragment = document.createDocumentFragment();
+        function loadBatch() {
+            const limit = Math.min(currentIndex + BATCH_SIZE, album.count + 1);
+            if (currentIndex >= limit) return;
 
-                for (let i = currentIndex; i < limit; i++) {
-                    
-                    const div = document.createElement('div');
-                    div.className = 'photo-item';
-                    
-                    const img = document.createElement('img');
-                    
-                    // Chemins des images
-                    const smallSrc = `${album.folder}/${album.prefix}${i}-small${extension}`;
-                    const bigSrc = `${album.folder}/${album.prefix}${i}${extension}`;
+            for (let i = currentIndex; i < limit; i++) {
+                
+                const div = document.createElement('div');
+                div.className = 'photo-item';
+                
+                const img = document.createElement('img');
+                const smallSrc = `${album.folder}/${album.prefix}${i}-small${extension}`;
+                const bigSrc = `${album.folder}/${album.prefix}${i}${extension}`;
 
-                    img.src = smallSrc;
-                    img.alt = `${album.title} ${i}`;
-                    img.loading = "lazy"; // Le navigateur gère le chargement différé
-                    img.decoding = "async"; // Décodage en arrière-plan (plus fluide)
-                    
-                    // Apparition douce
-                    img.onload = () => div.classList.add('visible');
-                    
-                    // Fallback si pas de miniature
-                    img.onerror = function() { 
-                        if (this.src !== bigSrc) this.src = bigSrc; 
-                    };
+                img.src = smallSrc;
+                img.alt = `${album.title} ${i}`;
+                img.loading = "lazy"; 
+                
+                // Gestion erreur (si pas de miniature, on prend la grande)
+                img.onerror = function() { 
+                    if (this.src !== bigSrc) this.src = bigSrc; 
+                };
 
-                    // Zoom Lightbox
-                    div.onclick = () => {
-                        const lightboxImg = document.getElementById('lightbox-img');
-                        const lightbox = document.getElementById('lightbox');
-                        lightboxImg.src = bigSrc; 
-                        lightbox.style.display = 'flex';
-                    };
+                // Apparition douce une fois chargée
+                img.onload = () => div.classList.add('visible');
 
-                    div.appendChild(img);
-                    fragment.appendChild(div); // On ajoute au panier temporaire
-                }
+                // Lightbox
+                div.onclick = () => {
+                    const lightboxImg = document.getElementById('lightbox-img');
+                    const lightbox = document.getElementById('lightbox');
+                    lightboxImg.src = bigSrc; 
+                    lightbox.style.display = 'flex';
+                };
 
-                // On verse tout le panier dans la page d'un coup
-                container.appendChild(fragment);
+                div.appendChild(img);
 
-                currentIndex = limit;
+                // --- ALGORITHME DE DISTRIBUTION ---
+                // On ajoute l'image dans la colonne la plus petite pour équilibrer
+                // ou simplement tour à tour (plus simple et performant)
+                
+                // Méthode Tour à Tour (Round Robin) : 
+                // Image 1 -> Col 1, Image 2 -> Col 2, Image 3 -> Col 3, Image 4 -> Col 1...
+                const colIndex = (i - 1) % nbColumns;
+                columnWrappers[colIndex].appendChild(div);
             }
 
-            // --- INFINITE SCROLL ---
-            loadBatch(); // Premier chargement
-
-            const trigger = document.createElement('div');
-            trigger.style.height = "100px"; 
-            trigger.style.margin = "50px 0";
-            document.querySelector('main').appendChild(trigger);
-
-            const observer = new IntersectionObserver((entries) => {
-                if (entries[0].isIntersecting) {
-                    loadBatch();
-                }
-            }, { rootMargin: "400px" }); // On anticipe beaucoup le scroll
-
-            observer.observe(trigger);
-
-        } else {
-            document.getElementById('album-title').innerText = "Album introuvable";
+            currentIndex = limit;
         }
-    </script>
+
+        // --- INFINITE SCROLL ---
+        loadBatch(); 
+
+        const trigger = document.createElement('div');
+        trigger.style.height = "50px"; 
+        trigger.style.margin = "20px 0";
+        document.querySelector('main').appendChild(trigger);
+
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                loadBatch();
+            }
+        }, { rootMargin: "200px" });
+
+        observer.observe(trigger);
+
+    } else {
+        document.getElementById('album-title').innerText = "Album introuvable";
+    }
+</script>
 </body>
 </html>

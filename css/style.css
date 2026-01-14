@@ -243,26 +243,49 @@ nav {
     color: var(--text-muted); padding-bottom: 5px;
 }
 
+/* --- DANS style.css --- */
+
+/* Le conteneur principal devient flexible */
 .masonry-wrapper {
-    column-count: 3; 
-    column-gap: 30px; 
+    display: flex;
+    justify-content: center;
+    gap: 30px; /* Espace entre les colonnes */
     max-width: var(--container-width);
     margin: 0 auto;
     padding: 0 20px 100px;
-    contain: layout; 
+}
+
+/* On crée des colonnes qui ne bougeront jamais */
+.masonry-column {
+    display: flex;
+    flex-direction: column;
+    gap: 30px; /* Espace vertical entre les photos */
+    flex: 1;   /* Les colonnes prennent toute la largeur disponible */
+    max-width: 33%; /* Sécurité pour rester sur 3 colonnes */
 }
 
 .photo-item {
-    break-inside: avoid;
-    margin-bottom: 30px; 
     position: relative;
     background-color: #1a1a1a;
     cursor: zoom-in;
-    transition: opacity 0.5s ease;
+    
+    /* Correctifs anti-clignotement (Hardware Acceleration) */
+    transform: translateZ(0); 
+    backface-visibility: hidden;
+    will-change: opacity;
+    
+    transition: opacity 0.6s ease;
     opacity: 0;
 }
+
 .photo-item.visible { opacity: 1; }
-.photo-item:hover { opacity: 0.9; } /* Pas de zoom ici pour rester clean */
+
+.photo-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 2px;
+}
 
 /* Lightbox */
 #lightbox {
@@ -429,9 +452,11 @@ footer {
    RESPONSIVE (MOBILE & TABLETTE)
    ========================================= */
 
+/* RESPONSIVE : On passe à 2 colonnes sur tablette/mobile */
 @media (max-width: 1024px) {
-    .masonry-wrapper { column-count: 2; column-gap: 20px; }
-    .hero h1 { font-size: 4rem; }
+    .masonry-column { max-width: 50%; }
+    /* On cachera la 3ème colonne via le JS ou le CSS si nécessaire, 
+       mais le Flexbox gérera la réduction de largeur tout seul. */
 }
 
 @media (max-width: 768px) {
