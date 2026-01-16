@@ -488,3 +488,9 @@ footer {
         padding: 0 10px 50px;
     }
 }
+/* --- MENU QUI CHANGE AU SCROLL (Ajouté à la fin) --- */
+nav.scrolled {
+    background: #0a0a0a !important; /* Devient noir opaque */
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5); /* Ajoute une ombre portée */
+    padding: 15px 5%; /* Le menu devient un peu plus fin (plus élégant) */
+}
