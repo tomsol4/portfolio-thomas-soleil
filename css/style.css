@@ -176,7 +176,7 @@ nav.scrolled {
 }
 
 
-/* --- 6. GALERIE PHOTO STYLE "HESTON" (Masonry CSS pur) --- */
+/* --- 6. GALERIE PHOTO (Distribution Flex) --- */
 .gallery-header {
     padding: 180px 5% 60px;
     text-align: center;
@@ -187,52 +187,53 @@ nav.scrolled {
     color: var(--text-muted); padding-bottom: 5px;
 }
 
-/* --- style.css --- */
-
-/* LE NOUVEAU CONTENEUR MASONRY */
+/* Conteneur principal qui tient les colonnes */
 .masonry-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 30px; /* Espace entre les colonnes */
     max-width: var(--container-width);
     margin: 0 auto;
     padding: 0 20px 100px;
-    /* On supprime column-count et column-gap ici */
+}
+
+/* Les colonnes individuelles */
+.gallery-col {
+    display: flex;
+    flex-direction: column;
+    gap: 30px; /* Espace vertical entre les photos */
+    flex: 1;   /* Largeur égale pour chaque colonne */
+    max-width: 100%;
 }
 
 /* L'élément photo */
 .photo-item {
-    /* Largeur fixe pour faire 3 colonnes (environ 33% moins la marge) */
-    width: 32%; 
-    margin-bottom: 30px; /* Espace vertical */
-    margin-right: 1.33%; /* Espace horizontal calculé pour centrer */
-    
-    /* Plus besoin de break-inside ou inline-block car Masonry gère tout en absolute */
-    display: block; 
-    
+    position: relative;
+    width: 100%;
     cursor: zoom-in;
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-}
-
-/* Ajustement pour la dernière colonne (Masonry gère souvent ça, mais c'est une sécu) */
-.photo-item:nth-child(3n) {
-    margin-right: 0;
+    transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 .photo-item.visible { opacity: 1; transform: translateY(0); }
 
 .photo-item img {
-    width: 100%; height: auto; display: block;
+    width: 100%;
+    height: auto;
+    display: block;
+    background-color: #111; /* Petit fond gris pendant le chargement */
 }
 
-/* RESPONSIVE */
-@media (max-width: 1024px) {
-    .photo-item { width: 48%; margin-right: 2%; } /* 2 colonnes */
-    .photo-item:nth-child(2n) { margin-right: 0; }
-    .photo-item:nth-child(3n) { margin-right: 2%; } /* Reset du style 3 colonnes */
-}
-
+/* --- RESPONSIVE POUR LA GALERIE --- */
+/* Le JS gère le nombre de colonnes, mais le CSS assure que ça s'affiche bien */
 @media (max-width: 768px) {
-    .photo-item { width: 100%; margin-right: 0; } /* 1 colonne */
+    .masonry-wrapper {
+        gap: 15px;
+    }
+    .gallery-col {
+        gap: 15px;
+    }
 }
 
 /* --- 7. UTILS (Loader, Lightbox...) --- */
@@ -287,22 +288,3 @@ footer { text-align: center; padding: 60px 0; color: #444; font-size: 0.7rem; te
 @keyframes zoomEffect { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
 @keyframes fadeUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
 
-
-/* --- 11. RESPONSIVE --- */
-@media (max-width: 1024px) {
-    .masonry-wrapper { column-count: 2; } /* 2 colonnes sur tablette */
-}
-
-@media (max-width: 768px) {
-    nav { justify-content: center; padding: 15px; }
-    .nav-links { display: none; }
-    .logo { font-size: 1.2rem; }
-    .hero h1 { font-size: 3rem; }
-    
-    .albums-grid { grid-template-columns: 1fr; padding: 50px 20px; }
-    .album-info { opacity: 1; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); justify-content: flex-end; padding-bottom: 30px; }
-    .album-info h3 { transform: translateY(0); font-size: 2rem; }
-    
-    .masonry-wrapper { column-count: 1; } /* 1 colonne sur mobile */
-    .about-grid { flex-direction: column-reverse; gap: 40px; }
-}
