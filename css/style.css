@@ -187,26 +187,25 @@ nav.scrolled {
     color: var(--text-muted); padding-bottom: 5px;
 }
 
+/* --- style.css --- */
+
 /* LE NOUVEAU CONTENEUR MASONRY */
 .masonry-wrapper {
-    /* Utilisation des colonnes CSS natives pour éviter les trous */
-    column-count: 3;
-    column-gap: 30px; /* Espace entre les colonnes */
     max-width: var(--container-width);
     margin: 0 auto;
     padding: 0 20px 100px;
+    /* On supprime column-count et column-gap ici */
 }
 
 /* L'élément photo */
 .photo-item {
-    position: relative;
-    background-color: transparent; /* Plus propre */
+    /* Largeur fixe pour faire 3 colonnes (environ 33% moins la marge) */
+    width: 32%; 
     margin-bottom: 30px; /* Espace vertical */
+    margin-right: 1.33%; /* Espace horizontal calculé pour centrer */
     
-    /* Indispensable pour que l'image ne soit pas coupée entre 2 colonnes */
-    break-inside: avoid; 
-    display: inline-block; 
-    width: 100%;
+    /* Plus besoin de break-inside ou inline-block car Masonry gère tout en absolute */
+    display: block; 
     
     cursor: zoom-in;
     opacity: 0;
@@ -214,14 +213,27 @@ nav.scrolled {
     transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
 
+/* Ajustement pour la dernière colonne (Masonry gère souvent ça, mais c'est une sécu) */
+.photo-item:nth-child(3n) {
+    margin-right: 0;
+}
+
 .photo-item.visible { opacity: 1; transform: translateY(0); }
 
 .photo-item img {
     width: 100%; height: auto; display: block;
-    /* Suppression des bordures arrondies pour le look Heston */
-    border-radius: 0; 
 }
 
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+    .photo-item { width: 48%; margin-right: 2%; } /* 2 colonnes */
+    .photo-item:nth-child(2n) { margin-right: 0; }
+    .photo-item:nth-child(3n) { margin-right: 2%; } /* Reset du style 3 colonnes */
+}
+
+@media (max-width: 768px) {
+    .photo-item { width: 100%; margin-right: 0; } /* 1 colonne */
+}
 
 /* --- 7. UTILS (Loader, Lightbox...) --- */
 #loader-indicator {
