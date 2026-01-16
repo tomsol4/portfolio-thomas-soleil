@@ -1,6 +1,6 @@
 /* ============================================================
    STYLE COMPLET : THOMAS SOLEIL - PREMIUM & CINEMATIC
-   Inspiration : Minimalisme, Immersion, Editorial
+   Inspiration : Weddings by Heston (Minimaliste & Masonry)
    ============================================================ */
 
 /* --- 1. CONFIGURATION (Variables) --- */
@@ -17,15 +17,9 @@
 }
 
 /* --- 2. BASE & RESET --- */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-html {
-    scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
     background-color: var(--bg-color);
@@ -36,28 +30,19 @@ body {
     overflow-x: hidden;
 }
 
-a {
-    text-decoration: none;
-    color: inherit;
-    transition: opacity 0.3s ease, color 0.3s ease;
-}
+a { text-decoration: none; color: inherit; transition: opacity 0.3s ease; }
 a:hover { opacity: 0.7; }
 
-img {
-    max-width: 100%;
-    display: block;
-}
+img { max-width: 100%; display: block; }
 
-/* Typographie */
 h1, h2, h3, h4 {
     font-family: var(--font-title);
     font-weight: 400;
     color: var(--accent);
 }
-
 h1 { font-style: italic; }
 
-/* --- 3. NAVIGATION (Glassmorphism) --- */
+/* --- 3. NAVIGATION --- */
 nav {
     display: flex;
     justify-content: space-between;
@@ -97,22 +82,17 @@ nav.scrolled {
     position: relative;
 }
 
-.nav-links a.active, 
-.nav-links a:hover {
-    color: var(--accent);
-}
+.nav-links a.active, .nav-links a:hover { color: var(--accent); }
 
 .nav-links a::after {
     content: '';
-    position: absolute;
-    width: 0;
-    height: 1px;
-    bottom: -5px;
-    left: 0;
+    position: absolute; width: 0; height: 1px;
+    bottom: -5px; left: 0;
     background-color: var(--accent);
     transition: width 0.3s ease;
 }
 .nav-links a:hover::after { width: 100%; }
+
 
 /* --- 4. HERO SECTION --- */
 .hero {
@@ -126,46 +106,35 @@ nav.scrolled {
 
 .hero::before {
     content: '';
-    position: absolute;
-    inset: 0;
+    position: absolute; inset: 0;
     background: url('../images/hero-photo-accueil.jpg') center/cover no-repeat;
     z-index: 0;
     animation: zoomEffect 25s infinite alternate ease-in-out;
 }
 
 .hero::after { 
-    content: ''; 
-    position: absolute; 
-    inset: 0; 
-    background: rgba(0,0,0,0.4); 
-    z-index: 1; 
+    content: ''; position: absolute; inset: 0; 
+    background: rgba(0,0,0,0.4); z-index: 1; 
 }
 
 .hero-content { 
-    position: relative; 
-    z-index: 2; 
-    text-align: center; 
-    padding: 0 20px;
+    position: relative; z-index: 2; text-align: center; padding: 0 20px;
     animation: fadeUp 1.5s ease-out;
 }
 
 .hero h1 { 
     font-size: clamp(3rem, 7vw, 6rem);
-    color: #fff; 
-    margin-bottom: 10px; 
-    line-height: 1.1;
-    font-style: normal;
+    color: #fff; margin-bottom: 10px; line-height: 1.1; font-style: normal;
 }
 
 .hero p { 
-    font-family: var(--font-title);
-    font-style: italic;
+    font-family: var(--font-title); font-style: italic;
     font-size: clamp(1.2rem, 2vw, 1.8rem);
-    color: rgba(255,255,255,0.9); 
-    margin-top: 10px;
+    color: rgba(255,255,255,0.9); margin-top: 10px;
 }
 
-/* --- 5. GRILLE ALBUMS (Index) --- */
+
+/* --- 5. GRILLE ALBUMS (Accueil) --- */
 .albums-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -176,11 +145,8 @@ nav.scrolled {
 }
 
 .album-card {
-    position: relative;
-    display: block;
-    aspect-ratio: 3/4;
-    overflow: hidden;
-    background-color: #000;
+    position: relative; display: block;
+    aspect-ratio: 3/4; overflow: hidden; background-color: #000;
 }
 
 .album-card img {
@@ -189,45 +155,28 @@ nav.scrolled {
     opacity: 0.85;
 }
 
-.album-card:hover img { 
-    transform: scale(1.1); 
-    opacity: 0.4;
-}
+.album-card:hover img { transform: scale(1.1); opacity: 0.4; }
 
 .album-info {
-    position: absolute; 
-    inset: 0; 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    padding: 20px;
-    text-align: center;
+    position: absolute; inset: 0; 
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    opacity: 0; transition: opacity 0.5s ease; padding: 20px; text-align: center;
 }
 
 .album-card:hover .album-info { opacity: 1; }
 
 .album-info h3 { 
-    font-size: 2.5rem; 
-    font-style: italic;
-    transform: translateY(20px);
-    transition: transform 0.5s ease;
-    margin-bottom: 10px;
+    font-size: 2.5rem; font-style: italic;
+    transform: translateY(20px); transition: transform 0.5s ease; margin-bottom: 10px;
 }
-
 .album-card:hover .album-info h3 { transform: translateY(0); }
-
 .album-info span { 
-    font-family: var(--font-body);
-    font-size: 0.75rem; 
-    text-transform: uppercase; 
-    letter-spacing: 3px; 
-    color: var(--text-main);
+    font-family: var(--font-body); font-size: 0.75rem; 
+    text-transform: uppercase; letter-spacing: 3px; color: var(--text-main);
 }
 
-/* --- 6. PAGE GALERIE (Masonry & Animations) --- */
+
+/* --- 6. GALERIE PHOTO STYLE "HESTON" (Masonry CSS pur) --- */
 .gallery-header {
     padding: 180px 5% 60px;
     text-align: center;
@@ -238,338 +187,110 @@ nav.scrolled {
     color: var(--text-muted); padding-bottom: 5px;
 }
 
+/* LE NOUVEAU CONTENEUR MASONRY */
 .masonry-wrapper {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
+    /* Utilisation des colonnes CSS natives pour éviter les trous */
+    column-count: 3;
+    column-gap: 30px; /* Espace entre les colonnes */
     max-width: var(--container-width);
     margin: 0 auto;
     padding: 0 20px 100px;
 }
 
-.masonry-column {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    flex: 1;
-    max-width: 33%;
-}
-
-/* Animation Photo Item */
+/* L'élément photo */
 .photo-item {
     position: relative;
-    background-color: #1a1a1a;
+    background-color: transparent; /* Plus propre */
+    margin-bottom: 30px; /* Espace vertical */
+    
+    /* Indispensable pour que l'image ne soit pas coupée entre 2 colonnes */
+    break-inside: avoid; 
+    display: inline-block; 
+    width: 100%;
+    
     cursor: zoom-in;
-    margin-bottom: 30px; 
     opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    will-change: opacity, transform;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
 
-.photo-item.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
+.photo-item.visible { opacity: 1; transform: translateY(0); }
 
 .photo-item img {
-    width: 100%;
-    height: auto;
-    display: block;
-    border-radius: 2px;
+    width: 100%; height: auto; display: block;
+    /* Suppression des bordures arrondies pour le look Heston */
+    border-radius: 0; 
 }
 
-/* Loader Indicator */
+
+/* --- 7. UTILS (Loader, Lightbox...) --- */
 #loader-indicator {
-    text-align: center;
-    padding: 40px;
-    opacity: 0;
-    transition: opacity 0.3s;
-    font-family: var(--font-body);
-    font-size: 0.8rem;
-    letter-spacing: 2px;
-    color: #666;
-    text-transform: uppercase;
+    text-align: center; padding: 40px; opacity: 0; transition: opacity 0.3s;
+    font-family: var(--font-body); font-size: 0.8rem; letter-spacing: 2px; color: #666; text-transform: uppercase;
 }
 #loader-indicator.active { opacity: 1; }
 
-/* Lightbox */
 #lightbox {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.95);
-    z-index: 9999;
-    display: none;
-    justify-content: center; align-items: center;
-    cursor: zoom-out;
-    backdrop-filter: blur(5px);
+    position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 9999;
+    display: none; justify-content: center; align-items: center; cursor: zoom-out;
 }
-#lightbox img {
-    max-height: 90vh; max-width: 90vw;
-    box-shadow: 0 0 50px rgba(0,0,0,0.5);
-}
+#lightbox img { max-height: 95vh; max-width: 95vw; box-shadow: none; }
 
-/* --- 7. PAGE PRESTATIONS (Style "Clean/Heston") --- */
-.content-wrapper {
-    padding: 150px 5% 100px;
-    max-width: var(--container-width);
-    margin: 0 auto;
-}
-
-.pricing-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 40px;
-}
-
-/* Version épurée des cartes */
-.pricing-card {
-    background: transparent;
-    padding: 0 20px;
-    flex: 1;
-    min-width: 300px;
-    max-width: 350px;
-    text-align: center;
-    border: none;
-}
-
-@media (min-width: 1024px) {
-    .pricing-card:not(:last-child) {
-        border-right: 1px solid rgba(255,255,255,0.1);
-    }
-}
-
-.pricing-card h4 {
-    font-size: 2.2rem;
-    margin-bottom: 10px;
-    color: #fff;
-    font-style: italic;
-}
-
-.pricing-card.featured h4 {
-    font-size: 2.8rem; /* Légèrement plus gros pour le mariage */
-}
-
-.price {
-    font-family: var(--font-title);
-    font-style: italic;
-    font-size: 1.3rem;
-    color: var(--text-muted);
-    margin-bottom: 40px;
-    display: block;
-}
-
-.pricing-card ul {
-    list-style: none;
-    margin-bottom: 50px;
-    text-align: center;
-    opacity: 0.8;
-    color: #ccc;
-    font-size: 0.95rem;
-}
-
-.pricing-card li {
-    margin-bottom: 10px;
-}
-
-.btn-reserver {
-    display: inline-block;
-    padding: 15px 40px;
-    background: transparent;
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.3);
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 2px;
-    transition: all 0.3s;
-}
-.btn-reserver:hover {
-    background: #fff;
-    color: #000;
-    border-color: #fff;
-}
 
 /* --- 8. PAGE CONTACT --- */
-.contact-section { 
-    max-width: 700px; 
-    margin: 180px auto 100px; 
-    padding: 0 20px; 
-}
+.contact-section { max-width: 700px; margin: 180px auto 100px; padding: 0 20px; }
 .form-group { margin-bottom: 40px; }
-
-label {
-    display: block; margin-bottom: 10px;
-    text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px; color: var(--text-muted);
-}
-
+label { display: block; margin-bottom: 10px; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px; color: var(--text-muted); }
 input, textarea {
-    width: 100%; padding: 15px 0;
-    background: transparent;
-    border: none; border-bottom: 1px solid #333;
-    color: var(--text-main); font-family: var(--font-body); font-size: 1.1rem;
-    transition: border-color 0.3s;
+    width: 100%; padding: 15px 0; background: transparent; border: none; border-bottom: 1px solid #333;
+    color: var(--text-main); font-family: var(--font-body); font-size: 1.1rem; transition: border-color 0.3s;
 }
 input:focus, textarea:focus { outline: none; border-bottom: 1px solid var(--accent); }
-
 button[type="submit"] {
-    background-color: var(--accent); color: #000;
-    border: none; padding: 18px 50px;
-    text-transform: uppercase; letter-spacing: 2px; font-weight: 600;
-    cursor: pointer; margin-top: 20px;
-    transition: opacity 0.3s;
+    background-color: var(--accent); color: #000; border: none; padding: 18px 50px;
+    text-transform: uppercase; letter-spacing: 2px; font-weight: 600; cursor: pointer; margin-top: 20px; transition: opacity 0.3s;
 }
 button[type="submit"]:hover { opacity: 0.9; }
 
-/* Social Links commun */
+
+/* --- 9. FOOTER & MISC --- */
 .social-links { text-align: center; margin-top: 80px; }
-.social-links p { text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; color: #666; margin-bottom: 20px; }
 .social-links a { margin: 0 15px; font-size: 1.1rem; }
+footer { text-align: center; padding: 60px 0; color: #444; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; border-top: 1px solid #111; margin-top: 50px; }
 
-/* --- 9. MENTIONS LEGALES --- */
-.legal-content h4 {
-    font-family: var(--font-title);
-    font-size: 1.5rem;
-    margin-top: 40px;
-    margin-bottom: 15px;
-    color: #fff;
-    border-bottom: 1px solid #333;
-    padding-bottom: 10px;
-}
-.legal-content p {
-    margin-bottom: 20px;
-    color: #ccc;
-    font-size: 0.95rem;
-    line-height: 1.8;
-}
-.legal-content strong { color: #fff; font-weight: 500; }
-.legal-content a {
-    color: #fff; text-decoration: underline;
-    text-decoration-thickness: 1px; text-underline-offset: 4px;
-}
-.legal-content a:hover { opacity: 0.8; text-decoration: none; }
+/* Styles page À Propos */
+.about-grid { display: flex; gap: 60px; align-items: center; flex-wrap: wrap; margin-top: 50px; }
+.about-image { flex: 1; min-width: 300px; }
+.about-image img { width: 100%; filter: grayscale(20%); box-shadow: 20px 20px 0 rgba(255,255,255,0.05); }
+.about-content { flex: 1; min-width: 300px; }
+.about-content h1 { font-size: 3rem; margin-bottom: 30px; line-height: 1.1; }
+.about-content p { margin-bottom: 20px; color: #999; font-size: 1rem; }
+.signature { font-family: var(--font-title); font-style: italic; font-size: 1.5rem; margin-top: 40px; color: #fff; }
+
+/* Mentions Légales */
+.legal-content h4 { font-family: var(--font-title); font-size: 1.5rem; margin-top: 40px; margin-bottom: 15px; color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; }
 
 
-/* --- 10. FOOTER --- */
-footer {
-    text-align: center;
-    padding: 60px 0;
-    color: #444;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    border-top: 1px solid #111;
-    margin-top: 50px;
-}
+/* --- 10. ANIMATIONS --- */
+@keyframes zoomEffect { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
+@keyframes fadeUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
 
 
-/* --- 11. ANIMATIONS --- */
-@keyframes zoomEffect {
-    0% { transform: scale(1); }
-    100% { transform: scale(1.15); }
-}
-
-@keyframes fadeUp {
-    0% { opacity: 0; transform: translateY(30px); }
-    100% { opacity: 1; transform: translateY(0); }
-}
-
-
-/* --- 12. RESPONSIVE --- */
+/* --- 11. RESPONSIVE --- */
 @media (max-width: 1024px) {
-    .masonry-column { max-width: 50%; }
-    /* Bordures de séparation services invisibles sur tablette */
-    .pricing-card:not(:last-child) { border-right: none; border-bottom: 1px solid #222; padding-bottom: 40px; margin-bottom: 40px;}
+    .masonry-wrapper { column-count: 2; } /* 2 colonnes sur tablette */
 }
 
 @media (max-width: 768px) {
-    /* Menu */
     nav { justify-content: center; padding: 15px; }
     .nav-links { display: none; }
     .logo { font-size: 1.2rem; }
-
-    /* Hero */
     .hero h1 { font-size: 3rem; }
-    .hero p { font-size: 1.2rem; }
-
-    /* Albums */
-    .albums-grid {
-        grid-template-columns: 1fr;
-        padding: 50px 20px;
-    }
-    .album-card { aspect-ratio: 4/5; }
     
-    .album-info { 
-        opacity: 1; 
-        background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); 
-        justify-content: flex-end; 
-        padding-bottom: 30px;
-    }
+    .albums-grid { grid-template-columns: 1fr; padding: 50px 20px; }
+    .album-info { opacity: 1; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); justify-content: flex-end; padding-bottom: 30px; }
     .album-info h3 { transform: translateY(0); font-size: 2rem; }
-    .album-card img { opacity: 1; }
-
-    /* Galerie */
-    .masonry-wrapper {
-        column-count: 2;
-        column-gap: 10px;
-        padding: 0 10px 50px;
-    }
-}
-/* --- AJOUT POUR LA PAGE À PROPOS --- */
-.about-grid {
-    display: flex;
-    gap: 60px;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-top: 50px;
-}
-
-.about-image {
-    flex: 1;
-    min-width: 300px;
-}
-
-.about-image img {
-    width: 100%;
-    border-radius: 2px;
-    filter: grayscale(20%); /* L'effet noir & blanc léger */
-    box-shadow: 20px 20px 0 rgba(255,255,255,0.05); /* L'effet cadre décalé */
-}
-
-.about-content {
-    flex: 1;
-    min-width: 300px;
-}
-
-.about-content h1 {
-    font-size: 3rem;
-    margin-bottom: 30px;
-    line-height: 1.1;
-}
-
-.about-content p {
-    margin-bottom: 20px;
-    color: #999;
-    font-size: 1rem;
-}
-
-.about-content .intro-text {
-    font-size: 1.1rem;
-    color: #ccc;
-}
-
-.about-content strong {
-    color: #fff;
-}
-
-.signature {
-    font-family: var(--font-title);
-    font-style: italic;
-    font-size: 1.5rem;
-    margin-top: 40px;
-    color: #fff;
-}
-
-@media (max-width: 768px) {
+    
+    .masonry-wrapper { column-count: 1; } /* 1 colonne sur mobile */
     .about-grid { flex-direction: column-reverse; gap: 40px; }
-    .about-content h1 { font-size: 2.5rem; }
 }
