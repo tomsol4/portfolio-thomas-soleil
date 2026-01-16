@@ -24,7 +24,7 @@
 }
 
 html {
-    scroll-behavior: smooth; /* Défilement fluide */
+    scroll-behavior: smooth;
 }
 
 body {
@@ -48,14 +48,13 @@ img {
     display: block;
 }
 
-/* Typographie "Luxe" */
+/* Typographie */
 h1, h2, h3, h4 {
     font-family: var(--font-title);
     font-weight: 400;
     color: var(--accent);
 }
 
-/* Petite touche éditoriale : les titres en italique par défaut */
 h1 { font-style: italic; }
 
 /* --- 3. NAVIGATION (Glassmorphism) --- */
@@ -68,13 +67,17 @@ nav {
     top: 0;
     width: 100%;
     z-index: 1000;
-    
-    /* Effet verre dépoli */
     background: rgba(10, 10, 10, 0.7); 
     backdrop-filter: blur(10px); 
-    -webkit-backdrop-filter: blur(10px); /* Pour Safari */
+    -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     transition: all 0.3s ease;
+}
+
+nav.scrolled {
+    background: #0a0a0a !important;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    padding: 15px 5%;
 }
 
 .logo {
@@ -99,7 +102,6 @@ nav {
     color: var(--accent);
 }
 
-/* Petit trait élégant au survol */
 .nav-links a::after {
     content: '';
     position: absolute;
@@ -112,8 +114,7 @@ nav {
 }
 .nav-links a:hover::after { width: 100%; }
 
-
-/* --- 4. HERO SECTION (Cinématique / Ken Burns Effect) --- */
+/* --- 4. HERO SECTION --- */
 .hero {
     height: 100vh;
     display: flex;
@@ -123,18 +124,15 @@ nav {
     overflow: hidden; 
 }
 
-/* L'image de fond animée */
 .hero::before {
     content: '';
     position: absolute;
     inset: 0;
     background: url('../images/hero-photo-accueil.jpg') center/cover no-repeat;
     z-index: 0;
-    /* Animation de zoom lent */
     animation: zoomEffect 25s infinite alternate ease-in-out;
 }
 
-/* Le filtre sombre pour la lisibilité */
 .hero::after { 
     content: ''; 
     position: absolute; 
@@ -152,27 +150,26 @@ nav {
 }
 
 .hero h1 { 
-    font-size: clamp(3rem, 7vw, 6rem); /* Taille adaptative */
+    font-size: clamp(3rem, 7vw, 6rem);
     color: #fff; 
     margin-bottom: 10px; 
     line-height: 1.1;
-    font-style: normal; /* Titre principal droit */
+    font-style: normal;
 }
 
 .hero p { 
     font-family: var(--font-title);
-    font-style: italic; /* Sous-titre en italique style magazine */
+    font-style: italic;
     font-size: clamp(1.2rem, 2vw, 1.8rem);
     color: rgba(255,255,255,0.9); 
     margin-top: 10px;
 }
 
-
-/* --- 5. GRILLE ALBUMS (Style Minimaliste / Poster) --- */
+/* --- 5. GRILLE ALBUMS (Index) --- */
 .albums-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 20px; /* Espacement plus fin entre les affiches */
+    gap: 20px;
     padding: 100px 5%;
     max-width: var(--container-width);
     margin: 0 auto;
@@ -181,7 +178,7 @@ nav {
 .album-card {
     position: relative;
     display: block;
-    aspect-ratio: 3/4; /* Format Portrait élégant */
+    aspect-ratio: 3/4;
     overflow: hidden;
     background-color: #000;
 }
@@ -194,10 +191,9 @@ nav {
 
 .album-card:hover img { 
     transform: scale(1.1); 
-    opacity: 0.4; /* On assombrit l'image au survol pour lire le texte */
+    opacity: 0.4;
 }
 
-/* Infos centrées qui apparaissent au survol */
 .album-info {
     position: absolute; 
     inset: 0; 
@@ -205,7 +201,7 @@ nav {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    opacity: 0; /* Caché par défaut */
+    opacity: 0;
     transition: opacity 0.5s ease;
     padding: 20px;
     text-align: center;
@@ -231,8 +227,7 @@ nav {
     color: var(--text-main);
 }
 
-
-/* --- 6. GALERIE PHOTO (Masonry / Colonnes) --- */
+/* --- 6. PAGE GALERIE (Masonry & Animations) --- */
 .gallery-header {
     padding: 180px 5% 60px;
     text-align: center;
@@ -243,42 +238,39 @@ nav {
     color: var(--text-muted); padding-bottom: 5px;
 }
 
-/* --- DANS style.css --- */
-
-/* Le conteneur principal devient flexible */
 .masonry-wrapper {
     display: flex;
     justify-content: center;
-    gap: 30px; /* Espace entre les colonnes */
+    gap: 30px;
     max-width: var(--container-width);
     margin: 0 auto;
     padding: 0 20px 100px;
 }
 
-/* On crée des colonnes qui ne bougeront jamais */
 .masonry-column {
     display: flex;
     flex-direction: column;
-    gap: 30px; /* Espace vertical entre les photos */
-    flex: 1;   /* Les colonnes prennent toute la largeur disponible */
-    max-width: 33%; /* Sécurité pour rester sur 3 colonnes */
+    gap: 30px;
+    flex: 1;
+    max-width: 33%;
 }
 
+/* Animation Photo Item */
 .photo-item {
     position: relative;
     background-color: #1a1a1a;
     cursor: zoom-in;
-    
-    /* Correctifs anti-clignotement (Hardware Acceleration) */
-    transform: translateZ(0); 
-    backface-visibility: hidden;
-    will-change: opacity;
-    
-    transition: opacity 0.6s ease;
+    margin-bottom: 30px; 
     opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    will-change: opacity, transform;
 }
 
-.photo-item.visible { opacity: 1; }
+.photo-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
 
 .photo-item img {
     width: 100%;
@@ -286,6 +278,20 @@ nav {
     display: block;
     border-radius: 2px;
 }
+
+/* Loader Indicator */
+#loader-indicator {
+    text-align: center;
+    padding: 40px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    color: #666;
+    text-transform: uppercase;
+}
+#loader-indicator.active { opacity: 1; }
 
 /* Lightbox */
 #lightbox {
@@ -302,18 +308,11 @@ nav {
     box-shadow: 0 0 50px rgba(0,0,0,0.5);
 }
 
-
-/* --- 7. SERVICES & PRIX (Aligné sur le nouveau style) --- */
+/* --- 7. PAGE PRESTATIONS (Style "Clean/Heston") --- */
 .content-wrapper {
     padding: 150px 5% 100px;
     max-width: var(--container-width);
     margin: 0 auto;
-}
-.section-title {
-    text-align: center;
-    font-size: 2.5rem;
-    font-style: italic;
-    margin-bottom: 80px;
 }
 
 .pricing-grid {
@@ -323,74 +322,79 @@ nav {
     gap: 40px;
 }
 
+/* Version épurée des cartes */
 .pricing-card {
-    background: #111;
-    padding: 50px 40px;
+    background: transparent;
+    padding: 0 20px;
     flex: 1;
     min-width: 300px;
     max-width: 350px;
     text-align: center;
-    border: 1px solid #222;
-    transition: transform 0.3s ease, border-color 0.3s ease;
+    border: none;
 }
 
-.pricing-card:hover {
-    transform: translateY(-10px);
-    border-color: #444;
-}
-
-.pricing-card.featured {
-    border-color: var(--accent);
-    background: #161616;
+@media (min-width: 1024px) {
+    .pricing-card:not(:last-child) {
+        border-right: 1px solid rgba(255,255,255,0.1);
+    }
 }
 
 .pricing-card h4 {
-    font-size: 1.8rem;
-    margin-bottom: 20px;
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+    color: #fff;
     font-style: italic;
 }
 
+.pricing-card.featured h4 {
+    font-size: 2.8rem; /* Légèrement plus gros pour le mariage */
+}
+
 .price {
-    font-size: 1.2rem;
+    font-family: var(--font-title);
+    font-style: italic;
+    font-size: 1.3rem;
     color: var(--text-muted);
-    margin-bottom: 30px;
-    font-family: var(--font-body);
+    margin-bottom: 40px;
+    display: block;
 }
 
 .pricing-card ul {
     list-style: none;
-    margin-bottom: 40px;
-    text-align: left;
+    margin-bottom: 50px;
+    text-align: center;
+    opacity: 0.8;
     color: #ccc;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
 }
+
 .pricing-card li {
-    margin-bottom: 15px;
-    padding-left: 20px;
-    position: relative;
-}
-.pricing-card li::before {
-    content: '•';
-    position: absolute; left: 0; color: var(--text-muted);
+    margin-bottom: 10px;
 }
 
 .btn-reserver {
     display: inline-block;
-    padding: 12px 30px;
-    border: 1px solid var(--accent);
+    padding: 15px 40px;
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.3);
     text-transform: uppercase;
     font-size: 0.75rem;
     letter-spacing: 2px;
     transition: all 0.3s;
 }
 .btn-reserver:hover {
-    background: var(--accent);
+    background: #fff;
     color: #000;
+    border-color: #fff;
 }
 
-
-/* --- 8. FORMULAIRES & CONTACT --- */
-.contact-section { max-width: 700px; margin: 180px auto 100px; padding: 0 20px; }
+/* --- 8. PAGE CONTACT --- */
+.contact-section { 
+    max-width: 700px; 
+    margin: 180px auto 100px; 
+    padding: 0 20px; 
+}
 .form-group { margin-bottom: 40px; }
 
 label {
@@ -421,8 +425,31 @@ button[type="submit"]:hover { opacity: 0.9; }
 .social-links p { text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; color: #666; margin-bottom: 20px; }
 .social-links a { margin: 0 15px; font-size: 1.1rem; }
 
+/* --- 9. MENTIONS LEGALES --- */
+.legal-content h4 {
+    font-family: var(--font-title);
+    font-size: 1.5rem;
+    margin-top: 40px;
+    margin-bottom: 15px;
+    color: #fff;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+}
+.legal-content p {
+    margin-bottom: 20px;
+    color: #ccc;
+    font-size: 0.95rem;
+    line-height: 1.8;
+}
+.legal-content strong { color: #fff; font-weight: 500; }
+.legal-content a {
+    color: #fff; text-decoration: underline;
+    text-decoration-thickness: 1px; text-underline-offset: 4px;
+}
+.legal-content a:hover { opacity: 0.8; text-decoration: none; }
 
-/* --- 9. FOOTER --- */
+
+/* --- 10. FOOTER --- */
 footer {
     text-align: center;
     padding: 60px 0;
@@ -435,8 +462,7 @@ footer {
 }
 
 
-/* --- 10. ANIMATIONS (Keyframes) --- */
-
+/* --- 11. ANIMATIONS --- */
 @keyframes zoomEffect {
     0% { transform: scale(1); }
     100% { transform: scale(1.15); }
@@ -448,19 +474,15 @@ footer {
 }
 
 
-/* =========================================
-   RESPONSIVE (MOBILE & TABLETTE)
-   ========================================= */
-
-/* RESPONSIVE : On passe à 2 colonnes sur tablette/mobile */
+/* --- 12. RESPONSIVE --- */
 @media (max-width: 1024px) {
     .masonry-column { max-width: 50%; }
-    /* On cachera la 3ème colonne via le JS ou le CSS si nécessaire, 
-       mais le Flexbox gérera la réduction de largeur tout seul. */
+    /* Bordures de séparation services invisibles sur tablette */
+    .pricing-card:not(:last-child) { border-right: none; border-bottom: 1px solid #222; padding-bottom: 40px; margin-bottom: 40px;}
 }
 
 @media (max-width: 768px) {
-    /* Menu Mobile Simplifié */
+    /* Menu */
     nav { justify-content: center; padding: 15px; }
     .nav-links { display: none; }
     .logo { font-size: 1.2rem; }
@@ -474,10 +496,14 @@ footer {
         grid-template-columns: 1fr;
         padding: 50px 20px;
     }
-    .album-card { aspect-ratio: 4/5; } /* Un peu moins haut sur mobile */
+    .album-card { aspect-ratio: 4/5; }
     
-    /* Sur mobile, on affiche le titre de l'album tout le temps (pas de hover) */
-    .album-info { opacity: 1; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); justify-content: flex-end; padding-bottom: 30px;}
+    .album-info { 
+        opacity: 1; 
+        background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); 
+        justify-content: flex-end; 
+        padding-bottom: 30px;
+    }
     .album-info h3 { transform: translateY(0); font-size: 2rem; }
     .album-card img { opacity: 1; }
 
@@ -488,9 +514,62 @@ footer {
         padding: 0 10px 50px;
     }
 }
-/* --- MENU QUI CHANGE AU SCROLL (Ajouté à la fin) --- */
-nav.scrolled {
-    background: #0a0a0a !important; /* Devient noir opaque */
-    box-shadow: 0 5px 20px rgba(0,0,0,0.5); /* Ajoute une ombre portée */
-    padding: 15px 5%; /* Le menu devient un peu plus fin (plus élégant) */
+/* --- AJOUT POUR LA PAGE À PROPOS --- */
+.about-grid {
+    display: flex;
+    gap: 60px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 50px;
+}
+
+.about-image {
+    flex: 1;
+    min-width: 300px;
+}
+
+.about-image img {
+    width: 100%;
+    border-radius: 2px;
+    filter: grayscale(20%); /* L'effet noir & blanc léger */
+    box-shadow: 20px 20px 0 rgba(255,255,255,0.05); /* L'effet cadre décalé */
+}
+
+.about-content {
+    flex: 1;
+    min-width: 300px;
+}
+
+.about-content h1 {
+    font-size: 3rem;
+    margin-bottom: 30px;
+    line-height: 1.1;
+}
+
+.about-content p {
+    margin-bottom: 20px;
+    color: #999;
+    font-size: 1rem;
+}
+
+.about-content .intro-text {
+    font-size: 1.1rem;
+    color: #ccc;
+}
+
+.about-content strong {
+    color: #fff;
+}
+
+.signature {
+    font-family: var(--font-title);
+    font-style: italic;
+    font-size: 1.5rem;
+    margin-top: 40px;
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    .about-grid { flex-direction: column-reverse; gap: 40px; }
+    .about-content h1 { font-size: 2.5rem; }
 }

@@ -7,47 +7,15 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    
-    <style>
-        /* --- STYLE SPÉCIFIQUE POUR L'ANIMATION --- */
-        
-        /* État initial de la photo (cachée et légèrement plus bas) */
-        .photo-item {
-            margin-bottom: 30px; 
-            opacity: 0;
-            transform: translateY(30px); /* Décalage vers le bas */
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-            will-change: opacity, transform;
-        }
-
-        /* État final (visible et à sa place) */
-        .photo-item.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        /* Indicateur de chargement discret */
-        #loader-indicator {
-            text-align: center;
-            padding: 40px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            color: #666;
-            text-transform: uppercase;
-        }
-        #loader-indicator.active { opacity: 1; }
-    </style>
 </head>
 <body>
 
     <nav>
         <a href="index.html" class="logo">Thomas Soleil</a>
         <div class="nav-links">
-            <a href="index.html">Albums</a>
+            <a href="index.html" class="active">Albums</a>
             <a href="a-propos.html">À Propos</a>
+            <a href="services.html">Prestations</a>
             <a href="contact.html">Contact</a>
         </div>
     </nav>
@@ -67,146 +35,9 @@
     <div id="lightbox" onclick="closeLightbox()">
         <img id="lightbox-img" src="">
     </div>
-<script src="js/script.js"></script>
+
 <script src="js/config.js"></script>
-<script>
-    // --- VARIABLES ---
-    const BATCH_SIZE = 10;   // Nombre d'images chargées par vague
-    let currentIndex = 1;
-    let columnWrappers = [];
-    let album = null;
-    let isLoading = false;   // Sécurité pour éviter le double chargement
-
-    // 1. Initialisation
-    const params = new URLSearchParams(window.location.search);
-    const albumId = params.get('id');
-    
-    // On cherche l'album dans config.js
-    if (typeof siteConfig !== 'undefined') {
-        album = siteConfig.albums.find(a => a.id === albumId);
-    }
-
-    if (album) {
-        // Mise à jour des textes
-        document.title = `${album.title} | Thomas Soleil`;
-        document.getElementById('album-title').innerText = album.title;
-        document.getElementById('album-meta').innerText = album.date;
-        
-        initGalleryLayout();
-        loadBatch(); // Premier chargement
-        setupInfiniteScroll();
-    } else {
-        document.getElementById('album-title').innerText = "Album introuvable";
-        document.getElementById('loader-indicator').style.display = 'none';
-    }
-
-    // 2. Création des colonnes (Layout)
-    function initGalleryLayout() {
-        const container = document.getElementById('gallery-container');
-        container.innerHTML = "";
-        
-        // Détection Mobile ou PC
-        const isMobile = window.innerWidth <= 1024;
-        const nbColumns = isMobile ? 2 : 3;
-
-        for (let c = 0; c < nbColumns; c++) {
-            let col = document.createElement('div');
-            col.className = 'masonry-column';
-            container.appendChild(col);
-            columnWrappers.push(col);
-        }
-    }
-
-    // 3. Chargement progressif des images
-    function loadBatch() {
-        if (isLoading || currentIndex > album.count) return;
-        
-        isLoading = true;
-        document.getElementById('loader-indicator').classList.add('active');
-
-        const limit = Math.min(currentIndex + BATCH_SIZE, album.count + 1);
-        let imagesLoadedCount = 0;
-        const totalImagesInBatch = limit - currentIndex;
-
-        if (totalImagesInBatch <= 0) {
-            isLoading = false;
-            document.getElementById('loader-indicator').classList.remove('active');
-            return;
-        }
-
-        for (let i = currentIndex; i < limit; i++) {
-            createPhotoItem(i, (i - currentIndex) * 100); // Petit délai en cascade
-        }
-
-        currentIndex = limit;
-
-        // Petit délai pour permettre au DOM de respirer avant la prochaine détection
-        setTimeout(() => {
-            isLoading = false;
-            document.getElementById('loader-indicator').classList.remove('active');
-        }, 500);
-    }
-
-    function createPhotoItem(index, delay) {
-        const extension = album.ext || ".webp";
-        const div = document.createElement('div');
-        div.className = 'photo-item';
-        
-        const img = document.createElement('img');
-        const smallSrc = `${album.folder}/${album.prefix}${index}-small${extension}`;
-        const bigSrc = `${album.folder}/${album.prefix}${index}${extension}`;
-
-        // On tente de charger la petite, si erreur on charge la grande
-        img.src = smallSrc;
-        img.loading = "lazy";
-        img.alt = `${album.title} ${index}`;
-        
-        img.onerror = function() { 
-            if (this.src !== bigSrc) this.src = bigSrc; 
-        };
-
-        // L'ANIMATION MAGIQUE : Quand l'image est chargée
-        img.onload = () => {
-            setTimeout(() => {
-                div.classList.add('visible');
-            }, delay); // Le délai crée l'effet "cascade"
-        };
-
-        // Lightbox au clic
-        div.onclick = () => openLightbox(bigSrc);
-
-        div.appendChild(img);
-
-        // Distribution "Round Robin" (Colonne 1, puis 2, puis 3...)
-        const colIndex = (index - 1) % columnWrappers.length;
-        columnWrappers[colIndex].appendChild(div);
-    }
-
-    // 4. Scroll Infini (Intersection Observer)
-    function setupInfiniteScroll() {
-        const trigger = document.getElementById('loader-indicator');
-        
-        const observer = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting) {
-                loadBatch();
-            }
-        }, { rootMargin: "100px" }); // Déclenche 100px avant le bas
-
-        observer.observe(trigger);
-    }
-
-    // 5. Gestion de la Lightbox
-    function openLightbox(src) {
-        const lb = document.getElementById('lightbox');
-        const lbImg = document.getElementById('lightbox-img');
-        lbImg.src = src;
-        lb.style.display = 'flex';
-    }
-
-    function closeLightbox() {
-        document.getElementById('lightbox').style.display = 'none';
-    }
-
-</script>
+<script src="js/script.js"></script>
+<script src="js/gallery.js"></script>
 </body>
 </html>
