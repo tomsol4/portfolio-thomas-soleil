@@ -2,11 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
     const albumId = params.get('id');
     
-    if (typeof siteConfig === 'undefined' || !albumId) {
-        const title = document.getElementById('album-title');
-        if(title) title.innerText = "Album introuvable";
-        return;
-    }
+    if (typeof siteConfig === 'undefined' || !albumId) return;
 
     const album = siteConfig.albums.find(a => a.id === albumId);
 
@@ -14,21 +10,19 @@ document.addEventListener("DOMContentLoaded", () => {
         document.title = `${album.title} | Thomas Soleil`;
         document.getElementById('album-title').innerText = album.title;
         document.getElementById('album-meta').innerText = album.date;
-        
-        // Lancement de la génération intelligente
-        generateSmartGallery(album);
+        generateStableGallery(album);
     } else {
         document.getElementById('album-title').innerText = "Album introuvable";
     }
 });
 
-async function generateSmartGallery(album) {
+function generateStableGallery(album) {
     const container = document.getElementById('gallery-container');
     const extension = album.ext || ".webp";
     
     container.innerHTML = ""; 
 
-    // 1. CRÉATION DES COLONNES
+    // 1. CRÉATION DES COLONNES (Structure fixe)
     const isMobile = window.innerWidth < 768;
     const colCount = isMobile ? 2 : 3;
     const columns = [];
@@ -40,48 +34,32 @@ async function generateSmartGallery(album) {
         columns.push(colDiv);
     }
 
-    // 2. CHARGEMENT ET DISTRIBUTION INTELLIGENTE
-    // On boucle sur toutes les images
+    // 2. DISTRIBUTION IMMÉDIATE (1, 2, 3, 1, 2, 3...)
+    // On n'attend pas le chargement de l'image pour lui assigner sa place.
+    // Cela empêche tout mouvement ou saut visuel.
     for (let i = 1; i <= album.count; i++) {
         const src = `${album.folder}/${album.prefix}${i}${extension}`;
         
-        // On crée l'objet image en mémoire pour tester sa taille
-        const imgObject = new Image();
-        imgObject.src = src;
-
-        // ASTUCE PRO : On attend que l'image ait chargé ses infos (taille)
-        // avant de l'afficher. Cela permet de savoir si c'est un portrait ou paysage.
-        await new Promise(resolve => {
-            imgObject.onload = resolve;
-            imgObject.onerror = resolve; // On continue même si erreur
-        });
-
-        // 3. ALGORITHME "COLONNE LA PLUS COURTE"
-        // On cherche quelle colonne est la moins haute actuellement
-        let shortestColIndex = 0;
-        let minHeight = columns[0].offsetHeight;
-
-        for (let j = 1; j < columns.length; j++) {
-            if (columns[j].offsetHeight < minHeight) {
-                minHeight = columns[j].offsetHeight;
-                shortestColIndex = j;
-            }
-        }
-
-        // 4. CRÉATION DE LA CARTE FINALE
+        // Calcul mathématique simple pour choisir la colonne : 0, 1, 2, 0, 1, 2...
+        // Image 1 -> Col 1 / Image 2 -> Col 2 / Image 3 -> Col 3 / Image 4 -> Col 1
+        const columnIndex = (i - 1) % colCount;
+        
         const div = document.createElement('div');
-        div.className = 'photo-item loaded'; // On met direct 'loaded' car on a déjà attendu
+        div.className = 'photo-item';
         
-        // On reprend l'image qu'on a déjà chargée (plus rapide)
-        const finalImg = imgObject; 
-        finalImg.alt = `Photo ${i} - ${album.title}`;
-        
-        // Click Lightbox
-        div.onclick = () => openLightbox(src);
-        div.appendChild(finalImg);
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = `Photo ${i}`;
+        img.loading = "lazy";
 
-        // On l'ajoute dans la colonne LA PLUS COURTE
-        columns[shortestColIndex].appendChild(div);
+        // Juste l'apparition en fondu quand c'est prêt
+        img.onload = () => { div.classList.add('loaded'); };
+        
+        div.onclick = () => openLightbox(src);
+        div.appendChild(img);
+
+        // On ajoute directement dans la bonne colonne
+        columns[columnIndex].appendChild(div);
     }
 }
 
@@ -89,10 +67,7 @@ async function generateSmartGallery(album) {
 window.openLightbox = function(src) {
     const lb = document.getElementById('lightbox');
     const lbImg = document.getElementById('lightbox-img');
-    if(lb && lbImg) {
-        lbImg.src = src;
-        lb.style.display = 'flex';
-    }
+    if(lb && lbImg) { lbImg.src = src; lb.style.display = 'flex'; }
 }
 
 window.closeLightbox = function() {

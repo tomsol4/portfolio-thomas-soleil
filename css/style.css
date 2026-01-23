@@ -169,23 +169,25 @@ nav.scrolled {
 .photo-item {
     position: relative;
     width: 100%;
-    margin-bottom: var(--gallery-gap); /* IMPORTANT : Marge sous chaque photo */
+    margin-bottom: var(--gallery-gap);
     
-    /* Animation uniquement sur l'opacité (pas de mouvement) */
+    /* STABILITÉ MAXIMALE : */
+    /* On enlève transform et animation de mouvement */
     opacity: 0;
-    animation: fadeIn 0.5s ease forwards;
-}
-
-/* On définit une animation simple */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    transition: opacity 0.4s ease-out; /* Apparition rapide et simple */
 }
 
 .photo-item img {
     width: 100%;
     display: block;
     height: auto;
+    /* Assure que l'image prend sa place proprement */
+    background-color: #1a1a1a; /* Petit fond gris sombre pendant le chargement */
+}
+
+.photo-item.loaded {
+    opacity: 1;
+    /* Pas de transform ici non plus */
 }
 
 /* --- 7. FOOTER & PAGES --- */
