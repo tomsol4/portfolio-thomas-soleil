@@ -50,7 +50,7 @@ const siteConfig = {
         {
             id: "montagne",
             title: "Expédition Montagne",
-            cover: "images/Montagne/Montagne-2.webp",
+            cover: "images/Montagne/Montagne-5.webp",
             folder: "images/Montagne",
             prefix: "Montagne-",
             count: 112,
