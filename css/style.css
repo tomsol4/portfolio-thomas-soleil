@@ -167,16 +167,30 @@ nav.scrolled {
 }
 
 .photo-item {
-    break-inside: avoid;
+    /* STABILISATION */
+    break-inside: avoid;       /* Empêche de couper l'image */
+    page-break-inside: avoid;  /* Support vieux navigateurs */
+    display: inline-block;     /* ASTUCE : Force le bloc à rester compact et stable */
+    width: 100%;               /* Prend toute la largeur de la colonne */
     margin-bottom: var(--gallery-gap);
+    
+    /* ANIMATION SIMPLE (Juste l'apparition, pas de mouvement) */
     opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition: opacity 0.5s ease-in-out;
+    
+    /* On enlève 'transform' et 'translateY' qui causaient l'effet de glissement */
 }
 
-.photo-item img { width: 100%; display: block; }
+.photo-item img {
+    width: 100%;
+    display: block;
+    border-radius: 2px; /* Optionnel : léger arrondi ou 0 pour carré */
+}
 
-.photo-item.loaded { opacity: 1; transform: translateY(0); }
+.photo-item.loaded {
+    opacity: 1;
+    /* Plus de transform ici non plus */
+}
 
 /* --- 7. FOOTER & PAGES --- */
 footer {
