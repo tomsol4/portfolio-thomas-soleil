@@ -1,22 +1,29 @@
 /* ============================================================
-   STYLE COMPLET : THOMAS SOLEIL - PREMIUM & CINEMATIC
-   Inspiration : Weddings by Heston (Minimaliste & Masonry)
+   STYLE : THOMAS SOLEIL - "WBH" GREY EDITION
    ============================================================ */
 
-/* --- 1. CONFIGURATION (Variables) --- */
+/* --- 1. CONFIGURATION & COULEURS --- */
 :root {
-    --bg-color: #0a0a0a;       /* Noir profond */
-    --text-main: #e0e0e0;      /* Blanc cassé */
-    --text-muted: #888888;     /* Gris discret */
-    --accent: #ffffff;         /* Blanc pur */
+    /* LE GRIS WBH : Un gris anthracite foncé et mat */
+    --bg-color: #1c1c1c;       
+    --card-bg: #1c1c1c;        
+    
+    --text-main: #ffffff;      
+    --text-muted: #b3b3b3;     
     
     --font-title: 'Playfair Display', serif;
     --font-body: 'Montserrat', sans-serif;
     
+    --nav-height: 90px;
+    
+    /* Largeur contenue pour avoir de l'espace sur les côtés */
     --container-width: 1400px; 
+    
+    /* Espacement entre les images */
+    --gallery-gap: 15px;
 }
 
-/* --- 2. BASE & RESET --- */
+/* --- 2. BASE --- */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 html { scroll-behavior: smooth; }
@@ -30,261 +37,196 @@ body {
     overflow-x: hidden;
 }
 
-a { text-decoration: none; color: inherit; transition: opacity 0.3s ease; }
+a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
 a:hover { opacity: 0.7; }
-
-img { max-width: 100%; display: block; }
-
-h1, h2, h3, h4 {
-    font-family: var(--font-title);
-    font-weight: 400;
-    color: var(--accent);
-}
-h1 { font-style: italic; }
+img { display: block; max-width: 100%; height: auto; }
 
 /* --- 3. NAVIGATION --- */
 nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 5%;
+    /* Espace sur les côtés pour aligner avec la galerie */
+    padding: 0 50px; 
+    height: var(--nav-height);
     position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-    background: rgba(10, 10, 10, 0.7); 
-    backdrop-filter: blur(10px); 
-    -webkit-backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    transition: all 0.3s ease;
+    top: 0; width: 100%; z-index: 1000;
+    background: linear-gradient(to bottom, rgba(28,28,28,0.95), transparent);
+    transition: background 0.4s ease, padding 0.4s ease;
 }
 
-nav.scrolled {
-    background: #0a0a0a !important;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-    padding: 15px 5%;
+nav.scrolled { 
+    background: var(--bg-color); 
+    padding: 0 40px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.2);
 }
 
 .logo {
-    font-size: 1.4rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
     font-family: var(--font-title);
-    color: var(--accent);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 .nav-links a {
-    margin-left: 30px;
+    margin-left: 40px;
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: var(--text-muted);
-    position: relative;
+    color: #ccc;
 }
+.nav-links a.active { color: #fff; border-bottom: 1px solid #fff; padding-bottom: 5px;}
 
-.nav-links a.active, .nav-links a:hover { color: var(--accent); }
-
-.nav-links a::after {
-    content: '';
-    position: absolute; width: 0; height: 1px;
-    bottom: -5px; left: 0;
-    background-color: var(--accent);
-    transition: width 0.3s ease;
-}
-.nav-links a:hover::after { width: 100%; }
-
-
-/* --- 4. HERO SECTION --- */
+/* --- 4. HERO (ACCUEIL) --- */
 .hero {
-    height: 100vh;
+    height: 80vh; /* Un peu moins haut pour inviter à scroller */
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    position: relative;
-    overflow: hidden; 
-}
-
-.hero::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: url('../images/hero-photo-accueil.jpg') center/cover no-repeat;
-    z-index: 0;
-    animation: zoomEffect 25s infinite alternate ease-in-out;
-}
-
-.hero::after { 
-    content: ''; position: absolute; inset: 0; 
-    background: rgba(0,0,0,0.4); z-index: 1; 
-}
-
-.hero-content { 
-    position: relative; z-index: 2; text-align: center; padding: 0 20px;
-    animation: fadeUp 1.5s ease-out;
+    text-align: center;
+    padding: 0 20px;
 }
 
 .hero h1 { 
-    font-size: clamp(3rem, 7vw, 6rem);
-    color: #fff; margin-bottom: 10px; line-height: 1.1; font-style: normal;
+    font-family: var(--font-title);
+    font-size: clamp(3rem, 5vw, 6rem); 
+    font-weight: 400;
+    letter-spacing: -1px;
+    margin-bottom: 20px; 
 }
-
 .hero p { 
-    font-family: var(--font-title); font-style: italic;
-    font-size: clamp(1.2rem, 2vw, 1.8rem);
-    color: rgba(255,255,255,0.9); margin-top: 10px;
+    font-size: 0.8rem;
+    letter-spacing: 4px; 
+    text-transform: uppercase; 
+    color: var(--text-muted); 
 }
 
-
-/* --- 5. GRILLE ALBUMS (Accueil) --- */
+/* --- 5. GRILLE ALBUMS (ACCUEIL) --- */
 .albums-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 20px;
-    padding: 100px 5%;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: var(--gallery-gap);
+    /* ICI : On gère l'espace sur les côtés */
     max-width: var(--container-width);
-    margin: 0 auto;
+    margin: 0 auto; /* Centre le bloc */
+    padding: 50px 50px; /* Marge interne gauche/droite */
 }
 
 .album-card {
-    position: relative; display: block;
-    aspect-ratio: 3/4; overflow: hidden; background-color: #000;
+    position: relative;
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    background: var(--card-bg);
+    cursor: pointer;
 }
 
 .album-card img {
     width: 100%; height: 100%; object-fit: cover;
-    transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.5s ease;
-    opacity: 0.85;
+    transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s;
+    opacity: 0.9;
 }
 
-.album-card:hover img { transform: scale(1.1); opacity: 0.4; }
+.album-card:hover img { 
+    transform: scale(1.03); 
+    opacity: 0.7; 
+}
 
 .album-info {
-    position: absolute; inset: 0; 
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
-    opacity: 0; transition: opacity 0.5s ease; padding: 20px; text-align: center;
+    position: absolute; bottom: 40px; left: 0; right: 0;
+    text-align: center; pointer-events: none; padding: 0 10px;
 }
-
-.album-card:hover .album-info { opacity: 1; }
 
 .album-info h3 { 
-    font-size: 2.5rem; font-style: italic;
-    transform: translateY(20px); transition: transform 0.5s ease; margin-bottom: 10px;
-}
-.album-card:hover .album-info h3 { transform: translateY(0); }
-.album-info span { 
-    font-family: var(--font-body); font-size: 0.75rem; 
-    text-transform: uppercase; letter-spacing: 3px; color: var(--text-main);
+    font-size: 1.8rem; 
+    font-family: var(--font-title);
+    font-weight: 400;
+    margin-bottom: 5px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
-
-/* --- 6. GALERIE PHOTO (Distribution Flex) --- */
-.gallery-header {
-    padding: 180px 5% 60px;
-    text-align: center;
-}
-.gallery-header h1 { font-size: 3rem; margin-bottom: 10px; }
-.back-link {
-    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px;
-    color: var(--text-muted); padding-bottom: 5px;
+.album-info span {
+    font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase;
 }
 
-/* Conteneur principal qui tient les colonnes */
+/* --- 6. GALERIE MASONRY (PAGE GALERIE) --- */
+.gallery-header { 
+    padding: 180px 5% 80px; 
+    text-align: center; 
+}
+
 .masonry-wrapper {
-    display: flex;
-    justify-content: center;
-    gap: 30px; /* Espace entre les colonnes */
-    max-width: var(--container-width);
-    margin: 0 auto;
-    padding: 0 20px 100px;
+    /* 3 Colonnes sur PC */
+    column-count: 3;  
+    column-gap: var(--gallery-gap);
+    
+    /* GESTION DE L'ESPACE SUR LES CÔTÉS */
+    max-width: var(--container-width); /* Largeur max bloquée */
+    margin: 0 auto; /* Centré au milieu */
+    padding: 0 90px 90px; /* 50px d'espace à gauche et à droite */
 }
 
-/* Les colonnes individuelles */
-.gallery-col {
-    display: flex;
-    flex-direction: column;
-    gap: 30px; /* Espace vertical entre les photos */
-    flex: 1;   /* Largeur égale pour chaque colonne */
-    max-width: 100%;
-}
-
-/* L'élément photo */
 .photo-item {
-    position: relative;
-    width: 100%;
-    cursor: zoom-in;
+    break-inside: avoid;
+    margin-bottom: var(--gallery-gap);
     opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
-.photo-item.visible { opacity: 1; transform: translateY(0); }
+.photo-item img { width: 100%; display: block; }
 
-.photo-item img {
-    width: 100%;
-    height: auto;
-    display: block;
-    background-color: #111; /* Petit fond gris pendant le chargement */
+.photo-item.loaded { opacity: 1; transform: translateY(0); }
+
+/* --- 7. FOOTER & PAGES --- */
+footer {
+    text-align: center; padding: 60px 20px;
+    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px;
+    color: #555; border-top: 1px solid #2a2a2a;
+}
+.content-wrapper { max-width: 800px; margin: 150px auto; padding: 0 20px; }
+button {
+    background: #fff; color: #000; padding: 15px 40px; border: none;
+    text-transform: uppercase; font-weight: 600; cursor: pointer;
+    letter-spacing: 1px;
 }
 
-/* --- RESPONSIVE POUR LA GALERIE --- */
-/* Le JS gère le nombre de colonnes, mais le CSS assure que ça s'affiche bien */
-@media (max-width: 768px) {
-    .masonry-wrapper {
-        gap: 15px;
-    }
-    .gallery-col {
-        gap: 15px;
-    }
-}
-
-/* --- 7. UTILS (Loader, Lightbox...) --- */
-#loader-indicator {
-    text-align: center; padding: 40px; opacity: 0; transition: opacity 0.3s;
-    font-family: var(--font-body); font-size: 0.8rem; letter-spacing: 2px; color: #666; text-transform: uppercase;
-}
-#loader-indicator.active { opacity: 1; }
-
+/* --- 8. LIGHTBOX --- */
 #lightbox {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 9999;
-    display: none; justify-content: center; align-items: center; cursor: zoom-out;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(28,28,28,0.98); /* Même gris en très opaque */
+    z-index: 2000; display: none; justify-content: center; align-items: center;
 }
-#lightbox img { max-height: 95vh; max-width: 95vw; box-shadow: none; }
+#lightbox img { max-height: 95vh; max-width: 95vw; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
 
+/* --- 9. RESPONSIVE (SMARTPHONE) --- */
 
-/* --- 8. PAGE CONTACT --- */
-.contact-section { max-width: 700px; margin: 180px auto 100px; padding: 0 20px; }
-.form-group { margin-bottom: 40px; }
-label { display: block; margin-bottom: 10px; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px; color: var(--text-muted); }
-input, textarea {
-    width: 100%; padding: 15px 0; background: transparent; border: none; border-bottom: 1px solid #333;
-    color: var(--text-main); font-family: var(--font-body); font-size: 1.1rem; transition: border-color 0.3s;
+@media (max-width: 1024px) {
+    .albums-grid { grid-template-columns: repeat(2, 1fr); }
+    .masonry-wrapper { column-count: 2; }
 }
-input:focus, textarea:focus { outline: none; border-bottom: 1px solid var(--accent); }
-button[type="submit"] {
-    background-color: var(--accent); color: #000; border: none; padding: 18px 50px;
-    text-transform: uppercase; letter-spacing: 2px; font-weight: 600; cursor: pointer; margin-top: 20px; transition: opacity 0.3s;
+
+@media (max-width: 768px) {
+    /* Sur mobile, on garde de l'espace mais moins grand (20px au lieu de 50px) */
+    
+    /* 1. Albums Accueil : 1 colonne */
+    .albums-grid { 
+        grid-template-columns: 1fr; 
+        gap: 15px;
+        padding: 20px 20px; /* Espace sur les côtés */
+    }
+    
+    /* 2. Galerie Photos : 2 COLONNES */
+    .masonry-wrapper { 
+        column-count: 2; 
+        column-gap: 10px; /* Écart réduit entre les photos */
+        padding: 0 15px 50px; /* Espace sur les côtés */
+    }
+    
+    .photo-item { margin-bottom: 10px; }
+
+    nav { padding: 0 20px; height: 70px; }
+    .nav-links { display: none; } 
+    
+    .hero h1 { font-size: 3rem; }
 }
-button[type="submit"]:hover { opacity: 0.9; }
-
-
-/* --- 9. FOOTER & MISC --- */
-.social-links { text-align: center; margin-top: 80px; }
-.social-links a { margin: 0 15px; font-size: 1.1rem; }
-footer { text-align: center; padding: 60px 0; color: #444; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; border-top: 1px solid #111; margin-top: 50px; }
-
-/* Styles page À Propos */
-.about-grid { display: flex; gap: 60px; align-items: center; flex-wrap: wrap; margin-top: 50px; }
-.about-image { flex: 1; min-width: 300px; }
-.about-image img { width: 100%; filter: grayscale(20%); box-shadow: 20px 20px 0 rgba(255,255,255,0.05); }
-.about-content { flex: 1; min-width: 300px; }
-.about-content h1 { font-size: 3rem; margin-bottom: 30px; line-height: 1.1; }
-.about-content p { margin-bottom: 20px; color: #999; font-size: 1rem; }
-.signature { font-family: var(--font-title); font-style: italic; font-size: 1.5rem; margin-top: 40px; color: #fff; }
-
-/* Mentions Légales */
-.legal-content h4 { font-family: var(--font-title); font-size: 1.5rem; margin-top: 40px; margin-bottom: 15px; color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; }
-
-
-/* --- 10. ANIMATIONS --- */
-@keyframes zoomEffect { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
-@keyframes fadeUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
-
