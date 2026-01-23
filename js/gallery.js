@@ -1,71 +1,91 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Récupération de l'album via l'URL
     const params = new URLSearchParams(window.location.search);
     const albumId = params.get('id');
     
-    // Vérification de sécurité
     if (typeof siteConfig === 'undefined' || !albumId) {
-        document.getElementById('album-title').innerText = "Album introuvable";
+        const title = document.getElementById('album-title');
+        if(title) title.innerText = "Album introuvable";
         return;
     }
 
     const album = siteConfig.albums.find(a => a.id === albumId);
 
     if (album) {
-        // 2. Mise à jour des textes
         document.title = `${album.title} | Thomas Soleil`;
         document.getElementById('album-title').innerText = album.title;
         document.getElementById('album-meta').innerText = album.date;
         
-        // 3. Génération des images
-        generateGallery(album);
+        // Lancement de la génération intelligente
+        generateSmartGallery(album);
     } else {
         document.getElementById('album-title').innerText = "Album introuvable";
     }
 });
 
-function generateGallery(album) {
+async function generateSmartGallery(album) {
     const container = document.getElementById('gallery-container');
     const extension = album.ext || ".webp";
+    
+    container.innerHTML = ""; 
 
-    // On cache le loader texte s'il existe encore dans le HTML
-    const loader = document.getElementById('loader-indicator');
-    if(loader) loader.style.display = 'none';
+    // 1. CRÉATION DES COLONNES
+    const isMobile = window.innerWidth < 768;
+    const colCount = isMobile ? 2 : 3;
+    const columns = [];
 
+    for (let c = 0; c < colCount; c++) {
+        const colDiv = document.createElement('div');
+        colDiv.className = 'masonry-column';
+        container.appendChild(colDiv);
+        columns.push(colDiv);
+    }
+
+    // 2. CHARGEMENT ET DISTRIBUTION INTELLIGENTE
+    // On boucle sur toutes les images
     for (let i = 1; i <= album.count; i++) {
-        // Création de la div conteneur
-        const div = document.createElement('div');
-        div.className = 'photo-item';
-
-        // Création de l'image
-        const img = document.createElement('img');
-        // Construction du chemin : images/dossier/prefixe-numero.webp
         const src = `${album.folder}/${album.prefix}${i}${extension}`;
         
-        img.src = src;
-        img.alt = `Photo ${i} - ${album.title}`;
-        img.loading = "lazy"; // Important pour la performance
+        // On crée l'objet image en mémoire pour tester sa taille
+        const imgObject = new Image();
+        imgObject.src = src;
 
-        // QUAND L'IMAGE EST CHARGÉE :
-        img.onload = () => {
-            // On ajoute la classe qui la fait apparaître en douceur (géré par CSS)
-            div.classList.add('loaded');
-        };
+        // ASTUCE PRO : On attend que l'image ait chargé ses infos (taille)
+        // avant de l'afficher. Cela permet de savoir si c'est un portrait ou paysage.
+        await new Promise(resolve => {
+            imgObject.onload = resolve;
+            imgObject.onerror = resolve; // On continue même si erreur
+        });
 
-        // GESTION D'ERREUR (Si une photo n'existe pas, on cache le bloc)
-        img.onerror = () => {
-            div.style.display = 'none';
-        };
+        // 3. ALGORITHME "COLONNE LA PLUS COURTE"
+        // On cherche quelle colonne est la moins haute actuellement
+        let shortestColIndex = 0;
+        let minHeight = columns[0].offsetHeight;
 
-        // Clic pour Lightbox
+        for (let j = 1; j < columns.length; j++) {
+            if (columns[j].offsetHeight < minHeight) {
+                minHeight = columns[j].offsetHeight;
+                shortestColIndex = j;
+            }
+        }
+
+        // 4. CRÉATION DE LA CARTE FINALE
+        const div = document.createElement('div');
+        div.className = 'photo-item loaded'; // On met direct 'loaded' car on a déjà attendu
+        
+        // On reprend l'image qu'on a déjà chargée (plus rapide)
+        const finalImg = imgObject; 
+        finalImg.alt = `Photo ${i} - ${album.title}`;
+        
+        // Click Lightbox
         div.onclick = () => openLightbox(src);
+        div.appendChild(finalImg);
 
-        div.appendChild(img);
-        container.appendChild(div);
+        // On l'ajoute dans la colonne LA PLUS COURTE
+        columns[shortestColIndex].appendChild(div);
     }
 }
 
-// --- LIGHTBOX (Fonctionnement simple) ---
+// --- LIGHTBOX ---
 window.openLightbox = function(src) {
     const lb = document.getElementById('lightbox');
     const lbImg = document.getElementById('lightbox-img');
