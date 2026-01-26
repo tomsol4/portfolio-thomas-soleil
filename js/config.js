@@ -13,17 +13,6 @@ const siteConfig = {
     // LISTE DES ALBUMS
     albums: [
         {
-            id: "noel", 
-            title: "Concert Noël Chor Unum",
-            // CORRECTION ICI : On met .webp
-            cover: "images/noelchorunum/chorunumnoel-4.webp", 
-            folder: "images/noelchorunum", 
-            prefix: "chorunumnoel-", // Attention à ce nom, vérifie tes fichiers !
-            count: 260,
-            date: "2024",
-            ext: ".webp"
-        },
-        {
             id: "rugby",
             title: "Rugby",
             cover: "images/rugby/rugby-33.webp",
@@ -34,15 +23,17 @@ const siteConfig = {
             ext: ".webp"
         },
         {
-            id: "chartres",
-            title: "Chartres",
-            cover: "images/chartres/chartres-18.webp", // Mets le nom de ta photo préférée
-            folder: "images/chartres",
-            prefix: "chartres-",    
-            count: 22,
-            date: "2024",
+            id: "noel", 
+            title: "Concert Noël Chor Unum",
+            // CORRECTION ICI : On met .webp
+            cover: "images/noelchorunum/chorunumnoel-4.webp", 
+            folder: "images/noelchorunum", 
+            prefix: "chorunumnoel-", // Attention à ce nom, vérifie tes fichiers !
+            count: 260,
+            date: "2025",
             ext: ".webp"
         },
+
         {
             id: "rock-toulouse",
             title: "Rock Toulouse",
@@ -50,7 +41,7 @@ const siteConfig = {
             folder: "images/rocktoulouse",
             prefix: "Rock-",
             count: 100,
-            date: "2024",
+            date: "2025",
             ext: ".webp"
         },
         {
@@ -60,8 +51,18 @@ const siteConfig = {
             folder: "images/montagne",
             prefix: "Montagne-",
             count: 112,
-            date: "2023",
+            date: "2025",
             ext: ".webp"
         }
+                {
+            id: "chartres",
+            title: "Chartres",
+            cover: "images/chartres/chartres-18.webp", // Mets le nom de ta photo préférée
+            folder: "images/chartres",
+            prefix: "chartres-",    
+            count: 22,
+            date: "2024",
+            ext: ".webp"
+        },
     ]
 };
