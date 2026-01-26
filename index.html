@@ -3,17 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thomas Soleil | Photographe de l'instant</title>
+    <title>Thomas Soleil | Photographe</title>
     
     <link rel="preload" as="image" href="images/hero-photo-accueil_2.webp">
 
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,600&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
-</head>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,600;1,400&family=Montserrat:wght@300;400&display=swap" rel="stylesheet"></head>
 <body>
 
     <nav>
         <a href="index.html" class="logo">Thomas Soleil</a>
+        
+        <div class="burger">
+            <div></div><div></div><div></div>
+        </div>
+
         <div class="nav-links">
             <a href="index.html" class="active">Albums</a>
             <a href="a-propos.html">À Propos</a>
@@ -24,21 +28,21 @@
     <header class="hero">
         <div class="hero-content">
             <h1>Thomas Soleil</h1>
-            <p style="letter-spacing: 5px; text-transform: uppercase; font-size: 0.8rem; color: var(--accent);">Photographie de Portrait & Événement</p>
+            <p>Photographe Événementiel & Portrait</p>
         </div>
     </header>
 
     <main>
-        <section class="masonry-wrapper" id="albums-list"></section>
+        <section class="albums-grid" id="albums-list"></section>
     </main>
 
-    <footer style="padding: 100px 5%; text-align: center; color: var(--text-muted); font-size: 0.7rem; letter-spacing: 2px;">
-        <p>&copy; 2025 THOMAS SOLEIL. TOUS DROITS RÉSERVÉS.</p>
-        <div style="margin-top: 20px;">
-            <a href="mentions.html">MENTIONS LÉGALES</a>
-        </div>
-    </footer>
-
+<footer>
+    <p>&copy; 2025 Thomas Soleil. Tous droits réservés.</p>
+    <p style="margin-top: 10px;">
+        <a href="mentions.html">Mentions Légales</a> | 
+        <a href="contact.html">Contact</a>
+    </p>
+</footer>
     <script src="js/config.js"></script>
     <script src="js/main.js"></script>
     <script src="js/home.js"></script>
