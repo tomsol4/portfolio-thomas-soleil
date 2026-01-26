@@ -15,10 +15,8 @@ const siteConfig = {
         {
             id: "noel", 
             title: "Concert Noël Chor Unum",
-            
             // CORRECTION ICI : On met .webp
             cover: "images/noelchorunum/chorunumnoel-4.webp", 
-            
             folder: "images/noelchorunum", 
             prefix: "chorunumnoel-", // Attention à ce nom, vérifie tes fichiers !
             count: 260,
@@ -26,11 +24,19 @@ const siteConfig = {
             ext: ".webp"
         },
         {
+            id: "rugby",
+            title: "Rugby",
+            cover: "images/rugby/rugby-33.webp",
+            folder: "images/rugby",
+            prefix: "rugby-",
+            count: 147,
+            date: "2025",
+            ext: ".webp"
+        },
+        {
             id: "chartres",
             title: "Chartres",
-            
             cover: "images/chartres/chartres-18.webp", // Mets le nom de ta photo préférée
-            
             folder: "images/chartres",
             prefix: "chartres-",    
             count: 22,
