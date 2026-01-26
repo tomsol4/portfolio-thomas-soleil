@@ -29,10 +29,10 @@ const siteConfig = {
             id: "chartres",
             title: "Chartres",
             
-            cover: "images/chartres/chartres-5.webp", // Mets le nom de ta photo préférée
+            cover: "images/chartres/chartres-18.webp", // Mets le nom de ta photo préférée
             
             folder: "images/chartres",
-            prefix: "chartres-",
+            prefix: "chartres-",    
             count: 22,
             date: "2024",
             ext: ".webp"
