@@ -1,5 +1,5 @@
 /* ============================================================
-   STYLE : THOMAS SOLEIL - "WBH" GREY EDITION (REFONTE)
+   STYLE : THOMAS SOLEIL - "WBH" GREY EDITION (REFONTE FINALE)
    ============================================================ */
 
 /* --- 1. CONFIGURATION & VARIABLES --- */
@@ -39,7 +39,7 @@ a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
 a:hover { opacity: 0.7; }
 img { display: block; max-width: 100%; height: auto; }
 
-main { flex: 1; } /* Pousse le footer vers le bas si peu de contenu */
+main { flex: 1; } /* Pousse le footer vers le bas */
 
 /* --- 3. NAVIGATION --- */
 nav {
@@ -93,6 +93,12 @@ nav.scrolled {
 /* Menu Burger (Mobile) */
 .burger { display: none; cursor: pointer; z-index: 1001; }
 .burger div { width: 25px; height: 2px; background-color: #fff; margin: 5px; transition: all 0.3s ease; }
+
+/* Animation Croisée du Burger */
+.burger.toggle div:nth-child(1) { transform: rotate(-45deg) translate(-5px, 6px); }
+.burger.toggle div:nth-child(2) { opacity: 0; }
+.burger.toggle div:nth-child(3) { transform: rotate(45deg) translate(-5px, -6px); }
+
 
 /* --- 4. HERO (ACCUEIL) --- */
 .hero {
@@ -148,39 +154,62 @@ nav.scrolled {
 
 .album-info span { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; }
 
-/* --- 6. PAGE GALERIE --- */
+
+/* --- 6. PAGE GALERIE (Masonry Optimisé) --- */
 .gallery-header { padding: 160px 5% 60px; text-align: center; }
 .back-link { display: inline-block; margin-bottom: 20px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
 .back-link:hover { color: #fff; }
 
 .masonry-wrapper {
-    column-count: 3; column-gap: var(--gallery-gap);
+    /* Flexbox pour les colonnes Masonry */
+    display: flex;
+    gap: var(--gallery-gap);
     max-width: var(--container-width);
     margin: 0 auto; padding: 0 50px 90px;
+    align-items: flex-start; /* Important pour que les colonnes soient indépendantes */
 }
 
-/* DANS css/style.css */
+.masonry-column {
+    flex: 1; /* Chaque colonne prend la même largeur */
+    display: flex;
+    flex-direction: column;
+    gap: var(--gallery-gap);
+    width: 0; /* Astuce pour forcer l'égalité des largeurs */
+    min-width: 0;
+}
 
+/* --- LE BLOC PHOTO STABILISÉ --- */
 .photo-item {
     position: relative;
     width: 100%;
-    margin-bottom: var(--gallery-gap);
-    break-inside: avoid;
     
-    /* MODIFICATION ICI : */
-    opacity: 0;
-    /* On accélère l'apparition (0.2s au lieu de 0.4s) */
-    transition: opacity 0.2s ease-out; 
-    /* On ajoute un petit transform pour un effet "pop" rapide */
-    transform: translateY(10px); 
-    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+    /* STABILITÉ : On réserve l'espace avant le chargement */
+    background-color: #252525; 
+    min-height: 250px; 
+    
+    border-radius: 2px;
+    overflow: hidden;
+    cursor: zoom-in;
 }
 
-.photo-item.loaded {
-    opacity: 1;
-    transform: translateY(0); /* L'image remonte à sa place */
+.photo-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    
+    /* ANIMATION RAPIDE */
+    opacity: 0; 
+    transition: opacity 0.2s ease-out; /* Très rapide pour éviter la sensation de lenteur */
 }
-.photo-item img { width: 100%; background-color: #1a1a1a; cursor: zoom-in;}
+
+/* Classe ajoutée par JS quand l'image est prête */
+.photo-item.loaded img {
+    opacity: 1;
+}
+
+/* Si erreur, on cache tout le bloc */
+.photo-item.error { display: none; }
+
 
 /* --- 7. PAGES TEXTE (A PROPOS, CONTACT, MENTIONS) --- */
 .content-wrapper { max-width: 900px; margin: 160px auto 100px; padding: 0 30px; }
@@ -233,7 +262,7 @@ footer {
 
 /* --- 10. RESPONSIVE --- */
 @media (max-width: 1024px) {
-    .albums-grid, .masonry-wrapper { grid-template-columns: repeat(2, 1fr); column-count: 2; }
+    .albums-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 768px) {
@@ -250,7 +279,9 @@ footer {
     
     /* Grilles */
     .albums-grid { grid-template-columns: 1fr; padding: 20px; }
-    .masonry-wrapper { column-count: 2; padding: 0 15px 50px; gap: 10px; }
+    
+    /* Masonry Wrapper Mobile */
+    .masonry-wrapper { padding: 0 15px 50px; gap: 10px; }
     
     /* About */
     .about-grid { grid-template-columns: 1fr; }

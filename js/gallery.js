@@ -1,100 +1,136 @@
+// VARIABLES GLOBALES
+let currentAlbum = null;
+let photosLoadedCount = 0;
+let isLoading = false;
+const BATCH_SIZE = 20; 
+
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Récupération de l'ID de l'album dans l'URL
     const params = new URLSearchParams(window.location.search);
     const albumId = params.get('id');
     
-    // Sécurité : Si pas de config ou pas d'ID, on arrête tout
     if (typeof siteConfig === 'undefined' || !albumId) return;
 
-    // 2. On cherche l'album correspondant dans la config
-    const album = siteConfig.albums.find(a => a.id === albumId);
+    currentAlbum = siteConfig.albums.find(a => a.id === albumId);
 
-    if (album) {
-        // Mise à jour du titre de la page et des textes
-        document.title = `${album.title} | Thomas Soleil`;
-        document.getElementById('album-title').innerText = album.title;
+    if (currentAlbum) {
+        document.title = `${currentAlbum.title} | Thomas Soleil`;
+        document.getElementById('album-title').innerText = currentAlbum.title;
         const meta = document.getElementById('album-meta');
-        if(meta) meta.innerText = album.date;
+        if(meta) meta.innerText = currentAlbum.date;
         
-        // Lancement de la galerie
-        generateStableGallery(album);
+        initGalleryStructure();
+        loadNextBatch();
+        window.addEventListener('scroll', handleScroll);
     } else {
         document.getElementById('album-title').innerText = "Album introuvable";
     }
 });
 
-function generateStableGallery(album) {
+function initGalleryStructure() {
     const container = document.getElementById('gallery-container');
-    const extension = album.ext || ".webp";
-    
-    // On vide le conteneur pour éviter les doublons
     container.innerHTML = ""; 
 
-    // 3. Détection Mobile vs PC pour les colonnes
     const isMobile = window.innerWidth < 768;
     const colCount = isMobile ? 2 : 3;
-    const columns = [];
-
-    // Création des colonnes (divs vides qui vont recevoir les images)
+    
     for (let c = 0; c < colCount; c++) {
         const colDiv = document.createElement('div');
         colDiv.className = 'masonry-column';
         container.appendChild(colDiv);
-        columns.push(colDiv);
     }
+}
 
-    // 4. Boucle pour créer chaque image
-    for (let i = 1; i <= album.count; i++) {
-        // Construction du chemin de l'image
-        const src = `${album.folder}/${album.prefix}${i}${extension}`;
+function handleScroll() {
+    if (isLoading || !currentAlbum || photosLoadedCount >= currentAlbum.count) return;
+    
+    // On charge la suite quand on arrive un peu avant le bas
+    const scrollPosition = window.innerHeight + window.scrollY;
+    const threshold = document.body.offsetHeight - 800; 
+
+    if (scrollPosition >= threshold) {
+        loadNextBatch();
+    }
+}
+
+function loadNextBatch() {
+    if (!currentAlbum) return;
+    isLoading = true;
+
+    const container = document.getElementById('gallery-container');
+    const extension = currentAlbum.ext || ".webp";
+    
+    // On récupère les colonnes pour les mesurer
+    const columns = Array.from(document.querySelectorAll('.masonry-column'));
+    
+    const start = photosLoadedCount + 1;
+    let end = start + BATCH_SIZE - 1;
+    if (end > currentAlbum.count) end = currentAlbum.count;
+
+    for (let i = start; i <= end; i++) {
+        const src = `${currentAlbum.folder}/${currentAlbum.prefix}${i}${extension}`;
         
-        // Calcul pour savoir dans quelle colonne mettre l'image (0, 1, 2...)
-        const columnIndex = (i - 1) % colCount;
+        // --- ALGORITHME D'ÉQUILIBRAGE ---
+        // On cherche la colonne la plus petite (en hauteur de pixels)
+        // Grâce au CSS (min-height), même une photo non chargée prend de la place
+        let shortestColumn = columns[0];
         
+        columns.forEach(col => {
+            if (col.offsetHeight < shortestColumn.offsetHeight) {
+                shortestColumn = col;
+            }
+        });
+
+        // CRÉATION DE LA CARTE PHOTO
         const div = document.createElement('div');
         div.className = 'photo-item';
-        
+        div.style.opacity = '0'; 
+        div.style.transition = 'opacity 0.4s ease';
+
         const img = document.createElement('img');
         img.src = src;
-        img.alt = `Photo ${i} - ${album.title}`;
-
-        // --- OPTIMISATION VITESSE ---
-        // Les 6 premières images chargent en mode "Eager" (Immédiat)
-        // Les suivantes en "Lazy" (Différé)
-        if (i <= 6) {
-            img.loading = "eager"; 
-        } else {
-            img.loading = "lazy";
-        }
-
-        // --- GESTION D'AFFICHAGE ---
-        // Quand l'image est prête, on ajoute la classe .loaded pour le fondu
-        img.onload = () => { div.classList.add('loaded'); };
+        img.alt = `Photo ${i}`;
         
-        // Si l'image est déjà dans le cache (rechargement de page), on force l'affichage
-        if (img.complete) { div.classList.add('loaded'); }
+        // Optimisation chargement
+        if (i <= 6) img.loading = "eager"; 
+        else img.loading = "lazy";
 
-        // Si l'image n'existe pas (erreur 404), on cache le bloc pour ne pas avoir de trou
+        // Affichage fluide
+        const showImage = () => {
+            div.classList.add('loaded');
+            div.style.opacity = '1';
+            // Une fois chargée, on enlève la contrainte de hauteur min pour que ce soit parfait
+            div.style.minHeight = '0'; 
+        };
+
+        img.onload = showImage;
+        if (img.complete) showImage();
+        
         img.onerror = () => { div.style.display = 'none'; };
-        
-        // Clic pour ouvrir la Lightbox
         div.onclick = () => openLightbox(src);
         
         div.appendChild(img);
         
-        // On place l'image dans la bonne colonne
-        columns[columnIndex].appendChild(div);
+        // --- INSERTION DANS LA COLONNE LA PLUS COURTE ---
+        shortestColumn.appendChild(div);
     }
+
+    photosLoadedCount = end;
+    
+    // Petit délai pour laisser le navigateur recalculer les hauteurs avant la prochaine vague
+    setTimeout(() => {
+        isLoading = false;
+        // Si on n'a pas encore rempli l'écran (grands écrans), on en charge d'autres
+        if(document.body.offsetHeight < window.innerHeight) {
+            handleScroll();
+        }
+    }, 100);
 }
 
-// --- FONCTIONS LIGHTBOX ---
+// --- LIGHTBOX ---
 window.openLightbox = function(src) {
     const lb = document.getElementById('lightbox');
     const lbImg = document.getElementById('lightbox-img');
-    if(lb && lbImg) { 
-        lbImg.src = src; 
-        lb.style.display = 'flex'; 
-    }
+    if(lb && lbImg) { lbImg.src = src; lb.style.display = 'flex'; }
 }
 
 window.closeLightbox = function() {
