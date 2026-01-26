@@ -159,13 +159,27 @@ nav.scrolled {
     margin: 0 auto; padding: 0 50px 90px;
 }
 
+/* DANS css/style.css */
+
 .photo-item {
-    position: relative; width: 100%;
+    position: relative;
+    width: 100%;
     margin-bottom: var(--gallery-gap);
-    break-inside: avoid; /* Empêche de couper les images */
-    opacity: 0; transition: opacity 0.4s ease-out;
+    break-inside: avoid;
+    
+    /* MODIFICATION ICI : */
+    opacity: 0;
+    /* On accélère l'apparition (0.2s au lieu de 0.4s) */
+    transition: opacity 0.2s ease-out; 
+    /* On ajoute un petit transform pour un effet "pop" rapide */
+    transform: translateY(10px); 
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
 }
-.photo-item.loaded { opacity: 1; }
+
+.photo-item.loaded {
+    opacity: 1;
+    transform: translateY(0); /* L'image remonte à sa place */
+}
 .photo-item img { width: 100%; background-color: #1a1a1a; cursor: zoom-in;}
 
 /* --- 7. PAGES TEXTE (A PROPOS, CONTACT, MENTIONS) --- */
