@@ -344,3 +344,5 @@ footer {
 
     .hero h1 { font-size: 3rem; }
 }
+footer a { color: #777; text-decoration: none; margin: 0 10px; transition: 0.3s;}
+footer a:hover { color: #fff; text-decoration: underline; }
