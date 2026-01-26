@@ -4,15 +4,16 @@
 
 /* --- 1. CONFIGURATION & VARIABLES --- */
 :root {
+    /* ON CHANGE ICI : On remplace 'Playfair Display' par 'Bodoni Moda' */
+    --font-title: 'Bodoni Moda', serif;
+    
+    --font-body: 'Montserrat', sans-serif;
+    
+    /* Le reste ne change pas... */
     --bg-color: #1c1c1c;       
     --card-bg: #1c1c1c;        
     --text-main: #ffffff;      
     --text-muted: #b3b3b3;     
-    --accent-color: #ffffff;
-
-    --font-title: 'Playfair Display', serif;
-    --font-body: 'Montserrat', sans-serif;
-    
     --nav-height: 90px;
     --container-width: 1400px; 
     --gallery-gap: 15px;
@@ -124,17 +125,36 @@ nav.scrolled {
     color: #fff;
 }
 
+/* DANS css/style.css - Section HERO */
+
 .hero h1 { 
     font-family: var(--font-title);
+    
+    /* Taille responsive */
     font-size: clamp(3rem, 6vw, 7rem); 
-    font-weight: 400;
-    letter-spacing: -1px;
+    
+    /* POIDS : On garde fin (400) pour l'élégance */
+    font-weight: 400; 
+    
+    /* LE SECRET DU STYLE : */
+    text-transform: uppercase; /* Tout en majuscules */
+    letter-spacing: 8px;       /* Énorme espacement entre les lettres */
+    line-height: 1.2;          /* Un peu d'air entre les lignes */
+    
     margin-bottom: 20px;
     
-    /* Ombre portée légère : INDISPENSABLE sans filtre pour détacher le texte */
+    /* Ombre portée légère pour lisibilité */
     text-shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
 
+/* On applique aussi ce style au Logo dans le menu pour que ce soit cohérent */
+.logo {
+    font-family: var(--font-title);
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 4px; /* Un peu moins espacé que le gros titre */
+    font-weight: 600;    /* Un peu plus gras pour le logo */
+}
 .hero p { 
     font-size: 0.9rem;
     letter-spacing: 5px; 
