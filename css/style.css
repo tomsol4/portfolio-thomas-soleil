@@ -1,29 +1,24 @@
 /* ============================================================
-   STYLE : THOMAS SOLEIL - "WBH" GREY EDITION
+   STYLE : THOMAS SOLEIL - "WBH" GREY EDITION (REFONTE)
    ============================================================ */
 
-/* --- 1. CONFIGURATION & COULEURS --- */
+/* --- 1. CONFIGURATION & VARIABLES --- */
 :root {
-    /* LE GRIS WBH : Un gris anthracite foncé et mat */
     --bg-color: #1c1c1c;       
     --card-bg: #1c1c1c;        
-    
     --text-main: #ffffff;      
     --text-muted: #b3b3b3;     
-    
+    --accent-color: #ffffff;
+
     --font-title: 'Playfair Display', serif;
     --font-body: 'Montserrat', sans-serif;
     
     --nav-height: 90px;
-    
-    /* Largeur contenue pour avoir de l'espace sur les côtés */
     --container-width: 1400px; 
-    
-    /* Espacement entre les images */
     --gallery-gap: 15px;
 }
 
-/* --- 2. BASE --- */
+/* --- 2. BASE & RESET --- */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 html { scroll-behavior: smooth; }
@@ -35,18 +30,22 @@ body {
     font-weight: 300;
     line-height: 1.6;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
 a:hover { opacity: 0.7; }
 img { display: block; max-width: 100%; height: auto; }
 
+main { flex: 1; } /* Pousse le footer vers le bas si peu de contenu */
+
 /* --- 3. NAVIGATION --- */
 nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* Espace sur les côtés pour aligner avec la galerie */
     padding: 0 50px; 
     height: var(--nav-height);
     position: fixed;
@@ -66,40 +65,52 @@ nav.scrolled {
     font-size: 1.2rem;
     text-transform: uppercase;
     letter-spacing: 2px;
+    z-index: 1001;
+}
+
+.nav-links {
+    display: flex;
+    gap: 40px;
 }
 
 .nav-links a {
-    margin-left: 40px;
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 2px;
     color: #ccc;
+    position: relative;
 }
-.nav-links a.active { color: #fff; border-bottom: 1px solid #fff; padding-bottom: 5px;}
+
+.nav-links a.active, .nav-links a:hover { 
+    color: #fff; 
+}
+
+.nav-links a.active::after {
+    content: ''; display: block; width: 100%; height: 1px; 
+    background: #fff; margin-top: 5px;
+}
+
+/* Menu Burger (Mobile) */
+.burger { display: none; cursor: pointer; z-index: 1001; }
+.burger div { width: 25px; height: 2px; background-color: #fff; margin: 5px; transition: all 0.3s ease; }
 
 /* --- 4. HERO (ACCUEIL) --- */
 .hero {
-    height: 80vh; /* Un peu moins haut pour inviter à scroller */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 0 20px;
+    height: 80vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 0 20px;
 }
 
 .hero h1 { 
     font-family: var(--font-title);
     font-size: clamp(3rem, 5vw, 6rem); 
-    font-weight: 400;
-    letter-spacing: -1px;
+    font-weight: 400; letter-spacing: -1px;
     margin-bottom: 20px; 
 }
 .hero p { 
-    font-size: 0.8rem;
-    letter-spacing: 4px; 
-    text-transform: uppercase; 
-    color: var(--text-muted); 
+    font-size: 0.8rem; letter-spacing: 4px; 
+    text-transform: uppercase; color: var(--text-muted); 
 }
 
 /* --- 5. GRILLE ALBUMS (ACCUEIL) --- */
@@ -107,18 +118,13 @@ nav.scrolled {
     display: grid;
     grid-template-columns: repeat(3, 1fr); 
     gap: var(--gallery-gap);
-    /* ICI : On gère l'espace sur les côtés */
     max-width: var(--container-width);
-    margin: 0 auto; /* Centre le bloc */
-    padding: 50px 50px; /* Marge interne gauche/droite */
+    margin: 0 auto; padding: 50px;
 }
 
 .album-card {
-    position: relative;
-    aspect-ratio: 3/4;
-    overflow: hidden;
-    background: var(--card-bg);
-    cursor: pointer;
+    position: relative; aspect-ratio: 3/4;
+    overflow: hidden; background: var(--card-bg);
 }
 
 .album-card img {
@@ -127,10 +133,7 @@ nav.scrolled {
     opacity: 0.9;
 }
 
-.album-card:hover img { 
-    transform: scale(1.03); 
-    opacity: 0.7; 
-}
+.album-card:hover img { transform: scale(1.03); opacity: 0.7; }
 
 .album-info {
     position: absolute; bottom: 40px; left: 0; right: 0;
@@ -138,107 +141,106 @@ nav.scrolled {
 }
 
 .album-info h3 { 
-    font-size: 1.8rem; 
-    font-family: var(--font-title);
-    font-weight: 400;
-    margin-bottom: 5px;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    font-size: 1.8rem; font-family: var(--font-title);
+    font-weight: 400; margin-bottom: 5px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
 }
 
-.album-info span {
-    font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase;
-}
+.album-info span { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; }
 
-/* --- 6. GALERIE MASONRY (PAGE GALERIE) --- */
-.gallery-header { 
-    padding: 180px 5% 80px; 
-    text-align: center; 
-}
+/* --- 6. PAGE GALERIE --- */
+.gallery-header { padding: 160px 5% 60px; text-align: center; }
+.back-link { display: inline-block; margin-bottom: 20px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+.back-link:hover { color: #fff; }
 
 .masonry-wrapper {
-    /* 3 Colonnes sur PC */
-    column-count: 3;  
-    column-gap: var(--gallery-gap);
-    
-    /* GESTION DE L'ESPACE SUR LES CÔTÉS */
-    max-width: var(--container-width); /* Largeur max bloquée */
-    margin: 0 auto; /* Centré au milieu */
-    padding: 0 90px 90px; /* 50px d'espace à gauche et à droite */
+    column-count: 3; column-gap: var(--gallery-gap);
+    max-width: var(--container-width);
+    margin: 0 auto; padding: 0 50px 90px;
 }
 
 .photo-item {
-    position: relative;
-    width: 100%;
+    position: relative; width: 100%;
     margin-bottom: var(--gallery-gap);
-    
-    /* STABILITÉ MAXIMALE : */
-    /* On enlève transform et animation de mouvement */
-    opacity: 0;
-    transition: opacity 0.4s ease-out; /* Apparition rapide et simple */
+    break-inside: avoid; /* Empêche de couper les images */
+    opacity: 0; transition: opacity 0.4s ease-out;
 }
+.photo-item.loaded { opacity: 1; }
+.photo-item img { width: 100%; background-color: #1a1a1a; cursor: zoom-in;}
 
-.photo-item img {
-    width: 100%;
-    display: block;
-    height: auto;
-    /* Assure que l'image prend sa place proprement */
-    background-color: #1a1a1a; /* Petit fond gris sombre pendant le chargement */
-}
+/* --- 7. PAGES TEXTE (A PROPOS, CONTACT, MENTIONS) --- */
+.content-wrapper { max-width: 900px; margin: 160px auto 100px; padding: 0 30px; }
 
-.photo-item.loaded {
-    opacity: 1;
-    /* Pas de transform ici non plus */
-}
+/* A propos */
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+.about-content h1 { font-family: var(--font-title); font-size: 2.5rem; margin-bottom: 30px; line-height: 1.2; }
+.about-content p { margin-bottom: 20px; color: #ddd; }
+.signature { font-family: var(--font-title); font-style: italic; font-size: 1.5rem; margin-top: 30px; }
 
-/* --- 7. FOOTER & PAGES --- */
-footer {
-    text-align: center; padding: 60px 20px;
-    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px;
-    color: #555; border-top: 1px solid #2a2a2a;
+/* Contact */
+.contact-header { text-align: center; margin-bottom: 60px; }
+.contact-header h1 { font-family: var(--font-title); font-size: 3rem; margin-bottom: 10px; }
+.form-group { margin-bottom: 25px; }
+.form-group label { display: block; margin-bottom: 10px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+.form-group input, .form-group textarea {
+    width: 100%; background: transparent; border: 1px solid #444;
+    color: #fff; padding: 15px; font-family: var(--font-body); font-size: 1rem;
 }
-.content-wrapper { max-width: 800px; margin: 150px auto; padding: 0 20px; }
-button {
+.form-group input:focus, .form-group textarea:focus { outline: none; border-color: #fff; }
+button[type="submit"] {
     background: #fff; color: #000; padding: 15px 40px; border: none;
-    text-transform: uppercase; font-weight: 600; cursor: pointer;
-    letter-spacing: 1px;
+    text-transform: uppercase; font-weight: 600; cursor: pointer; letter-spacing: 1px; transition: 0.3s;
+}
+button[type="submit"]:hover { background: #ddd; }
+
+/* Mentions Légales */
+.legal-content h4 { font-family: var(--font-title); font-size: 1.3rem; margin: 40px 0 15px; color: #fff; }
+.legal-content p { color: #ccc; margin-bottom: 15px; }
+
+/* Social Links */
+.social-section { margin-top: 60px; padding-top: 40px; border-top: 1px solid #333; text-align: center; }
+.social-section a { margin: 0 15px; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+
+/* --- 8. FOOTER --- */
+footer {
+    text-align: center; padding: 40px 20px;
+    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px;
+    color: #555; border-top: 1px solid #2a2a2a; margin-top: auto;
 }
 
-/* --- 8. LIGHTBOX --- */
+/* --- 9. LIGHTBOX --- */
 #lightbox {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(28,28,28,0.98); /* Même gris en très opaque */
-    z-index: 2000; display: none; justify-content: center; align-items: center;
+    background: rgba(28,28,28,0.98); z-index: 2000;
+    display: none; justify-content: center; align-items: center;
+    padding: 20px;
 }
-#lightbox img { max-height: 95vh; max-width: 95vw; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+#lightbox img { max-height: 90vh; max-width: 90vw; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
 
-/* --- 9. RESPONSIVE (SMARTPHONE) --- */
-
+/* --- 10. RESPONSIVE --- */
 @media (max-width: 1024px) {
-    .albums-grid { grid-template-columns: repeat(2, 1fr); }
-    .masonry-wrapper { column-count: 2; }
+    .albums-grid, .masonry-wrapper { grid-template-columns: repeat(2, 1fr); column-count: 2; }
 }
 
 @media (max-width: 768px) {
-    /* Sur mobile, on garde de l'espace mais moins grand (20px au lieu de 50px) */
-    
-    /* 1. Albums Accueil : 1 colonne */
-    .albums-grid { 
-        grid-template-columns: 1fr; 
-        gap: 15px;
-        padding: 20px 20px; /* Espace sur les côtés */
+    /* Navigation Mobile */
+    .burger { display: block; }
+    .nav-links {
+        position: absolute; right: 0px; top: var(--nav-height);
+        height: calc(100vh - var(--nav-height));
+        background-color: var(--bg-color);
+        flex-direction: column; align-items: center; justify-content: center;
+        width: 100%; transform: translateX(100%); transition: transform 0.4s ease-in;
     }
+    .nav-links.nav-active { transform: translateX(0%); }
     
-    /* 2. Galerie Photos : 2 COLONNES */
-    .masonry-wrapper { 
-        column-count: 2; 
-        column-gap: 10px; /* Écart réduit entre les photos */
-        padding: 0 15px 50px; /* Espace sur les côtés */
-    }
+    /* Grilles */
+    .albums-grid { grid-template-columns: 1fr; padding: 20px; }
+    .masonry-wrapper { column-count: 2; padding: 0 15px 50px; gap: 10px; }
     
-    .photo-item { margin-bottom: 10px; }
+    /* About */
+    .about-grid { grid-template-columns: 1fr; }
+    .about-image { order: -1; margin-bottom: 20px; }
 
-    nav { padding: 0 20px; height: 70px; }
-    .nav-links { display: none; } 
-    
     .hero h1 { font-size: 3rem; }
 }

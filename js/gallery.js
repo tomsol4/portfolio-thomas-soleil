@@ -19,14 +19,14 @@ document.addEventListener("DOMContentLoaded", () => {
 function generateStableGallery(album) {
     const container = document.getElementById('gallery-container');
     const extension = album.ext || ".webp";
-    
     container.innerHTML = ""; 
 
-    // 1. CRÉATION DES COLONNES (Structure fixe)
+    // Détection mobile pour le nombre de colonnes
     const isMobile = window.innerWidth < 768;
     const colCount = isMobile ? 2 : 3;
     const columns = [];
 
+    // Création des colonnes
     for (let c = 0; c < colCount; c++) {
         const colDiv = document.createElement('div');
         colDiv.className = 'masonry-column';
@@ -34,14 +34,9 @@ function generateStableGallery(album) {
         columns.push(colDiv);
     }
 
-    // 2. DISTRIBUTION IMMÉDIATE (1, 2, 3, 1, 2, 3...)
-    // On n'attend pas le chargement de l'image pour lui assigner sa place.
-    // Cela empêche tout mouvement ou saut visuel.
+    // Distribution des images
     for (let i = 1; i <= album.count; i++) {
         const src = `${album.folder}/${album.prefix}${i}${extension}`;
-        
-        // Calcul mathématique simple pour choisir la colonne : 0, 1, 2, 0, 1, 2...
-        // Image 1 -> Col 1 / Image 2 -> Col 2 / Image 3 -> Col 3 / Image 4 -> Col 1
         const columnIndex = (i - 1) % colCount;
         
         const div = document.createElement('div');
@@ -49,16 +44,17 @@ function generateStableGallery(album) {
         
         const img = document.createElement('img');
         img.src = src;
-        img.alt = `Photo ${i}`;
+        img.alt = `Photo ${i} - ${album.title}`;
         img.loading = "lazy";
 
-        // Juste l'apparition en fondu quand c'est prêt
+        // Apparition douce
         img.onload = () => { div.classList.add('loaded'); };
+        
+        // GESTION D'ERREUR : Si l'image n'existe pas, on cache le bloc entier
+        img.onerror = () => { div.style.display = 'none'; };
         
         div.onclick = () => openLightbox(src);
         div.appendChild(img);
-
-        // On ajoute directement dans la bonne colonne
         columns[columnIndex].appendChild(div);
     }
 }
@@ -67,7 +63,10 @@ function generateStableGallery(album) {
 window.openLightbox = function(src) {
     const lb = document.getElementById('lightbox');
     const lbImg = document.getElementById('lightbox-img');
-    if(lb && lbImg) { lbImg.src = src; lb.style.display = 'flex'; }
+    if(lb && lbImg) { 
+        lbImg.src = src; 
+        lb.style.display = 'flex'; 
+    }
 }
 
 window.closeLightbox = function() {

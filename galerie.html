@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galerie | Thomas Soleil</title>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <nav>
         <a href="index.html" class="logo">Thomas Soleil</a>
+        <div class="burger"><div></div><div></div><div></div></div>
         <div class="nav-links">
             <a href="index.html" class="active">Albums</a>
             <a href="a-propos.html">À Propos</a>
@@ -23,18 +23,18 @@
         <div class="gallery-header">
             <a href="index.html" class="back-link">← Retour aux albums</a>
             <h1 id="album-title">Chargement...</h1>
-            <p id="album-meta" style="color: #666; font-style: italic;"></p>
+            <p id="album-meta"></p>
         </div>
 
         <div class="masonry-wrapper" id="gallery-container"></div>
     </main>
 
     <div id="lightbox" onclick="closeLightbox()">
-        <img id="lightbox-img" src="">
+        <img id="lightbox-img" src="" alt="Agrandissement">
     </div>
 
-<script src="js/config.js"></script>
-<script src="js/script.js"></script>
-<script src="js/gallery.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/gallery.js"></script>
 </body>
 </html>
