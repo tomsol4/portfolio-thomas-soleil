@@ -53,8 +53,8 @@ const siteConfig = {
             count: 112,
             date: "2025",
             ext: ".webp"
-        }
-                {
+        },
+        {
             id: "chartres",
             title: "Chartres",
             cover: "images/chartres/chartres-18.webp", // Mets le nom de ta photo préférée
