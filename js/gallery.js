@@ -2,7 +2,10 @@
 let currentAlbum = null;
 let photosLoadedCount = 0;
 let isLoading = false;
-const BATCH_SIZE = 20; 
+
+// REGLAGE 1 : On charge 40 photos d'un coup (au lieu de 20)
+// Cela crée un gros tampon d'avance.
+const BATCH_SIZE = 40; 
 
 document.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
@@ -43,9 +46,10 @@ function initGalleryStructure() {
 function handleScroll() {
     if (isLoading || !currentAlbum || photosLoadedCount >= currentAlbum.count) return;
     
-    // On charge la suite quand on arrive un peu avant le bas
+    // REGLAGE 2 : On charge BEAUCOUP plus tôt.
+    // Dès qu'on est à 2000px du bas (environ 2 écrans de hauteur), on lance la suite.
     const scrollPosition = window.innerHeight + window.scrollY;
-    const threshold = document.body.offsetHeight - 800; 
+    const threshold = document.body.offsetHeight - 2000; 
 
     if (scrollPosition >= threshold) {
         loadNextBatch();
@@ -70,10 +74,8 @@ function loadNextBatch() {
         const src = `${currentAlbum.folder}/${currentAlbum.prefix}${i}${extension}`;
         
         // --- ALGORITHME D'ÉQUILIBRAGE ---
-        // On cherche la colonne la plus petite (en hauteur de pixels)
-        // Grâce au CSS (min-height), même une photo non chargée prend de la place
+        // On cherche la colonne la plus petite
         let shortestColumn = columns[0];
-        
         columns.forEach(col => {
             if (col.offsetHeight < shortestColumn.offsetHeight) {
                 shortestColumn = col;
@@ -90,7 +92,8 @@ function loadNextBatch() {
         img.src = src;
         img.alt = `Photo ${i}`;
         
-        // Optimisation chargement
+        // Comme on précharge beaucoup, on laisse en lazy loading pour ne pas bloquer le navigateur
+        // Mais comme on déclenche 2000px en avance, le navigateur a le temps de les traiter.
         if (i <= 6) img.loading = "eager"; 
         else img.loading = "lazy";
 
@@ -98,7 +101,6 @@ function loadNextBatch() {
         const showImage = () => {
             div.classList.add('loaded');
             div.style.opacity = '1';
-            // Une fois chargée, on enlève la contrainte de hauteur min pour que ce soit parfait
             div.style.minHeight = '0'; 
         };
 
@@ -110,17 +112,17 @@ function loadNextBatch() {
         
         div.appendChild(img);
         
-        // --- INSERTION DANS LA COLONNE LA PLUS COURTE ---
+        // Insertion intelligente
         shortestColumn.appendChild(div);
     }
 
     photosLoadedCount = end;
     
-    // Petit délai pour laisser le navigateur recalculer les hauteurs avant la prochaine vague
+    // Petit délai de sécurité
     setTimeout(() => {
         isLoading = false;
-        // Si on n'a pas encore rempli l'écran (grands écrans), on en charge d'autres
-        if(document.body.offsetHeight < window.innerHeight) {
+        // Si l'écran est très grand et n'est pas rempli, on charge encore
+        if(document.body.offsetHeight < window.innerHeight + 1000) {
             handleScroll();
         }
     }, 100);
