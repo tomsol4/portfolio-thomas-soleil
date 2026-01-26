@@ -35,7 +35,7 @@ const siteConfig = {
         },
 
         {
-            id: "rock-toulouse",
+            id: "rocktoulouse",
             title: "Rock Toulouse",
             cover: "images/rocktoulouse/Rock-31.webp",
             folder: "images/rocktoulouse",
