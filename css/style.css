@@ -100,25 +100,60 @@ nav.scrolled {
 .burger.toggle div:nth-child(3) { transform: rotate(45deg) translate(-5px, -6px); }
 
 
-/* --- 4. HERO (ACCUEIL) --- */
+/* --- 4. HERO (ACCUEIL) - PLEIN ÉCRAN SANS FILTRE --- */
 .hero {
-    height: 80vh;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    text-align: center; padding: 0 20px;
+    /* 100vh = 100% de la hauteur de l'écran */
+    height: 100vh; 
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 20px;
+    
+    /* IMAGE DE FOND (BRUTE) */
+    /* Remplace 'home-cover.webp' par le nom de ta photo */
+    background-image: url('../images/hero-photo-accueil.jpg');
+    
+    /* GESTION DE L'IMAGE */
+    background-size: cover;   /* Couvre tout l'écran */
+    background-position: center; /* Centré */
+    background-attachment: fixed; /* Effet Parallaxe (l'image reste fixe) */
+    
+    color: #fff;
 }
 
 .hero h1 { 
     font-family: var(--font-title);
-    font-size: clamp(3rem, 5vw, 6rem); 
-    font-weight: 400; letter-spacing: -1px;
-    margin-bottom: 20px; 
-}
-.hero p { 
-    font-size: 0.8rem; letter-spacing: 4px; 
-    text-transform: uppercase; color: var(--text-muted); 
+    font-size: clamp(3rem, 6vw, 7rem); 
+    font-weight: 400;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+    
+    /* Ombre portée légère : INDISPENSABLE sans filtre pour détacher le texte */
+    text-shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
 
+.hero p { 
+    font-size: 0.9rem;
+    letter-spacing: 5px; 
+    text-transform: uppercase; 
+    color: #fff; 
+    
+    /* Petite ombre aussi pour le sous-titre */
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    margin-top: 10px;
+}
+
+/* RESPONSIVE MOBILE */
+@media (max-width: 768px) {
+    .hero {
+        /* On désactive le parallaxe sur mobile pour la fluidité */
+        background-attachment: scroll; 
+    }
+    .hero h1 { font-size: 3.5rem; }
+}
 /* --- 5. GRILLE ALBUMS (ACCUEIL) --- */
 .albums-grid {
     display: grid;
