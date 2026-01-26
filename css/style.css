@@ -115,7 +115,7 @@ nav.scrolled {
     
     /* IMAGE DE FOND (BRUTE) */
     /* Remplace 'home-cover.webp' par le nom de ta photo */
-    background-image: url('../images/hero-photo-accueil.jpg');
+    background-image: url('../images/hero-photo-accueil_2.jpg');
     
     /* GESTION DE L'IMAGE */
     background-size: cover;   /* Couvre tout l'écran */
