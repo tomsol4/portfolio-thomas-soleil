@@ -69,17 +69,24 @@ nav {
 }
 
 nav.scrolled { 
-    background: var(--bg-color); 
+    background: #1c1c1c; 
     padding: 0 40px;
-    box-shadow: 0 2px 20px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 20px rgba(0,0,0,0.4);
 }
 
 .logo {
-    font-family: var(--font-title);
-    font-size: 1.2rem;
+    font-family: var(--font-title); /* Utilise Rosehot */
+    font-size: 1.6rem;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 6px; /* Grand espacement pour l'élégance */
+    font-weight: 400;
+    color: #ffffff; /* Blanc pur */
     z-index: 1001;
+    transition: opacity 0.3s ease;
+}
+
+.logo:hover {
+    opacity: 0.8;
 }
 
 .nav-links {
