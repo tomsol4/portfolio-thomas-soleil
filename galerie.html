@@ -28,8 +28,13 @@
         <div class="masonry-wrapper" id="gallery-container"></div>
     </main>
 
-    <div id="lightbox" onclick="closeLightbox()">
-        <img id="lightbox-img" src="" alt="Agrandissement">
+    <div id="lightbox">
+        <span class="close-lb" onclick="closeLightbox()">&times;</span>
+        <div class="lb-content">
+            <button class="nav-btn prev" onclick="changePhoto(-1)">&#10094;</button>
+                <img id="lightbox-img" src="" alt="Agrandissement">
+            <button class="nav-btn next" onclick="changePhoto(1)">&#10095;</button>
+        </div>
     </div>
 
     <script src="js/config.js"></script>

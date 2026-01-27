@@ -330,12 +330,32 @@ footer {
 /* --- 9. LIGHTBOX --- */
 #lightbox {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(28,28,28,0.98); z-index: 2000;
+    background: rgba(10, 10, 10, 0.98); z-index: 2000;
     display: none; justify-content: center; align-items: center;
-    padding: 20px;
 }
-#lightbox img { max-height: 90vh; max-width: 90vw; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
 
+.lb-content {
+    display: flex; align-items: center; width: 100%; height: 100%;
+    justify-content: space-between; padding: 0 20px;
+}
+
+#lightbox img { 
+    max-height: 85vh; max-width: 80vw; 
+    object-fit: contain;
+}
+
+.nav-btn {
+    background: none; border: none; color: white; font-size: 3rem;
+    cursor: pointer; padding: 20px; transition: 0.3s;
+    font-family: serif;
+}
+
+.nav-btn:hover { color: #ccc; transform: scale(1.1); }
+
+.close-lb {
+    position: absolute; top: 30px; right: 40px;
+    color: white; font-size: 3rem; cursor: pointer;
+}
 /* --- 10. RESPONSIVE --- */
 @media (max-width: 1024px) {
     .albums-grid { grid-template-columns: repeat(2, 1fr); }
