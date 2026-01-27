@@ -3,14 +3,20 @@
    ============================================================ */
 
 /* --- 1. CONFIGURATION & VARIABLES --- */
+/* Déclaration de la police personnalisée */
+@font-face {
+    font-family: 'Rosehot';
+    src: url('../fonts/Rosehot.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
 :root {
     /* ON CHANGE ICI : On remplace 'Playfair Display' par 'Bodoni Moda' */
-    --font-title: 'Bodoni Moda', serif;
+--font-title: 'Rosehot', serif;
     
     --font-body: 'Montserrat', sans-serif;
-    
-    /* Le reste ne change pas... */
     --bg-color: #1c1c1c;       
+    --text-main: #ffffff;     
     --card-bg: #1c1c1c;        
     --text-main: #ffffff;      
     --text-muted: #b3b3b3;     
