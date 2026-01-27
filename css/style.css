@@ -1,19 +1,23 @@
 /* ============================================================
-   STYLE : THOMAS SOLEIL - ÉDITION FINALE ROSEHOT
+   STYLE : THOMAS SOLEIL - "WBH" GREY EDITION (REFONTE FINALE)
    ============================================================ */
 
-/* --- 1. POLICE PERSONNALISÉE --- */
+/* --- 1. CONFIGURATION & VARIABLES --- */
+/* Déclaration de la police personnalisée */
 @font-face {
     font-family: 'Rosehot';
     src: url('../fonts/Rosehot.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
 }
-
 :root {
-    --font-title: 'Rosehot', serif;
+    /* ON CHANGE ICI : On remplace 'Playfair Display' par 'Bodoni Moda' */
+--font-title: 'Rosehot', serif;
+    
     --font-body: 'Montserrat', sans-serif;
     --bg-color: #1c1c1c;       
+    --text-main: #ffffff;     
+    --card-bg: #1c1c1c;        
     --text-main: #ffffff;      
     --text-muted: #b3b3b3;     
     --nav-height: 90px;
@@ -38,21 +42,15 @@ body {
     min-height: 100vh;
 }
 
-/* APPLICATION GLOBALE DE LA POLICE ROSEHOT SUR LES TITRES */
-h1, h2, h3, .logo, .album-info h3, #album-title {
-    font-family: 'Rosehot', serif !important;
-    text-transform: uppercase;
-    letter-spacing: 4px;
-    font-weight: 400;
-}
-
 a { text-decoration: none; color: inherit; transition: opacity 0.3s; }
 a:hover { opacity: 0.7; }
 img { display: block; max-width: 100%; height: auto; }
 
-main { flex: 1; }
+main { flex: 1; } /* Pousse le footer vers le bas */
 
 /* --- 3. NAVIGATION --- */
+/* --- Dans style.css --- */
+
 nav {
     display: flex;
     justify-content: space-between;
@@ -60,22 +58,35 @@ nav {
     padding: 0 50px; 
     height: var(--nav-height);
     position: fixed;
-    top: 0; width: 100%; z-index: 1000;
-    background: transparent; /* Pas de dégradé au départ */
+    top: 0; 
+    width: 100%; 
+    z-index: 1000;
+    
+    /* MODIFICATION ICI : On remplace le dégradé par de la transparence */
+    background: transparent; 
+    
     transition: background 0.4s ease, padding 0.4s ease;
 }
 
 nav.scrolled { 
-    background: var(--bg-color); 
+    background: #1c1c1c; 
     padding: 0 40px;
     box-shadow: 0 2px 20px rgba(0,0,0,0.4);
 }
 
 .logo {
+    font-family: var(--font-title); /* Utilise Rosehot */
     font-size: 1.6rem;
-    letter-spacing: 6px;
-    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 6px; /* Grand espacement pour l'élégance */
+    font-weight: 400;
+    color: #ffffff; /* Blanc pur */
     z-index: 1001;
+    transition: opacity 0.3s ease;
+}
+
+.logo:hover {
+    opacity: 0.8;
 }
 
 .nav-links {
@@ -83,20 +94,26 @@ nav.scrolled {
     gap: 40px;
 }
 
+/* --- Dans style.css --- */
+
 .nav-links a {
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: #ffffff; /* Blanc pur */
+    
+    /* MODIFICATION : On passe de #ccc à #fff pour un blanc pur */
+    color: #ffffff; 
+    
     position: relative;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    /* On ajoute une petite ombre pour décoller le texte de l'image si elle est claire */
+    text-shadow: 0 1px 4px rgba(0,0,0,0.5); 
 }
 
 .nav-links a.active, .nav-links a:hover { 
-    color: #fff; 
-    opacity: 1;
+    color: #ffffff; 
+    /* On s'assure que l'opacité est au maximum */
+    opacity: 1; 
 }
-
 .nav-links a.active::after {
     content: ''; display: block; width: 100%; height: 1px; 
     background: #fff; margin-top: 5px;
@@ -106,43 +123,85 @@ nav.scrolled {
 .burger { display: none; cursor: pointer; z-index: 1001; }
 .burger div { width: 25px; height: 2px; background-color: #fff; margin: 5px; transition: all 0.3s ease; }
 
+/* Animation Croisée du Burger */
 .burger.toggle div:nth-child(1) { transform: rotate(-45deg) translate(-5px, 6px); }
 .burger.toggle div:nth-child(2) { opacity: 0; }
 .burger.toggle div:nth-child(3) { transform: rotate(45deg) translate(-5px, -6px); }
 
-/* --- 4. HERO (ACCUEIL) --- */
+
+/* --- 4. HERO (ACCUEIL) - PLEIN ÉCRAN SANS FILTRE --- */
 .hero {
+    /* 100vh = 100% de la hauteur de l'écran */
     height: 100vh; 
+    
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
     padding: 0 20px;
+    
+    /* IMAGE DE FOND (BRUTE) */
+    /* Remplace 'home-cover.webp' par le nom de ta photo */
     background-image: url('../images/hero-photo-accueil_2.webp');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+    
+    /* GESTION DE L'IMAGE */
+    background-size: cover;   /* Couvre tout l'écran */
+    background-position: center; /* Centré */
+    background-attachment: fixed; /* Effet Parallaxe (l'image reste fixe) */
+    
     color: #fff;
 }
 
+/* DANS css/style.css - Section HERO */
+
 .hero h1 { 
+    font-family: var(--font-title);
+    
+    /* Taille responsive */
     font-size: clamp(3rem, 6vw, 7rem); 
-    letter-spacing: 8px;
-    line-height: 1.2;
+    
+    /* POIDS : On garde fin (400) pour l'élégance */
+    font-weight: 400; 
+    
+    /* LE SECRET DU STYLE : */
+    text-transform: uppercase; /* Tout en majuscules */
+    letter-spacing: 8px;       /* Énorme espacement entre les lettres */
+    line-height: 1.2;          /* Un peu d'air entre les lignes */
+    
     margin-bottom: 20px;
+    
+    /* Ombre portée légère pour lisibilité */
     text-shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
 
+/* On applique aussi ce style au Logo dans le menu pour que ce soit cohérent */
+.logo {
+    font-family: var(--font-title);
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 4px; /* Un peu moins espacé que le gros titre */
+    font-weight: 600;    /* Un peu plus gras pour le logo */
+}
 .hero p { 
     font-size: 0.9rem;
     letter-spacing: 5px; 
     text-transform: uppercase; 
     color: #fff; 
+    
+    /* Petite ombre aussi pour le sous-titre */
     text-shadow: 0 2px 10px rgba(0,0,0,0.5);
     margin-top: 10px;
 }
 
+/* RESPONSIVE MOBILE */
+@media (max-width: 768px) {
+    .hero {
+        /* On désactive le parallaxe sur mobile pour la fluidité */
+        background-attachment: scroll; 
+    }
+    .hero h1 { font-size: 3.5rem; }
+}
 /* --- 5. GRILLE ALBUMS (ACCUEIL) --- */
 .albums-grid {
     display: grid;
@@ -171,41 +230,58 @@ nav.scrolled {
 }
 
 .album-info h3 { 
-    font-size: 1.8rem;
-    margin-bottom: 5px;
+    font-size: 1.8rem; font-family: var(--font-title);
+    font-weight: 400; margin-bottom: 5px;
     text-shadow: 0 2px 10px rgba(0,0,0,0.5);
 }
 
 .album-info span { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; }
 
-/* --- 6. PAGE GALERIE --- */
-.gallery-header { padding: 160px 5% 60px; text-align: center; }
-#album-title { font-size: 4rem; margin-top: 20px; }
+/* On force l'utilisation de Rosehot pour tous les titres du site */
+h1, h2, h3, .logo, .album-info h3 {
+    font-family: 'Rosehot', serif !important; 
+    text-transform: uppercase;
+    letter-spacing: 4px; /* Pour l'élégance */
+}
 
+/* Pour la page galerie spécifiquement (le titre "Rugby") */
+#album-title {
+    font-family: 'Rosehot', serif;
+    font-size: 4rem; /* Ajuste la taille selon tes envies */
+    margin-top: 20px;
+}
+/* --- 6. PAGE GALERIE (Masonry Optimisé) --- */
+.gallery-header { padding: 160px 5% 60px; text-align: center; }
 .back-link { display: inline-block; margin-bottom: 20px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
 .back-link:hover { color: #fff; }
 
 .masonry-wrapper {
+    /* Flexbox pour les colonnes Masonry */
     display: flex;
     gap: var(--gallery-gap);
     max-width: var(--container-width);
     margin: 0 auto; padding: 0 50px 90px;
-    align-items: flex-start;
+    align-items: flex-start; /* Important pour que les colonnes soient indépendantes */
 }
 
 .masonry-column {
-    flex: 1;
+    flex: 1; /* Chaque colonne prend la même largeur */
     display: flex;
     flex-direction: column;
     gap: var(--gallery-gap);
+    width: 0; /* Astuce pour forcer l'égalité des largeurs */
     min-width: 0;
 }
 
+/* --- LE BLOC PHOTO STABILISÉ --- */
 .photo-item {
     position: relative;
     width: 100%;
+    
+    /* STABILITÉ : On réserve l'espace avant le chargement */
     background-color: #252525; 
     min-height: 250px; 
+    
     border-radius: 2px;
     overflow: hidden;
     cursor: zoom-in;
@@ -214,20 +290,54 @@ nav.scrolled {
 .photo-item img {
     width: 100%;
     height: auto;
+    display: block;
+    
+    /* ANIMATION RAPIDE */
     opacity: 0; 
-    transition: opacity 0.2s ease-out;
+    transition: opacity 0.2s ease-out; /* Très rapide pour éviter la sensation de lenteur */
 }
 
-.photo-item.loaded img { opacity: 1; }
+/* Classe ajoutée par JS quand l'image est prête */
+.photo-item.loaded img {
+    opacity: 1;
+}
 
-/* --- 7. PAGES TEXTE --- */
+/* Si erreur, on cache tout le bloc */
+.photo-item.error { display: none; }
+
+
+/* --- 7. PAGES TEXTE (A PROPOS, CONTACT, MENTIONS) --- */
 .content-wrapper { max-width: 900px; margin: 160px auto 100px; padding: 0 30px; }
 
+/* A propos */
 .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
-.about-content h1 { font-size: 2.5rem; margin-bottom: 30px; }
+.about-content h1 { font-family: var(--font-title); font-size: 2.5rem; margin-bottom: 30px; line-height: 1.2; }
+.about-content p { margin-bottom: 20px; color: #ddd; }
 .signature { font-family: var(--font-title); font-style: italic; font-size: 1.5rem; margin-top: 30px; }
 
-.contact-header h1 { font-size: 3rem; margin-bottom: 10px; }
+/* Contact */
+.contact-header { text-align: center; margin-bottom: 60px; }
+.contact-header h1 { font-family: var(--font-title); font-size: 3rem; margin-bottom: 10px; }
+.form-group { margin-bottom: 25px; }
+.form-group label { display: block; margin-bottom: 10px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+.form-group input, .form-group textarea {
+    width: 100%; background: transparent; border: 1px solid #444;
+    color: #fff; padding: 15px; font-family: var(--font-body); font-size: 1rem;
+}
+.form-group input:focus, .form-group textarea:focus { outline: none; border-color: #fff; }
+button[type="submit"] {
+    background: #fff; color: #000; padding: 15px 40px; border: none;
+    text-transform: uppercase; font-weight: 600; cursor: pointer; letter-spacing: 1px; transition: 0.3s;
+}
+button[type="submit"]:hover { background: #ddd; }
+
+/* Mentions Légales */
+.legal-content h4 { font-family: var(--font-title); font-size: 1.3rem; margin: 40px 0 15px; color: #fff; }
+.legal-content p { color: #ccc; margin-bottom: 15px; }
+
+/* Social Links */
+.social-section { margin-top: 60px; padding-top: 40px; border-top: 1px solid #333; text-align: center; }
+.social-section a { margin: 0 15px; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
 
 /* --- 8. FOOTER --- */
 footer {
@@ -235,10 +345,8 @@ footer {
     font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px;
     color: #555; border-top: 1px solid #2a2a2a; margin-top: auto;
 }
-footer a { color: #777; margin: 0 10px; transition: 0.3s;}
-footer a:hover { color: #fff; text-decoration: underline; }
 
-/* --- 9. LIGHTBOX AMÉLIORÉE --- */
+/* --- 9. LIGHTBOX --- */
 #lightbox {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(10, 10, 10, 0.98); z-index: 2000;
@@ -253,7 +361,6 @@ footer a:hover { color: #fff; text-decoration: underline; }
 #lightbox img { 
     max-height: 85vh; max-width: 80vw; 
     object-fit: contain;
-    box-shadow: 0 0 30px rgba(0,0,0,0.5);
 }
 
 .nav-btn {
@@ -266,15 +373,15 @@ footer a:hover { color: #fff; text-decoration: underline; }
 
 .close-lb {
     position: absolute; top: 30px; right: 40px;
-    color: white; font-size: 3rem; cursor: pointer; z-index: 2001;
+    color: white; font-size: 3rem; cursor: pointer;
 }
-
 /* --- 10. RESPONSIVE --- */
 @media (max-width: 1024px) {
     .albums-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 768px) {
+    /* Navigation Mobile */
     .burger { display: block; }
     .nav-links {
         position: absolute; right: 0px; top: var(--nav-height);
@@ -284,7 +391,19 @@ footer a:hover { color: #fff; text-decoration: underline; }
         width: 100%; transform: translateX(100%); transition: transform 0.4s ease-in;
     }
     .nav-links.nav-active { transform: translateX(0%); }
+    
+    /* Grilles */
     .albums-grid { grid-template-columns: 1fr; padding: 20px; }
-    .hero { background-attachment: scroll; }
-    .hero h1 { font-size: 3.5rem; }
+    
+    /* Masonry Wrapper Mobile */
+    .masonry-wrapper { padding: 0 15px 50px; gap: 10px; }
+    
+    /* About */
+    .about-grid { grid-template-columns: 1fr; }
+    .about-image { order: -1; margin-bottom: 20px; }
+
+    .hero h1 { font-size: 3rem; }
 }
+footer a { color: #777; text-decoration: none; margin: 0 10px; transition: 0.3s;}
+footer a:hover { color: #fff; text-decoration: underline; }
+
