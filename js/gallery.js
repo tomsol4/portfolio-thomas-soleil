@@ -97,3 +97,21 @@ document.addEventListener('keydown', (e) => {
         if (e.key === "Escape") closeLightbox();
     }
 });
+
+// Ajoute ceci à la fin de ton fichier gallery.js
+
+function handleScroll() {
+    // Si on est déjà en train de charger, on ne fait rien
+    if (isLoading) return;
+
+    // Calcul de la position de scroll
+    // On vérifie si on est à moins de 800px du bas de la page
+    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+    
+    if (scrollTop + clientHeight >= scrollHeight - 800) {
+        // On vérifie s'il reste des photos à charger
+        if (photosLoadedCount < currentAlbum.count) {
+            loadNextBatch();
+        }
+    }
+}
