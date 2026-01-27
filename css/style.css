@@ -196,11 +196,10 @@ nav.scrolled {
 
 /* RESPONSIVE MOBILE */
 @media (max-width: 768px) {
-    .hero {
-        /* On désactive le parallaxe sur mobile pour la fluidité */
-        background-attachment: scroll; 
+    .photo-item {
+        min-height: 150px; /* Plus petit pour s'adapter aux écrans étroits */
+        background-color: transparent; /* On enlève le gris sur mobile */
     }
-    .hero h1 { font-size: 3.5rem; }
 }
 /* --- 5. GRILLE ALBUMS (ACCUEIL) --- */
 .albums-grid {
