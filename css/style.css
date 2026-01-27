@@ -237,7 +237,19 @@ nav.scrolled {
 
 .album-info span { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; }
 
+/* On force l'utilisation de Rosehot pour tous les titres du site */
+h1, h2, h3, .logo, .album-info h3 {
+    font-family: 'Rosehot', serif !important; 
+    text-transform: uppercase;
+    letter-spacing: 4px; /* Pour l'élégance */
+}
 
+/* Pour la page galerie spécifiquement (le titre "Rugby") */
+#album-title {
+    font-family: 'Rosehot', serif;
+    font-size: 4rem; /* Ajuste la taille selon tes envies */
+    margin-top: 20px;
+}
 /* --- 6. PAGE GALERIE (Masonry Optimisé) --- */
 .gallery-header { padding: 160px 5% 60px; text-align: center; }
 .back-link { display: inline-block; margin-bottom: 20px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
