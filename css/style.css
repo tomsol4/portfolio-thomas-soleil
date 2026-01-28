@@ -286,11 +286,3 @@ footer a:hover { color: #fff; text-decoration: underline; }
     .about-image { order: -1; margin-bottom: 20px; }
     .hero h1 { font-size: 3rem; }
 }
-/* CODE DE TEST A SUPPRIMER PLUS TARD */
-.photo-item img {
-    opacity: 1 !important;
-}
-.photo-item {
-    border: 2px solid red;
-    min-height: 50px !important;
-}
