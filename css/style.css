@@ -184,9 +184,15 @@ nav.scrolled {
 }
 
 .photo-item {
-    position: relative; width: 100%;
+    position: relative;
+    width: 100%;
+    
+    /* C'est ce gris qui dépasse : */
     background-color: #252525; 
-    min-height: 200px; /* Réduit un peu pour éviter les gros trous */
+    
+    /* C'est cette hauteur qui force le bloc à être trop grand : */
+    min-height: 200px; 
+    
     border-radius: 2px;
     overflow: hidden;
     cursor: zoom-in;
@@ -196,8 +202,11 @@ nav.scrolled {
     width: 100%; height: auto; display: block;
     opacity: 0; transition: opacity 0.3s ease-out;
 }
-.photo-item.loaded img { opacity: 1; }
-
+.photo-item.loaded {
+    min-height: 0 !important;       /* On annule la hauteur minimale */
+    background-color: transparent;  /* On rend le fond invisible */
+    height: auto;                   /* La boîte colle parfaitement à l'image */
+}
 /* --- 7. PAGES TEXTE --- */
 .content-wrapper { max-width: 900px; margin: 160px auto 100px; padding: 0 30px; }
 .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
