@@ -183,14 +183,13 @@ nav.scrolled {
     min-width: 0;
 }
 
+/* --- LE BLOC PHOTO STABILISÉ --- */
 .photo-item {
     position: relative;
     width: 100%;
     
-    /* C'est ce gris qui dépasse : */
+    /* Le fond gris de chargement */
     background-color: #252525; 
-    
-    /* C'est cette hauteur qui force le bloc à être trop grand : */
     min-height: 200px; 
     
     border-radius: 2px;
@@ -198,14 +197,26 @@ nav.scrolled {
     cursor: zoom-in;
 }
 
+/* L'état initial de l'image (invisible) */
 .photo-item img {
-    width: 100%; height: auto; display: block;
-    opacity: 0; transition: opacity 0.3s ease-out;
+    width: 100%; 
+    height: auto; 
+    display: block;
+    opacity: 0; /* Elle est cachée au début */
+    transition: opacity 0.3s ease-out;
 }
+
+/* --- C'EST ICI QU'IL MANQUAIT LE CODE --- */
+/* Quand la boîte a la classe "loaded", l'image devient visible */
+.photo-item.loaded img {
+    opacity: 1;
+}
+
+/* Et on supprime le gris et la hauteur minimale (ton correctif précédent) */
 .photo-item.loaded {
-    min-height: 0 !important;       /* On annule la hauteur minimale */
-    background-color: transparent;  /* On rend le fond invisible */
-    height: auto;                   /* La boîte colle parfaitement à l'image */
+    min-height: 0 !important;       
+    background-color: transparent;  
+    height: auto;                   
 }
 /* --- 7. PAGES TEXTE --- */
 .content-wrapper { max-width: 900px; margin: 160px auto 100px; padding: 0 30px; }
