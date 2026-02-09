@@ -1,59 +1,70 @@
 document.addEventListener("DOMContentLoaded", () => {
     
-    // 1. INJECTION DU HEADER ET FOOTER
+    // 1. INJECTION DU HEADER, FOOTER ET META THEME
     injectCommonElements();
+    injectMetaThemeColor(); // Force la barre d'adresse en noir sur mobile
 
-    // 2. GESTION DU SCROLL NAV (Ton ancien code)
+    // 2. GESTION DU SCROLL NAV
     const nav = document.querySelector("nav");
     window.addEventListener("scroll", () => {
         if (window.scrollY > 50) nav.classList.add("scrolled");
         else nav.classList.remove("scrolled");
     });
 
-    // 3. GESTION DU MENU MOBILE (Ton ancien code, adapté aux éléments dynamiques)
+    // 3. GESTION DU MENU MOBILE (Burger)
+    initMobileMenu();
+});
+
+/* --- FONCTION : MENU MOBILE --- */
+function initMobileMenu() {
     const burger = document.querySelector('.burger');
     const navLinks = document.querySelector('.nav-links');
+    const nav = document.querySelector('nav');
     const links = document.querySelectorAll('.nav-links a');
 
-    if(burger) {
+    if (burger) {
         burger.addEventListener('click', () => {
+            // Bascule l'animation du burger et l'affichage du menu
             navLinks.classList.toggle('nav-active');
             burger.classList.toggle('toggle');
+            
+            // FIX MOBILE : Force le fond noir quand le menu est ouvert
+            nav.classList.toggle('menu-open');
         });
         
+        // Ferme le menu quand on clique sur un lien
         links.forEach(link => {
             link.addEventListener('click', () => {
                 navLinks.classList.remove('nav-active');
                 burger.classList.remove('toggle');
+                nav.classList.remove('menu-open');
             });
         });
     }
-});
+}
 
-// --- FONCTION POUR GÉNÉRER LE HTML COMMUN ---
+/* --- FONCTION : GÉNÉRATION DU HTML COMMUN --- */
 function injectCommonElements() {
     const nav = document.querySelector('nav');
     const footer = document.querySelector('footer');
 
-    // A. Le HTML du Menu
+    // A. Injection du Menu
     if (nav) {
         nav.innerHTML = `
             <a href="index.html" class="logo">T.S</a>
             <div class="burger"><div></div><div></div><div></div></div>
             <div class="nav-links">
-                <a href="index.html" data-link="albums">Albums</a>
-                <a href="a-propos.html" data-link="a-propos">À Propos</a>
-                <a href="contact.html" data-link="contact">Contact</a>
+                <a href="index.html">Albums</a>
+                <a href="a-propos.html">À Propos</a>
+                <a href="contact.html">Contact</a>
             </div>
         `;
-        highlightActiveLink();
+        highlightActiveLink(); // Souligne la page en cours
     }
 
-    // B. Le HTML du Footer (AVEC INSTAGRAM)
+    // B. Injection du Footer (Avec Instagram & Année auto)
     if (footer) {
-        // On récupère l'année actuelle automatiquement
         const year = new Date().getFullYear();
-        
         footer.innerHTML = `
             <p>&copy; ${year} Thomas Soleil. Tous droits réservés.</p>
             <p style="margin-top: 10px;">
@@ -65,19 +76,25 @@ function injectCommonElements() {
     }
 }
 
-// --- FONCTION POUR ACTIVER LE LIEN COURANT ---
+/* --- FONCTION : SOULIGNER LE LIEN ACTIF --- */
 function highlightActiveLink() {
-    // Récupère le nom du fichier actuel (ex: "contact.html")
     let path = window.location.pathname.split("/").pop();
-    
-    // Si on est à la racine (tsoleil.fr/), path est vide, donc on force index.html
     if (path === "") path = "index.html";
-
-    // Cas spécial : Si on est sur "galerie.html", on veut activer "Albums" (index.html)
+    
+    // Si on est dans une galerie, on active "Albums"
     if (path.includes("galerie.html")) path = "index.html";
 
     const activeLink = document.querySelector(`.nav-links a[href="${path}"]`);
-    if (activeLink) {
-        activeLink.classList.add("active");
+    if (activeLink) activeLink.classList.add("active");
+}
+
+/* --- FONCTION : FORCER LA COULEUR DU NAVIGATEUR MOBILE --- */
+function injectMetaThemeColor() {
+    let meta = document.querySelector("meta[name='theme-color']");
+    if (!meta) {
+        meta = document.createElement('meta');
+        meta.name = "theme-color";
+        document.head.appendChild(meta);
     }
+    meta.content = "#1c1c1c"; // Noir profond
 }

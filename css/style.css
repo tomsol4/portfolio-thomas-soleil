@@ -297,3 +297,22 @@ footer a:hover { color: #fff; text-decoration: underline; }
     .about-image { order: -1; margin-bottom: 20px; }
     .hero h1 { font-size: 3rem; }
 }
+
+/* --- FIX MOBILE --- */
+
+/* 1. Évite le fond blanc lors du "scroll élastique" sur mobile */
+html {
+    background-color: var(--bg-color);
+}
+
+/* 2. Classe qu'on va activer en JS quand le menu est ouvert */
+nav.menu-open {
+    background-color: var(--bg-color) !important; /* Force le noir */
+}
+
+/* 3. Sécurité supplémentaire pour le burger sur fond clair (au cas où) */
+.burger div {
+    background-color: #fff;
+    /* Ombre portée pour que le burger reste visible même sur fond clair */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.8); 
+}
