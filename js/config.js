@@ -37,16 +37,16 @@ const siteConfig = {
         {
             id: "rocktoulouse",
             title: "Rock Toulouse",
-            cover: "images/rocktoulouse/Rock-31.webp",
+            cover: "images/rocktoulouse/Rock-25.webp",
             folder: "images/rocktoulouse",
             prefix: "Rock-",
-            count: 100,
+            count: 77,
             date: "2025",
             ext: ".webp"
         },
         {
             id: "montagne",
-            title: "Expédition Montagne",
+            title: "Randonnée Montagne",
             cover: "images/montagne/Montagne-5.webp",
             folder: "images/montagne",
             prefix: "Montagne-",
@@ -55,14 +55,14 @@ const siteConfig = {
             ext: ".webp"
         },
         {
-            id: "chartres",
-            title: "Chartres",
-            cover: "images/chartres/chartres-18.webp", // Mets le nom de ta photo préférée
-            folder: "images/chartres",
-            prefix: "chartres-",    
+            id: "autres",
+            title: "autres",
+            cover: "images/vrac/vrac-18.jpg", // Mets le nom de ta photo préférée
+            folder: "images/vrac",
+            prefix: "vrac-",    
             count: 22,
-            date: "2024",
-            ext: ".webp"
+            date: "",
+            ext: ".jpg"
         },
     ]
 };

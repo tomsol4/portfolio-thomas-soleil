@@ -30,3 +30,23 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+// Dans main.js
+function injectCommonElements() {
+    const navHTML = `
+        <a href="index.html" class="logo">T.S</a>
+        <div class="burger"><div></div><div></div><div></div></div>
+        <div class="nav-links">
+            <a href="index.html">Albums</a>
+            <a href="a-propos.html">À Propos</a>
+            <a href="contact.html">Contact</a>
+        </div>
+    `;
+    document.querySelector('nav').innerHTML = navHTML;
+    
+    // Code pour mettre la classe .active sur le bon lien
+    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        if (link.getAttribute('href') === currentPath) link.classList.add('active');
+    });
+}
+// Appeler cette fonction au début du DOMContentLoaded
