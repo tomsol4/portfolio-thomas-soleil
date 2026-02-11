@@ -55,6 +55,16 @@ const siteConfig = {
             ext: ".webp"
         },
         {
+            id: "argentique",
+            title: "Photo Argentique",
+            cover: "images/argentique/argentique1.jpg",
+            folder: "images/argentique",
+            prefix: "argentique",
+            count: 23,
+            date: "2025",
+            ext: ".jpg"
+        },
+        {
             id: "autres",
             title: "autres",
             cover: "images/vrac/vrac-18.jpg", // Mets le nom de ta photo préférée
