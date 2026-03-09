@@ -12,6 +12,38 @@ const siteConfig = {
 
     // LISTE DES ALBUMS
     albums: [
+                {
+            id: "montagne",
+            title: "Randonnée Montagne",
+            cover: "images/montagne/Montagne-5.webp",
+            folder: "images/montagne",
+            prefix: "Montagne-",
+            count: 112,
+            date: "2025",
+            ext: ".webp"
+        },
+
+        {
+            id: "argentique",
+            title: "Photo Argentique",
+            cover: "images/argentique/argentique19.jpg",
+            folder: "images/argentique",
+            prefix: "argentique",
+            count: 23,
+            date: "2025",
+            ext: ".jpg"
+        },
+
+        {
+            id: "rocktoulouse",
+            title: "Rock Toulouse",
+            cover: "images/rocktoulouse/Rock-25.webp",
+            folder: "images/rocktoulouse",
+            prefix: "Rock-",
+            count: 77,
+            date: "2025",
+            ext: ".webp"
+        },
         {
             id: "rugby",
             title: "Rugby",
@@ -32,37 +64,6 @@ const siteConfig = {
             count: 260,
             date: "2025",
             ext: ".webp"
-        },
-
-        {
-            id: "rocktoulouse",
-            title: "Rock Toulouse",
-            cover: "images/rocktoulouse/Rock-25.webp",
-            folder: "images/rocktoulouse",
-            prefix: "Rock-",
-            count: 77,
-            date: "2025",
-            ext: ".webp"
-        },
-        {
-            id: "montagne",
-            title: "Randonnée Montagne",
-            cover: "images/montagne/Montagne-5.webp",
-            folder: "images/montagne",
-            prefix: "Montagne-",
-            count: 112,
-            date: "2025",
-            ext: ".webp"
-        },
-        {
-            id: "argentique",
-            title: "Photo Argentique",
-            cover: "images/argentique/argentique1.jpg",
-            folder: "images/argentique",
-            prefix: "argentique",
-            count: 23,
-            date: "2025",
-            ext: ".jpg"
         },
         {
             id: "autres",
