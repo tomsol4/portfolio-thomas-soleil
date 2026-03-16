@@ -18,6 +18,14 @@ document.addEventListener("DOMContentLoaded", () => {
         
         const titleEl = document.getElementById('album-title');
         if(titleEl) titleEl.innerText = currentAlbum.title;
+        // Remplir les métadonnées de l'album (nombre / date)
+        const metaEl = document.getElementById('album-meta');
+        if (metaEl) {
+            const parts = [];
+            if (currentAlbum.count) parts.push(`${currentAlbum.count} photo${currentAlbum.count > 1 ? 's' : ''}`);
+            if (currentAlbum.date) parts.push(currentAlbum.date);
+            metaEl.innerText = parts.join(' — ');
+        }
 
         initGalleryStructure();
         loadNextBatch();
@@ -25,22 +33,47 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// Recharge la page si on redimensionne la fenêtre (pour recalculer les colonnes)
+// Reflow on resize (rebuild columns without full reload)
 let resizeTimer;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-        location.reload(); 
+        rebuildColumns();
     }, 200);
 });
+
+function rebuildColumns() {
+    const container = document.getElementById('gallery-container');
+    if (!container) return;
+
+    // Récupère tous les items existants avant de vider
+    const existingItems = Array.from(container.querySelectorAll('.photo-item'));
+
+    // Vide et recrée les colonnes
+    container.innerHTML = '';
+    const colCount = window.innerWidth < 480 ? 1 : (window.innerWidth < 768 ? 2 : 3);
+    const columns = [];
+    for (let c = 0; c < colCount; c++) {
+        const colDiv = document.createElement('div');
+        colDiv.className = 'masonry-column';
+        container.appendChild(colDiv);
+        columns.push(colDiv);
+    }
+
+    // Redistribue les éléments existants dans les nouvelles colonnes
+    existingItems.forEach(item => {
+        // insert into currently shortest column for nicer distribution
+        const shortest = columns.reduce((p, c) => p.offsetHeight < c.offsetHeight ? p : c, columns[0]);
+        shortest.appendChild(item);
+    });
+}
 
 function initGalleryStructure() {
     const container = document.getElementById('gallery-container');
     if(!container) return;
 
-    container.innerHTML = ''; 
-    const colCount = window.innerWidth < 768 ? 2 : 3;
-    
+    container.innerHTML = '';
+    const colCount = window.innerWidth < 480 ? 1 : (window.innerWidth < 768 ? 2 : 3);
     for (let c = 0; c < colCount; c++) {
         const colDiv = document.createElement('div');
         colDiv.className = 'masonry-column';
@@ -50,10 +83,10 @@ function initGalleryStructure() {
 
 function loadNextBatch() {
     if (!currentAlbum || isLoading) return;
-    isLoading = true;
-    
+
     const columns = Array.from(document.querySelectorAll('.masonry-column'));
-    if(columns.length === 0) return;
+    if (columns.length === 0) return;
+    isLoading = true;
 
     // Sécurité pour l'extension et le compteur
     const extension = currentAlbum.ext || ".webp"; 
@@ -95,7 +128,8 @@ function loadNextBatch() {
     }
     
     photosLoadedCount = end;
-    setTimeout(() => { isLoading = false; }, 50); 
+    // Autorise de nouvelles charges immédiatement après avoir inséré les éléments
+    isLoading = false;
 }
 
 // --- LIGHTBOX ---

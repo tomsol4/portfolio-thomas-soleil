@@ -6,10 +6,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 2. GESTION DU SCROLL NAV
     const nav = document.querySelector("nav");
-    window.addEventListener("scroll", () => {
-        if (window.scrollY > 50) nav.classList.add("scrolled");
-        else nav.classList.remove("scrolled");
-    });
+    if (nav) {
+        window.addEventListener("scroll", () => {
+            if (window.scrollY > 50) nav.classList.add("scrolled");
+            else nav.classList.remove("scrolled");
+        });
+    }
 
     // 3. GESTION DU MENU MOBILE (Burger)
     initMobileMenu();
