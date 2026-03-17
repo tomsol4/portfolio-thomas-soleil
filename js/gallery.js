@@ -25,12 +25,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// Recharge la page si on redimensionne la fenêtre (pour recalculer les colonnes)
+// Nouveau code corrigé
 let resizeTimer;
+let windowWidth = window.innerWidth; // On mémorise la largeur au chargement
+
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-        location.reload(); 
+        // On vérifie si la largeur a VRAIMENT changé
+        if (window.innerWidth !== windowWidth) {
+            windowWidth = window.innerWidth; // On met à jour la nouvelle largeur
+            location.reload(); 
+        }
     }, 200);
 });
 
