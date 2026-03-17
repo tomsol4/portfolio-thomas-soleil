@@ -98,3 +98,16 @@ function injectMetaThemeColor() {
     }
     meta.content = "#1c1c1c"; // Noir profond
 }
+
+// --- FONCTION : EMPÊCHER LE CLIC-DROIT SUR LES IMAGES ---
+document.addEventListener('contextmenu', function(e) {
+    if (e.target.tagName === 'IMG') {
+        e.preventDefault(); // Annule l'action par défaut du clic-droit
+    }
+});
+// --- FONCTION : EMPÊCHER LE GLISSER-DÉPOSER DES IMAGES ---
+document.addEventListener('dragstart', function(e) {
+    if (e.target.tagName === 'IMG') {
+        e.preventDefault(); // Annule le comportement de glisser-déposer
+    }
+}); 
