@@ -48,13 +48,14 @@ function injectCommonElements() {
     const nav = document.querySelector('nav');
     const footer = document.querySelector('footer');
 
-    // A. Injection du Menu
+// A. Injection du Menu
     if (nav) {
         nav.innerHTML = `
             <a href="index.html" class="logo">T.S</a>
             <div class="burger"><div></div><div></div><div></div></div>
             <div class="nav-links">
                 <a href="index.html">Albums</a>
+                <a href="prestations.html">Tarifs</a>
                 <a href="a-propos.html">À Propos</a>
                 <a href="contact.html">Contact</a>
             </div>
