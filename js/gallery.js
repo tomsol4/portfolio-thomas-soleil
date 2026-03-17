@@ -25,23 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-let resizeTimer;
-let windowWidth = window.innerWidth;
-
-window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-        // On calcule la différence de largeur
-        let widthDiff = Math.abs(window.innerWidth - windowWidth);
-        
-        // Si la différence est supérieure à 50 pixels (rotation de l'écran)
-        // On ignore les petits changements de 10-20px (barre de défilement)
-        if (widthDiff > 50) {
-            windowWidth = window.innerWidth;
-            location.reload(); 
-        }
-    }, 250);
-});
 
 function initGalleryStructure() {
     const container = document.getElementById('gallery-container');
