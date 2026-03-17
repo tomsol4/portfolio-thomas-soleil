@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
     const albumId = params.get('id');
     
-    // Si pas de config ou pas d'ID, on arrête tout
     if (typeof siteConfig === 'undefined' || !albumId) return;
 
     currentAlbum = siteConfig.albums.find(a => a.id === albumId);
@@ -24,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
         window.addEventListener('scroll', handleScroll);
     }
 });
-
 
 function initGalleryStructure() {
     const container = document.getElementById('gallery-container');
@@ -47,7 +45,6 @@ function loadNextBatch() {
     const columns = Array.from(document.querySelectorAll('.masonry-column'));
     if(columns.length === 0) return;
 
-    // Sécurité pour l'extension et le compteur
     const extension = currentAlbum.ext || ".webp"; 
     const start = photosLoadedCount + 1;
     let end = Math.min(start + BATCH_SIZE - 1, currentAlbum.count);
@@ -69,17 +66,15 @@ function loadNextBatch() {
         img.alt = `Photo ${currentAlbum.title} ${i}`;
         img.loading = "lazy";
 
-        // CORRECTION MAJEURE ICI : On définit l'action AVANT de donner la source
         img.onload = () => { 
             div.classList.add('loaded'); 
         };
         
-        // Si l'image a une erreur (ex: n'existe pas), on cache le bloc
         img.onerror = () => {
             div.style.display = 'none';
         };
 
-        img.src = src; // On lance le chargement à la fin
+        img.src = src; 
         
         div.onclick = () => openLightbox(i);
         div.appendChild(img);
