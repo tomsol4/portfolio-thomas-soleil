@@ -8,9 +8,10 @@ document.addEventListener("DOMContentLoaded", () => {
         card.href = `galerie.html?id=${album.id}`;
         card.className = 'album-card';
         
-        // OPTIMISATION : Pas de lazy loading pour les albums sur l'accueil
-        // (il y en a peu, on veut qu'ils soient là tout de suite)
-        const loadingMode = "eager"; 
+// OPTIMISATION VITESSE (SEO) : 
+        // On charge immédiatement les 3 premiers (visibles à l'écran),
+        // et on retarde le chargement des autres pour accélérer l'affichage mobile.
+        const loadingMode = index < 3 ? "eager" : "lazy";
 
         card.innerHTML = `
             <img src="${album.cover}" alt="${album.title}" loading="${loadingMode}">
