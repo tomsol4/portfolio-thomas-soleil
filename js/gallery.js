@@ -26,17 +26,21 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 let resizeTimer;
-let windowWidth = window.innerWidth; // On mémorise la largeur de l'écran
+let windowWidth = window.innerWidth;
 
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-        // On vérifie si la LARGEUR a vraiment changé
-        if (window.innerWidth !== windowWidth) {
-            windowWidth = window.innerWidth; // On met à jour
+        // On calcule la différence de largeur
+        let widthDiff = Math.abs(window.innerWidth - windowWidth);
+        
+        // Si la différence est supérieure à 50 pixels (rotation de l'écran)
+        // On ignore les petits changements de 10-20px (barre de défilement)
+        if (widthDiff > 50) {
+            windowWidth = window.innerWidth;
             location.reload(); 
         }
-    }, 200);
+    }, 250);
 });
 
 function initGalleryStructure() {
