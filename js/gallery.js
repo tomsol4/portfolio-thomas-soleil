@@ -25,16 +25,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// Nouveau code corrigé
 let resizeTimer;
-let windowWidth = window.innerWidth; // On mémorise la largeur au chargement
+let windowWidth = window.innerWidth; // On mémorise la largeur de l'écran
 
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-        // On vérifie si la largeur a VRAIMENT changé
+        // On vérifie si la LARGEUR a vraiment changé
         if (window.innerWidth !== windowWidth) {
-            windowWidth = window.innerWidth; // On met à jour la nouvelle largeur
+            windowWidth = window.innerWidth; // On met à jour
             location.reload(); 
         }
     }, 200);
