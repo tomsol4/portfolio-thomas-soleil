@@ -320,66 +320,79 @@ nav.menu-open {
 /* --- PAGE PRESTATIONS & TARIFS --- */
 .pricing-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Retour à 3 colonnes ! */
-    gap: 30px;
-    margin-top: 50px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px; /* On augmente l'espace entre les cartes */
+    margin-top: 60px;
+    align-items: stretch; /* Les cartes font toutes la même hauteur */
+    max-width: 1200px; /* On donne plus de largeur globale à la grille */
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .pricing-card {
-    background: #252525;
-    padding: 40px 30px;
+    background: #1c1c1c; /* On garde la couleur de fond du site pour un effet plus subtil */
+    padding: 50px 40px; /* Plus d'espace à l'intérieur de la carte */
     border-radius: 4px;
     text-align: center;
     position: relative;
     border: 1px solid #333;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s ease, border-color 0.4s ease; /* Transition plus douce */
+    display: flex;
+    flex-direction: column;
 }
 
 .pricing-card:hover {
-    transform: translateY(-10px);
-    border-color: #555;
+    transform: translateY(-5px); /* Élévation plus subtile au survol */
+    border-color: #666;
 }
 
 .pricing-card h3 {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
+    font-size: 1.2rem; /* Titre légèrement plus petit pour tenir sur une ligne */
+    margin-bottom: 25px;
     color: #fff;
+    letter-spacing: 5px; /* Un peu plus d'espace entre les lettres */
+    min-height: auto; /* On enlève la hauteur forcée */
 }
 
 .price {
-    font-size: 2.5rem;
+    font-size: 2.2rem; /* Prix un poil plus petit pour plus d'élégance */
     font-weight: 300;
     color: #fff;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     font-family: var(--font-title);
+    letter-spacing: 2px;
 }
 
 .price span {
-    font-size: 1rem;
+    font-size: 0.8rem;
     color: #888;
     font-family: var(--font-body);
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 .pricing-desc {
-    font-size: 0.9rem;
-    color: #bbb;
-    margin-bottom: 30px;
-    min-height: 60px;
+    font-size: 0.85rem;
+    color: #aaa;
+    margin-bottom: 40px;
+    line-height: 1.6;
+    min-height: 80px; /* On donne de l'espace à la description pour aligner les listes */
 }
 
 .pricing-card ul {
     list-style: none;
     padding: 0;
-    margin-bottom: 40px;
-    text-align: left;
+    margin-bottom: 50px;
+    text-align: center; /* On centre la liste pour un rendu plus esthétique */
+    flex-grow: 1; 
 }
 
 .pricing-card ul li {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #ddd;
-    margin-bottom: 12px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #333;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #2a2a2a; /* Ligne de séparation plus discrète */
 }
 
 .pricing-card ul li:last-child {
@@ -388,43 +401,48 @@ nav.menu-open {
 
 .btn-reserver {
     display: inline-block;
-    background: #fff;
-    color: #000;
-    padding: 12px 30px;
+    background: transparent; /* Bouton transparent avec bordure pour un look premium */
+    color: #fff;
+    border: 1px solid #fff;
+    padding: 15px 30px;
     text-transform: uppercase;
-    font-size: 0.8rem;
-    letter-spacing: 2px;
-    font-weight: 600;
-    transition: 0.3s;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    font-weight: 400;
+    transition: all 0.4s ease;
     width: 100%;
+    margin-top: auto; 
 }
 
 .btn-reserver:hover {
-    background: #ccc;
+    background: #fff;
+    color: #000;
 }
 
 /* Carte mise en avant (Mariage) */
 .pricing-card.featured {
     border-color: #fff;
+    background: #222; /* Légèrement plus clair que les autres pour la faire ressortir */
 }
 
 .badge {
     position: absolute;
-    top: -15px;
+    top: -12px;
     left: 50%;
     transform: translateX(-50%);
     background: #fff;
     color: #000;
-    padding: 5px 15px;
-    font-size: 0.7rem;
+    padding: 6px 20px;
+    font-size: 0.65rem;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: bold;
+    letter-spacing: 3px;
+    font-weight: 600;
 }
 
 /* Responsive pour mobile */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
     .pricing-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* Passe à 1 colonne sur les plus petits écrans */
+        max-width: 500px;
     }
 }
