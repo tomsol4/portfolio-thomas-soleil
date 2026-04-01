@@ -26,12 +26,12 @@ const siteConfig = {
         {
             id: "argentique",
             title: "Photo Argentique",
-            cover: "images/argentique/argentiqueNB-13.jpg",
+            cover: "images/argentique/ArgentiqueNB-26.webp",
             folder: "images/argentique",
             prefix: "argentiqueNB-",
             count: 23,
             date: "2025",
-            ext: ".jpg"
+            ext: ".webp"
         },
 
         {
