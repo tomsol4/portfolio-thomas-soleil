@@ -57,7 +57,7 @@ const siteConfig = {
         },
         {
             id: "rugby",
-            title: "Rugby",
+            title: "Rugby toulouse-Leinster Espoirs",
             cover: "images/rugby/rugby-33.webp",
             folder: "images/rugby",
             prefix: "rugby-",
