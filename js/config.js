@@ -35,6 +35,17 @@ const siteConfig = {
         },
 
         {
+            id: "Rugby CO",
+            title: "Rugby CO 1/4 de finale feminin",
+            cover: "images/rugbyCO/rugbyCO-11.webp",
+            folder: "images/rugbyCO",
+            prefix: "rugbyCO-",
+            count: 200,
+            date: "2025",
+            ext: ".webp"
+        },
+
+        {
             id: "rocktoulouse",
             title: "Rock Toulouse",
             cover: "images/rocktoulouse/Rock-25.webp",
