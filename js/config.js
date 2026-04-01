@@ -35,13 +35,13 @@ const siteConfig = {
         },
 
         {
-            id: "Rugby CO",
-            title: "Rugby CO 1/4 de finale feminin",
+            id: "RugbyCO",
+            title: "Rugby CO quart de finale senior feminin",
             cover: "images/rugbyCO/rugbyCO-11.webp",
             folder: "images/rugbyCO",
             prefix: "rugbyCO-",
-            count: 200,
-            date: "2025",
+            count: 203,
+            date: "2026",
             ext: ".webp"
         },
 
