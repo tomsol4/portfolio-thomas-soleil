@@ -24,19 +24,19 @@ const siteConfig = {
         },
 
         {
-            id: "argentique",
+            id: "Argentique",
             title: "Photo Argentique",
-            cover: "images/argentique/ArgentiqueNB-26.webp",
+            cover: "images/argentique/Argentique-26.webp",
             folder: "images/argentique",
-            prefix: "ArgentiqueNB-",
+            prefix: "Argentique-",
             count: 23,
             date: "2025",
             ext: ".webp"
         },
 
         {
-            id: "RugbyCO",
-            title: "Rugby CO quart de finale senior feminin",
+            id: "rugby_co",
+            title: "Castres Olympique Feminin",
             cover: "images/rugby_co/rugbyCO-88.webp",
             folder: "images/rugby_co",
             prefix: "rugbyCO-",
@@ -68,7 +68,6 @@ const siteConfig = {
         {
             id: "noel", 
             title: "Concert Noël Chor Unum",
-            // CORRECTION ICI : On met .webp
             cover: "images/noelchorunum/chorunumnoel-4.webp", 
             folder: "images/noelchorunum", 
             prefix: "chorunumnoel-", // Attention à ce nom, vérifie tes fichiers !

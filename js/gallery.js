@@ -2,7 +2,7 @@ let currentAlbum = null;
 let photosLoadedCount = 0;
 let isLoading = false;
 let currentIndex = 1;
-const BATCH_SIZE = 20;
+const BATCH_SIZE = 30;
 
 document.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
@@ -57,7 +57,7 @@ function loadNextBatch() {
     for (let i = start; i <= end; i++) {
         const src = `${currentAlbum.folder}/${currentAlbum.prefix}${i}${extension}`;
         
-        let shortestColumn = columns.reduce((p, c) => p.offsetHeight < c.offsetHeight ? p : c);
+        let targetColumn = columns[i % columns.length];
 
         const div = document.createElement('div');
         div.className = 'photo-item';
@@ -78,7 +78,7 @@ function loadNextBatch() {
         
         div.onclick = () => openLightbox(i);
         div.appendChild(img);
-        shortestColumn.appendChild(div);
+        targetColumn.appendChild(div);
     }
     
     photosLoadedCount = end;
@@ -128,7 +128,7 @@ document.addEventListener('keydown', (e) => {
 function handleScroll() {
     if (isLoading) return;
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-    if (scrollTop + clientHeight >= scrollHeight - 600) {
+    if (scrollTop + clientHeight >= scrollHeight - 2000) {
         if (photosLoadedCount < currentAlbum.count) {
             loadNextBatch();
         }

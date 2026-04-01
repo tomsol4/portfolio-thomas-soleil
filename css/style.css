@@ -184,41 +184,33 @@ nav.scrolled {
     min-width: 0;
 }
 
-/* --- LE BLOC PHOTO STABILISÉ --- */
 .photo-item {
     position: relative;
     width: 100%;
-    
-    /* Le fond gris de chargement */
     background-color: #252525; 
-    min-height: 200px; 
-    
+    aspect-ratio: 3/4; /* Crée une belle forme rectangulaire par défaut */
     border-radius: 2px;
     overflow: hidden;
     cursor: zoom-in;
 }
 
-/* L'état initial de l'image (invisible) */
 .photo-item img {
     width: 100%; 
     height: auto; 
     display: block;
-    opacity: 0; /* Elle est cachée au début */
+    opacity: 0; 
     transition: opacity 0.3s ease-out;
 }
 
-/* --- C'EST ICI QU'IL MANQUAIT LE CODE --- */
-/* Quand la boîte a la classe "loaded", l'image devient visible */
 .photo-item.loaded img {
     opacity: 1;
 }
 
-/* Et on supprime le gris et la hauteur minimale (ton correctif précédent) */
 .photo-item.loaded {
-    min-height: 0 !important;       
+    aspect-ratio: auto; /* Annule le ratio forcé une fois la vraie image chargée */
     background-color: transparent;  
-    height: auto;                   
 }
+
 /* --- 7. PAGES TEXTE --- */
 .content-wrapper { max-width: 900px; margin: 160px auto 100px; padding: 0 30px; }
 .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
