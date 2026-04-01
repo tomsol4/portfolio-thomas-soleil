@@ -29,7 +29,7 @@ function initGalleryStructure() {
     if(!container) return;
 
     container.innerHTML = ''; 
-    const colCount = window.innerWidth < 768 ? 2 : 3;
+    const colCount = window.innerWidth < 768 ? 2 : 4;
     
     for (let c = 0; c < colCount; c++) {
         const colDiv = document.createElement('div');
