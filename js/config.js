@@ -28,7 +28,7 @@ const siteConfig = {
             title: "Photo Argentique",
             cover: "images/argentique/ArgentiqueNB-26.webp",
             folder: "images/argentique",
-            prefix: "argentiqueNB-",
+            prefix: "ArgentiqueNB-",
             count: 23,
             date: "2025",
             ext: ".webp"
