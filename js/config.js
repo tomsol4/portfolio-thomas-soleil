@@ -12,17 +12,17 @@ const siteConfig = {
 
     // LISTE DES ALBUMS
     albums: [
-                {
-            id: "montagne",
-            title: "Randonnée Montagne",
-            cover: "images/montagne/Montagne-5.webp",
-            folder: "images/montagne",
-            prefix: "Montagne-",
-            count: 112,
-            date: "2025",
+
+        {
+            id: "mariage",
+            title: "mariage",
+            cover: "images/mariage/mariage1-1.webp",
+            folder: "images/mariage",
+            prefix: "mariage1-",
+            count: 77,
+            date: "2026",
             ext: ".webp"
         },
-
         {
             id: "Argentique",
             title: "Photo Argentique",
@@ -35,6 +35,26 @@ const siteConfig = {
         },
 
         {
+            id: "rugby",
+            title: "Rugby toulouse-Leinster Espoirs",
+            cover: "images/rugby/CO-BayonneEspoirs-209.webp",
+            folder: "images/rugby",
+            prefix: "CO-BayonneEspoirs-",
+            count: 241,
+            date: "2026",
+            ext: ".webp"
+        },
+                        {
+            id: "montagne",
+            title: "Randonnée Montagne",
+            cover: "images/montagne/Montagne-5.webp",
+            folder: "images/montagne",
+            prefix: "Montagne-",
+            count: 112,
+            date: "2025",
+            ext: ".webp"
+        },
+                {
             id: "rugby_co",
             title: "Castres Olympique Feminin",
             cover: "images/rugby_co/rugbyCO-88.webp",
@@ -45,26 +65,6 @@ const siteConfig = {
             ext: ".webp"
         },
 
-        {
-            id: "rocktoulouse",
-            title: "Rock Toulouse",
-            cover: "images/rocktoulouse/Rock-25.webp",
-            folder: "images/rocktoulouse",
-            prefix: "Rock-",
-            count: 77,
-            date: "2025",
-            ext: ".webp"
-        },
-        {
-            id: "rugby",
-            title: "Rugby toulouse-Leinster Espoirs",
-            cover: "images/rugby/CO-BayonneEspoirs-14.webp",
-            folder: "images/rugby",
-            prefix: "CO-BayonneEspoirs-",
-            count: 241,
-            date: "2026",
-            ext: ".webp"
-        },
         {
             id: "noel", 
             title: "Concert Noël Chor Unum",
