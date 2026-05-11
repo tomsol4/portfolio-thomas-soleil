@@ -13,6 +13,17 @@ const siteConfig = {
     // LISTE DES ALBUMS
     albums: [
 
+
+        {
+            id: "Argentique",
+            title: "Photo Argentique",
+            cover: "images/argentique/Argentique-26.webp",
+            folder: "images/argentique",
+            prefix: "Argentique-",
+            count: 23,
+            date: "2025",
+            ext: ".webp"
+        },
         {
             id: "mariage",
             title: "mariage",
@@ -24,20 +35,9 @@ const siteConfig = {
             ext: ".webp"
         },
         {
-            id: "Argentique",
-            title: "Photo Argentique",
-            cover: "images/argentique/Argentique-26.webp",
-            folder: "images/argentique",
-            prefix: "Argentique-",
-            count: 23,
-            date: "2025",
-            ext: ".webp"
-        },
-
-        {
             id: "rugby",
             title: "Rugby toulouse-Leinster Espoirs",
-            cover: "images/rugby/CO-BayonneEspoirs-209.webp",
+            cover: "images/rugby/CO-BayonneEspoirs-213.webp",
             folder: "images/rugby",
             prefix: "CO-BayonneEspoirs-",
             count: 241,
