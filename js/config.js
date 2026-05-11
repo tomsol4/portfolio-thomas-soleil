@@ -36,7 +36,7 @@ const siteConfig = {
         },
         {
             id: "rugby",
-            title: "Rugby toulouse-Leinster Espoirs",
+            title: "Rugby Castres Bayonne Espoirs",
             cover: "images/rugby/CO-BayonneEspoirs-209.webp",
             folder: "images/rugby",
             prefix: "CO-BayonneEspoirs-",
@@ -52,16 +52,6 @@ const siteConfig = {
             prefix: "Montagne-",
             count: 112,
             date: "2025",
-            ext: ".webp"
-        },
-                {
-            id: "rugby_co",
-            title: "Castres Olympique Feminin",
-            cover: "images/rugby_co/rugbyCO-88.webp",
-            folder: "images/rugby_co",
-            prefix: "rugbyCO-",
-            count: 203,
-            date: "2026",
             ext: ".webp"
         },
 
