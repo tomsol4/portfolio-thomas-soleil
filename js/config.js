@@ -30,7 +30,7 @@ const siteConfig = {
             cover: "images/mariage/mariage1-1.webp",
             folder: "images/mariage",
             prefix: "mariage1-",
-            count: 77,
+            count: 89,
             date: "2026",
             ext: ".webp"
         },
