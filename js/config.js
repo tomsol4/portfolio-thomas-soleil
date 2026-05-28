@@ -35,11 +35,11 @@ const siteConfig = {
             ext: ".webp"
         },
         {
-            id: "rugby",
+            id: "co_mhr",
             title: "Rugby CO MHR",
-            cover: "images/co-mhr/CO-MHR-1.webp",
-            folder: "images/co-mhr",
-            prefix: "co-mhr-",
+            cover: "images/co_mhr/co_mhr-203.webp",
+            folder: "images/co_mhr",
+            prefix: "co_mhr-",
             count: 214,
             date: "2026",
             ext: ".webp"
