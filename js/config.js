@@ -36,11 +36,11 @@ const siteConfig = {
         },
         {
             id: "rugby",
-            title: "Rugby Castres Bayonne Espoirs",
-            cover: "images/rugby/CO-BayonneEspoirs-209.webp",
-            folder: "images/rugby",
-            prefix: "CO-BayonneEspoirs-",
-            count: 241,
+            title: "Rugby CO MHR",
+            cover: "images/co-mhr/CO-MHR-1.webp",
+            folder: "images/co-mhr",
+            prefix: "co-mhr-",
+            count: 214,
             date: "2026",
             ext: ".webp"
         },
@@ -74,6 +74,16 @@ const siteConfig = {
             count: 22,
             date: "",
             ext: ".jpg"
+        },
+                {
+            id: "rugby",
+            title: "Rugby Castres Bayonne Espoirs",
+            cover: "images/rugby/CO-BayonneEspoirs-209.webp",
+            folder: "images/rugby",
+            prefix: "CO-BayonneEspoirs-",
+            count: 241,
+            date: "2026",
+            ext: ".webp"
         },
     ]
 };
