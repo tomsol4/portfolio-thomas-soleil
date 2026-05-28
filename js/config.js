@@ -13,15 +13,14 @@ const siteConfig = {
     // LISTE DES ALBUMS
     albums: [
 
-
         {
-            id: "Argentique",
-            title: "Photo Argentique",
-            cover: "images/argentique/Argentique-26.webp",
-            folder: "images/argentique",
-            prefix: "Argentique-",
-            count: 23,
-            date: "2025",
+            id: "co_mhr",
+            title: "Rugby CO MHR",
+            cover: "images/co_mhr/co_mhr-169.webp",
+            folder: "images/co_mhr",
+            prefix: "co_mhr-",
+            count: 214,
+            date: "2026",
             ext: ".webp"
         },
         {
@@ -34,14 +33,15 @@ const siteConfig = {
             date: "2026",
             ext: ".webp"
         },
+
         {
-            id: "co_mhr",
-            title: "Rugby CO MHR",
-            cover: "images/co_mhr/co_mhr-203.webp",
-            folder: "images/co_mhr",
-            prefix: "co_mhr-",
-            count: 214,
-            date: "2026",
+            id: "Argentique",
+            title: "Photo Argentique",
+            cover: "images/argentique/Argentique-26.webp",
+            folder: "images/argentique",
+            prefix: "Argentique-",
+            count: 23,
+            date: "2025",
             ext: ".webp"
         },
 
