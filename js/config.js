@@ -44,16 +44,6 @@ const siteConfig = {
             date: "2026",
             ext: ".webp"
         },
-                        {
-            id: "montagne",
-            title: "Randonnée Montagne",
-            cover: "images/montagne/Montagne-5.webp",
-            folder: "images/montagne",
-            prefix: "Montagne-",
-            count: 112,
-            date: "2025",
-            ext: ".webp"
-        },
 
         {
             id: "noel", 
@@ -65,6 +55,28 @@ const siteConfig = {
             date: "2025",
             ext: ".webp"
         },
+
+      {
+            id: "rugby",
+            title: "Rugby Castres Bayonne Espoirs",
+            cover: "images/rugby/CO-BayonneEspoirs-209.webp",
+            folder: "images/rugby",
+            prefix: "CO-BayonneEspoirs-",
+            count: 241,
+            date: "2026",
+            ext: ".webp"
+        },
+        {
+            id: "montagne",
+            title: "Randonnée Montagne",
+            cover: "images/montagne/Montagne-5.webp",
+            folder: "images/montagne",
+            prefix: "Montagne-",
+            count: 112,
+            date: "2025",
+            ext: ".webp"
+        },
+
         {
             id: "autres",
             title: "autres",
@@ -74,16 +86,6 @@ const siteConfig = {
             count: 22,
             date: "",
             ext: ".jpg"
-        },
-                {
-            id: "rugby",
-            title: "Rugby Castres Bayonne Espoirs",
-            cover: "images/rugby/CO-BayonneEspoirs-209.webp",
-            folder: "images/rugby",
-            prefix: "CO-BayonneEspoirs-",
-            count: 241,
-            date: "2026",
-            ext: ".webp"
         },
     ]
 };
