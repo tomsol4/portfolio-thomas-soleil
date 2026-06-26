@@ -24,8 +24,8 @@ const siteConfig = {
             ext: ".webp"
         },
         {
-            id: "mariage M & CI",
-            title: "mariage",
+            id: "mariage",
+            title: "mariage à l'argentique",
             cover: "images/mariage/mariage1-1.webp",
             folder: "images/mariage",
             prefix: "mariage1-",

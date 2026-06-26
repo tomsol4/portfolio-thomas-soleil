@@ -1,5 +1,5 @@
 /* ============================================================
-   STYLE : THOMAS SOLEIL - VERSION CORRIGÉE
+   STYLE : THOMAS SOLEIL - VERSION THÈME CLAIR (GALERIE)
    ============================================================ */
 
 /* --- 1. CONFIGURATION & VARIABLES --- */
@@ -8,16 +8,16 @@
     src: url('../fonts/Rosehot.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
-    font-display: swap; /* Optimisation pour le chargement */
+    font-display: swap;
 }
 
 :root {
     --font-title: 'Rosehot', serif;
     --font-body: 'Montserrat', sans-serif;
-    --bg-color: #1c1c1c;       
-    --card-bg: #1c1c1c;        
-    --text-main: #ffffff;      
-    --text-muted: #b3b3b3;     
+    --bg-color: #f7f7f7;       /* Blanc cassé doux pour le fond */
+    --card-bg: #ffffff;        /* Blanc pur pour détacher les éléments */
+    --text-main: #1c1c1c;      /* Gris très foncé pour le confort de lecture */
+    --text-muted: #666666;     /* Gris moyen pour les textes secondaires */
     --nav-height: 90px;
     --container-width: 1400px; 
     --gallery-gap: 15px;
@@ -25,13 +25,13 @@
 
 /* --- 2. BASE & RESET --- */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; background-color: var(--bg-color); }
 
 body {
     background-color: var(--bg-color);
     color: var(--text-main);
     font-family: var(--font-body);
-    font-weight: 300;
+    font-weight: 400; /* Légèrement augmenté pour mieux ressortir sur fond clair */
     line-height: 1.6;
     overflow-x: hidden;
     display: flex;
@@ -44,7 +44,7 @@ a:hover { opacity: 0.7; }
 img { display: block; max-width: 100%; height: auto; }
 main { flex: 1; }
 
-/* TYPOGRAPHIE GLOBALE (Remplace le !important) */
+/* TYPOGRAPHIE GLOBALE */
 h1, h2, h3, .logo, .album-info h3, #album-title {
     font-family: var(--font-title);
     text-transform: uppercase;
@@ -62,19 +62,19 @@ nav {
     position: fixed;
     top: 0; width: 100%; z-index: 1000;
     background: transparent; 
-    transition: background 0.4s ease, padding 0.4s ease;
+    transition: background 0.4s ease, padding 0.4s ease, box-shadow 0.4s ease;
 }
 
 nav.scrolled { 
-    background: #1c1c1c; 
+    background: var(--card-bg); /* Devient blanc au scroll */
     padding: 0 40px;
-    box-shadow: 0 2px 20px rgba(0,0,0,0.4);
+    box-shadow: 0 2px 20px rgba(0,0,0,0.05); /* Ombre beaucoup plus douce */
 }
 
 .logo {
     font-size: 1.6rem;
     letter-spacing: 6px;
-    color: #fff;
+    color: var(--text-main);
     z-index: 1001;
 }
 
@@ -84,24 +84,25 @@ nav.scrolled {
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: #fff; 
+    color: var(--text-main); 
     position: relative;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.5); 
+    font-weight: 500;
 }
 
 .nav-links a.active::after {
     content: ''; display: block; width: 100%; height: 1px; 
-    background: #fff; margin-top: 5px;
+    background: var(--text-main); margin-top: 5px;
 }
 
 /* Menu Burger */
 .burger { display: none; cursor: pointer; z-index: 1001; }
-.burger div { width: 25px; height: 2px; background-color: #fff; margin: 5px; transition: all 0.3s ease; }
+.burger div { width: 25px; height: 2px; background-color: var(--text-main); margin: 5px; transition: all 0.3s ease; }
 .burger.toggle div:nth-child(1) { transform: rotate(-45deg) translate(-5px, 6px); }
 .burger.toggle div:nth-child(2) { opacity: 0; }
 .burger.toggle div:nth-child(3) { transform: rotate(45deg) translate(-5px, -6px); }
 
 /* --- 4. HERO --- */
+/* Note : Le texte reste blanc ici car il est posé sur une photo de fond */
 .hero {
     height: 100vh; 
     height: 100dvh;
@@ -115,7 +116,7 @@ nav.scrolled {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    color: #fff;
+    color: #fff; 
 }
 
 .hero h1 { 
@@ -123,14 +124,14 @@ nav.scrolled {
     letter-spacing: 8px;
     line-height: 1.2;
     margin-bottom: 20px;
-    text-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    text-shadow: 0 4px 20px rgba(0,0,0,0.6); /* Assure la lisibilité sur la photo */
 }
 
 .hero p { 
     font-size: 0.9rem;
     letter-spacing: 5px; 
     text-transform: uppercase; 
-    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    text-shadow: 0 2px 10px rgba(0,0,0,0.6);
     margin-top: 10px;
 }
 
@@ -151,22 +152,23 @@ nav.scrolled {
 .album-card img {
     width: 100%; height: 100%; object-fit: cover;
     transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s;
-    opacity: 0.9;
+    opacity: 0.95;
 }
-.album-card:hover img { transform: scale(1.03); opacity: 0.7; }
+.album-card:hover img { transform: scale(1.03); opacity: 0.8; }
 
 .album-info {
     position: absolute; bottom: 40px; left: 0; right: 0;
     text-align: center; pointer-events: none; padding: 0 10px;
+    color: #fff; /* Le texte sur la photo reste blanc pour contraster */
 }
-.album-info h3 { font-size: 1.8rem; margin-bottom: 5px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-.album-info span { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; }
+.album-info h3 { font-size: 1.8rem; margin-bottom: 5px; text-shadow: 0 2px 10px rgba(0,0,0,0.6); }
+.album-info span { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; text-shadow: 0 1px 5px rgba(0,0,0,0.6); }
 
 /* --- 6. PAGE GALERIE --- */
 .gallery-header { padding: 160px 5% 60px; text-align: center; }
-#album-title { font-size: 4rem; margin-top: 20px; }
+#album-title { font-size: 4rem; margin-top: 20px; color: var(--text-main); }
 .back-link { display: inline-block; margin-bottom: 20px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
-.back-link:hover { color: #fff; }
+.back-link:hover { color: var(--text-main); }
 
 .masonry-wrapper {
     display: flex;
@@ -187,8 +189,8 @@ nav.scrolled {
 .photo-item {
     position: relative;
     width: 100%;
-    background-color: #252525; 
-    aspect-ratio: 3/4; /* Crée une belle forme rectangulaire par défaut */
+    background-color: #eaeaea; /* Fond de chargement plus clair */
+    aspect-ratio: 3/4; 
     border-radius: 2px;
     overflow: hidden;
     cursor: zoom-in;
@@ -202,53 +204,52 @@ nav.scrolled {
     transition: opacity 0.3s ease-out;
 }
 
-.photo-item.loaded img {
-    opacity: 1;
-}
-
-.photo-item.loaded {
-    aspect-ratio: auto; /* Annule le ratio forcé une fois la vraie image chargée */
-    background-color: transparent;  
-}
+.photo-item.loaded img { opacity: 1; }
+.photo-item.loaded { aspect-ratio: auto; background-color: transparent; }
 
 /* --- 7. PAGES TEXTE --- */
 .content-wrapper { max-width: 900px; margin: 160px auto 100px; padding: 0 30px; }
 .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
 .about-content h1 { font-size: 2.5rem; margin-bottom: 30px; line-height: 1.2; }
-.about-content p { margin-bottom: 20px; color: #ddd; }
-.signature { font-style: italic; font-size: 1.5rem; margin-top: 30px; }
+.about-content p { margin-bottom: 20px; color: var(--text-muted); }
+.signature { font-style: italic; font-size: 1.5rem; margin-top: 30px; color: var(--text-main); }
 
 /* Contact */
 .contact-header { text-align: center; margin-bottom: 60px; }
 .contact-header h1 { font-size: 3rem; margin-bottom: 10px; }
 .form-group { margin-bottom: 25px; }
-.form-group label { display: block; margin-bottom: 10px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+.form-group label { display: block; margin-bottom: 10px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 500;}
 .form-group input, .form-group textarea {
-    width: 100%; background: transparent; border: 1px solid #444;
-    color: #fff; padding: 15px; font-family: var(--font-body); font-size: 1rem;
+    width: 100%; background: var(--card-bg); border: 1px solid #ddd;
+    color: var(--text-main); padding: 15px; font-family: var(--font-body); font-size: 1rem;
+    transition: border-color 0.3s;
+}
+.form-group input:focus, .form-group textarea:focus {
+    outline: none; border-color: var(--text-main);
 }
 button[type="submit"] {
-    background: #fff; color: #000; padding: 15px 40px; border: none;
+    background: var(--text-main); color: #fff; padding: 15px 40px; border: none;
     text-transform: uppercase; font-weight: 600; cursor: pointer; letter-spacing: 1px; transition: 0.3s;
 }
-button[type="submit"]:hover { background: #ddd; }
-.social-section { margin-top: 60px; padding-top: 40px; border-top: 1px solid #333; text-align: center; }
-.social-section a { margin: 0 15px; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+button[type="submit"]:hover { background: #333; }
+.social-section { margin-top: 60px; padding-top: 40px; border-top: 1px solid #eaeaea; text-align: center; }
+.social-section a { margin: 0 15px; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; font-weight: 500;}
 
 /* Mentions Légales */
-.legal-content h4 { font-family: var(--font-title); font-size: 1.3rem; margin: 40px 0 15px; color: #fff; }
-.legal-content p { color: #ccc; margin-bottom: 15px; }
+.legal-content h4 { font-family: var(--font-title); font-size: 1.3rem; margin: 40px 0 15px; color: var(--text-main); }
+.legal-content p { color: var(--text-muted); margin-bottom: 15px; }
 
 /* --- 8. FOOTER --- */
 footer {
     text-align: center; padding: 40px 20px;
     font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px;
-    color: #555; border-top: 1px solid #2a2a2a; margin-top: auto;
+    color: var(--text-muted); border-top: 1px solid #eaeaea; margin-top: auto;
 }
-footer a { color: #777; transition: 0.3s; margin: 0 10px;}
-footer a:hover { color: #fff; text-decoration: underline; }
+footer a { color: var(--text-muted); transition: 0.3s; margin: 0 10px;}
+footer a:hover { color: var(--text-main); text-decoration: underline; }
 
 /* --- 9. LIGHTBOX --- */
+/* Conservée en sombre : idéal pour la visualisation photo plein écran */
 #lightbox {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(10, 10, 10, 0.98); z-index: 2000;
@@ -279,9 +280,10 @@ footer a:hover { color: #fff; text-decoration: underline; }
     .nav-links {
         position: absolute; right: 0px; top: var(--nav-height);
         height: calc(100vh - var(--nav-height));
-        background-color: var(--bg-color);
+        background-color: var(--card-bg);
         flex-direction: column; align-items: center; justify-content: center;
         width: 100%; transform: translateX(100%); transition: transform 0.4s ease-in;
+        box-shadow: -5px 0 15px rgba(0,0,0,0.05);
     }
     .nav-links.nav-active { transform: translateX(0%); }
     .albums-grid { grid-template-columns: 1fr; padding: 20px; }
@@ -292,64 +294,52 @@ footer a:hover { color: #fff; text-decoration: underline; }
 }
 
 /* --- FIX MOBILE --- */
+html { background-color: var(--bg-color); }
+nav.menu-open { background-color: var(--card-bg) !important; }
+.burger div { background-color: var(--text-main); box-shadow: none; } /* Enlevé l'ombre sur fond clair */
 
-/* 1. Évite le fond blanc lors du "scroll élastique" sur mobile */
-html {
-    background-color: var(--bg-color);
-}
 
-/* 2. Classe qu'on va activer en JS quand le menu est ouvert */
-nav.menu-open {
-    background-color: var(--bg-color) !important; /* Force le noir */
-}
-
-/* 3. Sécurité supplémentaire pour le burger sur fond clair (au cas où) */
-.burger div {
-    background-color: #fff;
-    /* Ombre portée pour que le burger reste visible même sur fond clair */
-    box-shadow: 0 1px 3px rgba(0,0,0,0.8); 
-}
 /* --- PAGE PRESTATIONS & TARIFS --- */
 .pricing-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 40px; /* On augmente l'espace entre les cartes */
+    gap: 40px; 
     margin-top: 60px;
-    align-items: stretch; /* Les cartes font toutes la même hauteur */
-    max-width: 1200px; /* On donne plus de largeur globale à la grille */
+    align-items: stretch; 
+    max-width: 1200px; 
     margin-left: auto;
     margin-right: auto;
 }
 
 .pricing-card {
-    background: #1c1c1c; /* On garde la couleur de fond du site pour un effet plus subtil */
-    padding: 50px 40px; /* Plus d'espace à l'intérieur de la carte */
+    background: var(--card-bg); /* Blanc pur */
+    padding: 50px 40px; 
     border-radius: 4px;
     text-align: center;
     position: relative;
-    border: 1px solid #333;
-    transition: transform 0.4s ease, border-color 0.4s ease; /* Transition plus douce */
+    border: 1px solid #eaeaea; /* Bordure très discrète */
+    transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease; 
     display: flex;
     flex-direction: column;
 }
 
 .pricing-card:hover {
-    transform: translateY(-5px); /* Élévation plus subtile au survol */
-    border-color: #666;
+    transform: translateY(-5px); 
+    border-color: #ddd;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03); /* Légère ombre au survol */
 }
 
 .pricing-card h3 {
-    font-size: 1.2rem; /* Titre légèrement plus petit pour tenir sur une ligne */
+    font-size: 1.2rem; 
     margin-bottom: 25px;
-    color: #fff;
-    letter-spacing: 5px; /* Un peu plus d'espace entre les lettres */
-    min-height: auto; /* On enlève la hauteur forcée */
+    color: var(--text-main);
+    letter-spacing: 5px; 
 }
 
 .price {
-    font-size: 2.2rem; /* Prix un poil plus petit pour plus d'élégance */
+    font-size: 2.2rem; 
     font-weight: 300;
-    color: #fff;
+    color: var(--text-main);
     margin-bottom: 25px;
     font-family: var(--font-title);
     letter-spacing: 2px;
@@ -357,7 +347,7 @@ nav.menu-open {
 
 .price span {
     font-size: 0.8rem;
-    color: #888;
+    color: var(--text-muted);
     font-family: var(--font-body);
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -365,26 +355,26 @@ nav.menu-open {
 
 .pricing-desc {
     font-size: 0.85rem;
-    color: #aaa;
+    color: var(--text-muted);
     margin-bottom: 40px;
     line-height: 1.6;
-    min-height: 80px; /* On donne de l'espace à la description pour aligner les listes */
+    min-height: 80px; 
 }
 
 .pricing-card ul {
     list-style: none;
     padding: 0;
     margin-bottom: 50px;
-    text-align: center; /* On centre la liste pour un rendu plus esthétique */
+    text-align: center; 
     flex-grow: 1; 
 }
 
 .pricing-card ul li {
     font-size: 0.85rem;
-    color: #ddd;
+    color: #444; /* Gris sombre pour le contraste */
     margin-bottom: 15px;
     padding-bottom: 15px;
-    border-bottom: 1px solid #2a2a2a; /* Ligne de séparation plus discrète */
+    border-bottom: 1px solid #eaeaea; 
 }
 
 .pricing-card ul li:last-child {
@@ -393,28 +383,28 @@ nav.menu-open {
 
 .btn-reserver {
     display: inline-block;
-    background: transparent; /* Bouton transparent avec bordure pour un look premium */
-    color: #fff;
-    border: 1px solid #fff;
+    background: transparent; 
+    color: var(--text-main);
+    border: 1px solid var(--text-main);
     padding: 15px 30px;
     text-transform: uppercase;
     font-size: 0.75rem;
     letter-spacing: 3px;
-    font-weight: 400;
+    font-weight: 500;
     transition: all 0.4s ease;
     width: 100%;
     margin-top: auto; 
 }
 
 .btn-reserver:hover {
-    background: #fff;
-    color: #000;
+    background: var(--text-main);
+    color: #fff;
 }
 
 /* Carte mise en avant (Mariage) */
 .pricing-card.featured {
-    border-color: #fff;
-    background: #222; /* Légèrement plus clair que les autres pour la faire ressortir */
+    border-color: var(--text-main);
+    background: #fdfdfd; /* Très léger contraste avec le blanc normal */
 }
 
 .badge {
@@ -422,8 +412,8 @@ nav.menu-open {
     top: -12px;
     left: 50%;
     transform: translateX(-50%);
-    background: #fff;
-    color: #000;
+    background: var(--text-main);
+    color: #fff;
     padding: 6px 20px;
     font-size: 0.65rem;
     text-transform: uppercase;
@@ -434,7 +424,7 @@ nav.menu-open {
 /* Responsive pour mobile */
 @media (max-width: 1024px) {
     .pricing-grid {
-        grid-template-columns: 1fr; /* Passe à 1 colonne sur les plus petits écrans */
+        grid-template-columns: 1fr; 
         max-width: 500px;
     }
 }
