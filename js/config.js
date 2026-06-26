@@ -24,7 +24,7 @@ const siteConfig = {
             ext: ".webp"
         },
         {
-            id: "mariage",
+            id: "mariage M & CI",
             title: "mariage",
             cover: "images/mariage/mariage1-1.webp",
             folder: "images/mariage",
