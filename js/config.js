@@ -50,7 +50,7 @@ const siteConfig = {
             cover: "images/co_rct/co_rct-111.webp",
             folder: "images/co_rct",
             prefix: "co_rct-",
-            count: 214,
+            count: 196,
             date: "2026",
             ext: ".webp"
         },
@@ -85,7 +85,16 @@ const siteConfig = {
             date: "2025",
             ext: ".webp"
         },
-
+        {
+            id: "concertsinfonia",
+            title: "Concert Sinfonia",
+            cover: "images/concertsinfonia/concertsinfonia-37.webp",
+            folder: "images/concertsinfonia",
+            prefix: "concertsinfonia-",
+            count: 64,
+            date: "2025",
+            ext: ".webp"
+        },
         {
             id: "autres",
             title: "autres",
