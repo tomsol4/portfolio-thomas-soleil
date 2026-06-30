@@ -44,7 +44,16 @@ const siteConfig = {
             date: "2025",
             ext: ".webp"
         },
-
+        {
+            id: "co_rct",
+            title: "Rugby CO RCT",
+            cover: "images/co_rct/co_rct-14.webp",
+            folder: "images/co_rct",
+            prefix: "co_rct-",
+            count: 214,
+            date: "2026",
+            ext: ".webp"
+        },
         {
             id: "noel", 
             title: "Concert Noël Chor Unum",
