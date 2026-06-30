@@ -87,8 +87,8 @@ const siteConfig = {
         },
         {
             id: "concertsinfonia",
-            title: "Concert Sinfonia",
-            cover: "images/concertsinfonia/concertsinfonia-37.webp",
+            title: "Concert Sinfonia Garonna",
+            cover: "images/concertsinfonia/concertsinfonia-14.webp",
             folder: "images/concertsinfonia",
             prefix: "concertsinfonia-",
             count: 64,
