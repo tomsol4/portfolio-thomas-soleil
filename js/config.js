@@ -16,7 +16,7 @@ const siteConfig = {
         {
             id: "co_mhr",
             title: "Rugby CO MHR",
-            cover: "images/co_mhr/co_mhr-169.webp",
+            cover: "images/co_mhr/co_mhr-16.webp",
             folder: "images/co_mhr",
             prefix: "co_mhr-",
             count: 214,
@@ -26,7 +26,7 @@ const siteConfig = {
         {
             id: "mariage",
             title: "mariage à l'argentique",
-            cover: "images/mariage/mariage1-1.webp",
+            cover: "images/mariage/mariage1-6.webp",
             folder: "images/mariage",
             prefix: "mariage1-",
             count: 89,
