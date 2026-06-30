@@ -47,7 +47,7 @@ const siteConfig = {
         {
             id: "co_rct",
             title: "Rugby CO RCT",
-            cover: "images/co_rct/co_rct-114.webp",
+            cover: "images/co_rct/co_rct-111.webp",
             folder: "images/co_rct",
             prefix: "co_rct-",
             count: 214,
