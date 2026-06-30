@@ -16,7 +16,7 @@ const siteConfig = {
         {
             id: "co_mhr",
             title: "Rugby CO MHR",
-            cover: "images/co_mhr/co_mhr-16.webp",
+            cover: "images/co_mhr/co_mhr-14.webp",
             folder: "images/co_mhr",
             prefix: "co_mhr-",
             count: 214,
