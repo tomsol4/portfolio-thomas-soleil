@@ -89,7 +89,7 @@ const siteConfig = {
         {
             id: "autres",
             title: "autres",
-            cover: "images/vrac/vrac-18.jpg", // Mets le nom de ta photo préférée
+            cover: "images/vrac/vrac-2.jpg", // Mets le nom de ta photo préférée
             folder: "images/vrac",
             prefix: "vrac-",    
             count: 22,
