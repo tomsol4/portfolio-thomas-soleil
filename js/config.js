@@ -92,7 +92,7 @@ const siteConfig = {
             folder: "images/concertsinfonia",
             prefix: "concertsinfonia-",
             count: 64,
-            date: "2025",
+            date: "2026",
             ext: ".webp"
         },
         {
