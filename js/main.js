@@ -55,7 +55,7 @@ function injectCommonElements() {
             <div class="burger"><div></div><div></div><div></div></div>
             <div class="nav-links">
                 <a href="index.html">Albums</a>
-                <a href="tarifs.html">Tarifs</a>
+                <a href="prestations.html">Prestations</a>
                 <a href="a-propos.html">À Propos</a>
                 <a href="contact.html">Contact</a>
             </div>
