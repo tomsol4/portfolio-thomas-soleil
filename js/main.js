@@ -51,7 +51,7 @@ function injectCommonElements() {
 // A. Injection du Menu
     if (nav) {
         nav.innerHTML = `
-            <a href="index.html" class="logo">T.S</a>
+            <a href="index.html" class="logo"><img src="images/logo.png" alt="Logo Thomas Soleil"></a>
             <div class="burger"><div></div><div></div><div></div></div>
             <div class="nav-links">
                 <a href="index.html">Albums</a>
