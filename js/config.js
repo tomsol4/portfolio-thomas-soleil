@@ -6,7 +6,7 @@ const siteConfig = {
     identity: {
         name: "Thomas Soleil",
         tagline: "Photographe Événementiel & Portrait",
-        email: "ton-email@exemple.com",
+        email: "thomas.soleil04@gmail.com",
         instagram: "https://www.instagram.com/tomsol_photo/"
     },
 
