@@ -55,18 +55,6 @@ const siteConfig = {
             ext: ".webp"
         },
         {
-            id: "noel", 
-            title: "Concert Noël Chor Unum",
-            cover: "images/noelchorunum/chorunumnoel-4.webp", 
-            folder: "images/noelchorunum", 
-            prefix: "chorunumnoel-", // Attention à ce nom, vérifie tes fichiers !
-            count: 260,
-            date: "2025",
-            ext: ".webp"
-        },
-
-
-        {
             id: "montagne",
             title: "Randonnée Montagne",
             cover: "images/montagne/Montagne-5.webp",
@@ -74,16 +62,6 @@ const siteConfig = {
             prefix: "Montagne-",
             count: 112,
             date: "2025",
-            ext: ".webp"
-        },
-              {
-            id: "rugby",
-            title: "Rugby Castres Bayonne Espoirs",
-            cover: "images/rugby/CO-BayonneEspoirs-209.webp",
-            folder: "images/rugby",
-            prefix: "CO-BayonneEspoirs-",
-            count: 241,
-            date: "2026",
             ext: ".webp"
         },
         {
@@ -96,6 +74,28 @@ const siteConfig = {
             date: "2026",
             ext: ".webp"
         },
+
+              {
+            id: "rugby",
+            title: "Rugby Castres Bayonne Espoirs",
+            cover: "images/rugby/CO-BayonneEspoirs-209.webp",
+            folder: "images/rugby",
+            prefix: "CO-BayonneEspoirs-",
+            count: 241,
+            date: "2026",
+            ext: ".webp"
+        },
+        {
+            id: "noel", 
+            title: "Concert Noël Chor Unum",
+            cover: "images/noelchorunum/chorunumnoel-4.webp", 
+            folder: "images/noelchorunum", 
+            prefix: "chorunumnoel-", // Attention à ce nom, vérifie tes fichiers !
+            count: 260,
+            date: "2025",
+            ext: ".webp"
+        },
+
         {
             id: "autres",
             title: "autres",
