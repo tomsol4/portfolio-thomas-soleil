@@ -65,16 +65,7 @@ const siteConfig = {
             ext: ".webp"
         },
 
-      {
-            id: "rugby",
-            title: "Rugby Castres Bayonne Espoirs",
-            cover: "images/rugby/CO-BayonneEspoirs-209.webp",
-            folder: "images/rugby",
-            prefix: "CO-BayonneEspoirs-",
-            count: 241,
-            date: "2026",
-            ext: ".webp"
-        },
+
         {
             id: "montagne",
             title: "Randonnée Montagne",
@@ -83,6 +74,16 @@ const siteConfig = {
             prefix: "Montagne-",
             count: 112,
             date: "2025",
+            ext: ".webp"
+        },
+              {
+            id: "rugby",
+            title: "Rugby Castres Bayonne Espoirs",
+            cover: "images/rugby/CO-BayonneEspoirs-209.webp",
+            folder: "images/rugby",
+            prefix: "CO-BayonneEspoirs-",
+            count: 241,
+            date: "2026",
             ext: ".webp"
         },
         {
