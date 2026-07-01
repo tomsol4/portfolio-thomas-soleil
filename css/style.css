@@ -66,7 +66,7 @@ nav {
     transition: background 0.4s ease, padding 0.4s ease, box-shadow 0.4s ease;
     /* Style pour l'image du logo */
 .logo img {
-    max-height: 45px; /* Tu peux augmenter ou réduire ce chiffre selon la forme de ton logo */
+    max-height: 70px; /* Tu peux augmenter ou réduire ce chiffre selon la forme de ton logo */
     width: auto;
     display: block;
 }
