@@ -1,7 +1,8 @@
 let currentAlbum = null;
 let photosLoadedCount = 0;
 let isLoading = false;
-let currentIndex = 1;
+let currentPhotoPosition = 0;
+let loadedPhotos = [];
 const BATCH_SIZE = 30;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -65,18 +66,24 @@ function loadNextBatch() {
         const img = document.createElement('img');
         img.alt = `Photo ${currentAlbum.title} ${i}`;
         img.loading = "lazy";
-
+        const photo = {
+            index: i,
+            src
+        };
+        
         img.onload = () => { 
             div.classList.add('loaded'); 
+            loadedPhotos.push(photo);
+            loadedPhotos.sort((a, b) => a.index - b.index);
         };
         
         img.onerror = () => {
-            div.style.display = 'none';
+            div.remove();
         };
 
         img.src = src; 
         
-        div.onclick = () => openLightbox(i);
+        div.onclick = () => openLightbox(photo);
         div.appendChild(img);
         targetColumn.appendChild(div);
     }
@@ -87,11 +94,17 @@ function loadNextBatch() {
 
 // --- LIGHTBOX ---
 window.openLightbox = function(index) {
-    currentIndex = index;
     const lb = document.getElementById('lightbox');
     const lbImg = document.getElementById('lightbox-img');
-    
-    if(lb && lbImg && currentAlbum) {
+
+    if (lb && lbImg && currentAlbum && loadedPhotos.length > 0) {
+        const photoPosition = typeof index === 'object'
+            ? loadedPhotos.findIndex(photo => photo.index === index.index)
+            : loadedPhotos.findIndex(photo => photo.index === index);
+
+        if (photoPosition === -1) return;
+
+        currentPhotoPosition = photoPosition;
         updateLightboxImage();
         lb.style.display = 'flex';
         document.body.style.overflow = 'hidden';
@@ -99,17 +112,23 @@ window.openLightbox = function(index) {
 }
 
 window.changePhoto = function(direction) {
-    if (!currentAlbum) return;
-    currentIndex += direction;
-    if (currentIndex > currentAlbum.count) currentIndex = 1;
-    if (currentIndex < 1) currentIndex = currentAlbum.count;
+    if (!currentAlbum || loadedPhotos.length === 0) return;
+
+    currentPhotoPosition += direction;
+    if (currentPhotoPosition >= loadedPhotos.length) currentPhotoPosition = 0;
+    if (currentPhotoPosition < 0) currentPhotoPosition = loadedPhotos.length - 1;
+
     updateLightboxImage();
 }
 
 function updateLightboxImage() {
     const lbImg = document.getElementById('lightbox-img');
-    const ext = currentAlbum.ext || ".webp";
-    lbImg.src = `${currentAlbum.folder}/${currentAlbum.prefix}${currentIndex}${ext}`;
+    const currentPhoto = loadedPhotos[currentPhotoPosition];
+
+    if (!lbImg || !currentPhoto) return;
+
+    lbImg.src = currentPhoto.src;
+    lbImg.alt = `Photo ${currentAlbum.title} ${currentPhoto.index}`;
 }
 
 window.closeLightbox = function() {

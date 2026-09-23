@@ -1,9 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
-
-    // 1. LE NAV ET LE FOOTER SONT MAINTENANT DU HTML STATIQUE (SEO + pas de flash au chargement).
-    // On se contente de les faire vivre :
-    highlightActiveLink();
-    updateFooterYear();
+    
+    // 1. INJECTION DU HEADER, FOOTER ET META THEME
+    injectCommonElements();
     injectMetaThemeColor(); // Force la barre d'adresse en noir sur mobile
 
     // 2. GESTION DU SCROLL NAV
@@ -45,10 +43,38 @@ function initMobileMenu() {
     }
 }
 
-/* --- FONCTION : ANNÉE DU FOOTER --- */
-function updateFooterYear() {
-    const yearEl = document.getElementById('footer-year');
-    if (yearEl) yearEl.textContent = new Date().getFullYear();
+/* --- FONCTION : GÉNÉRATION DU HTML COMMUN --- */
+function injectCommonElements() {
+    const nav = document.querySelector('nav');
+    const footer = document.querySelector('footer');
+
+// A. Injection du Menu
+    if (nav) {
+        nav.innerHTML = `
+            <a href="index.html" class="logo"><img src="images/logo.png" alt="Logo Thomas Soleil"></a>
+            <div class="burger"><div></div><div></div><div></div></div>
+            <div class="nav-links">
+                <a href="index.html">Albums</a>
+                <a href="prestations.html">Prestations</a>
+                <a href="a-propos.html">À Propos</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        `;
+        highlightActiveLink(); // Souligne la page en cours
+    }
+
+    // B. Injection du Footer (Avec Instagram & Année auto)
+    if (footer) {
+        const year = new Date().getFullYear();
+        footer.innerHTML = `
+            <p>&copy; ${year} Thomas Soleil. Tous droits réservés.</p>
+            <p style="margin-top: 10px;">
+                <a href="mentions.html">Mentions Légales</a> | 
+                <a href="contact.html">Contact</a> |
+                <a href="https://www.instagram.com/tomsol_photo/" target="_blank">Instagram</a>
+            </p>
+        `;
+    }
 }
 
 /* --- FONCTION : SOULIGNER LE LIEN ACTIF --- */
