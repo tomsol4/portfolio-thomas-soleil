@@ -246,7 +246,7 @@ nav.scrolled {
 .content-wrapper.large { 
     max-width: 1200px; 
 }
-.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: start; }
 .about-content h1 { font-size: 2.5rem; margin-bottom: 30px; line-height: 1.2; }
 .about-content p { margin-bottom: 20px; color: var(--text-muted); }
 .signature { font-style: italic; font-size: 1.5rem; margin-top: 30px; color: var(--text-main); }
