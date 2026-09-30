@@ -1,155 +1,85 @@
-let currentAlbum = null;
-let photosLoadedCount = 0;
-let isLoading = false;
-let currentPhotoPosition = 0;
-let loadedPhotos = [];
-const BATCH_SIZE = 30;
-
-document.addEventListener("DOMContentLoaded", () => {
-    const params = new URLSearchParams(window.location.search);
-    const albumId = params.get('id');
-    
-    if (typeof siteConfig === 'undefined' || !albumId) return;
-
-    currentAlbum = siteConfig.albums.find(a => a.id === albumId);
-
-    if (currentAlbum) {
-        document.title = `${currentAlbum.title} | Thomas Soleil`;
-        
-        const titleEl = document.getElementById('album-title');
-        if(titleEl) titleEl.innerText = currentAlbum.title;
-
-        initGalleryStructure();
-        loadNextBatch();
-        window.addEventListener('scroll', handleScroll);
-    }
-});
-
-function initGalleryStructure() {
-    const container = document.getElementById('gallery-container');
-    if(!container) return;
-
-    container.innerHTML = ''; 
-    const colCount = window.innerWidth < 768 ? 2 : 4;
-    
-    for (let c = 0; c < colCount; c++) {
-        const colDiv = document.createElement('div');
-        colDiv.className = 'masonry-column';
-        container.appendChild(colDiv);
-    }
-}
-
-function loadNextBatch() {
-    if (!currentAlbum || isLoading) return;
-    isLoading = true;
-    
-    const columns = Array.from(document.querySelectorAll('.masonry-column'));
-    if(columns.length === 0) return;
-
-    const extension = currentAlbum.ext || ".webp"; 
-    const start = photosLoadedCount + 1;
-    let end = Math.min(start + BATCH_SIZE - 1, currentAlbum.count);
-
-    if (start > currentAlbum.count) {
-        isLoading = false;
-        return;
-    }
-
-    for (let i = start; i <= end; i++) {
-        const src = `${currentAlbum.folder}/${currentAlbum.prefix}${i}${extension}`;
-        
-        let targetColumn = columns[i % columns.length];
-
-        const div = document.createElement('div');
-        div.className = 'photo-item';
-        
-        const img = document.createElement('img');
-        img.alt = `Photo ${currentAlbum.title} ${i}`;
-        img.loading = "lazy";
-        const photo = {
-            index: i,
-            src
+(() => {
+    'use strict';
+    const gallery = document.querySelector('.photo-grid');
+    const dialog = document.getElementById('lightbox');
+    if (!gallery || !dialog || typeof dialog.showModal !== 'function') return;
+    const photos = [...gallery.querySelectorAll('.photo-link')];
+    const image = dialog.querySelector('img');
+    const counter = document.getElementById('photo-counter');
+    const status = document.getElementById('photo-status');
+    const original = document.getElementById('photo-original');
+    const close = dialog.querySelector('.lightbox-close');
+    let position = 0, request = 0;
+    let opener = null, touch = null;
+    let previousOverflow = '';
+    function show(index) {
+        position = (index + photos.length) % photos.length;
+        const link = photos[position];
+        const id = ++request;
+        counter.textContent = `${position + 1} / ${photos.length}`;
+        status.textContent = 'Chargement de la photo…';
+        image.hidden = true;
+        original.href = link.href;
+        image.alt = link.querySelector('img').alt;
+        image.onload = () => {
+            if (id !== request) return;
+            image.hidden = false;
+            status.textContent = '';
+            for (const offset of [-1, 1]) {
+                const next = new Image();
+                next.src = photos[(position + offset + photos.length) % photos.length].href;
+            }
         };
-        
-        img.onload = () => { 
-            div.classList.add('loaded'); 
-            loadedPhotos.push(photo);
-            loadedPhotos.sort((a, b) => a.index - b.index);
+        image.onerror = () => {
+            if (id === request) status.textContent = 'Cette photo ne peut pas être chargée. Essayez la suivante ou ouvrez le fichier.';
         };
-        
-        img.onerror = () => {
-            div.remove();
-        };
-
-        img.src = src; 
-        
-        div.onclick = () => openLightbox(photo);
-        div.appendChild(img);
-        targetColumn.appendChild(div);
+        image.src = link.href;
     }
-    
-    photosLoadedCount = end;
-    setTimeout(() => { isLoading = false; }, 50); 
-}
-
-// --- LIGHTBOX ---
-window.openLightbox = function(index) {
-    const lb = document.getElementById('lightbox');
-    const lbImg = document.getElementById('lightbox-img');
-
-    if (lb && lbImg && currentAlbum && loadedPhotos.length > 0) {
-        const photoPosition = typeof index === 'object'
-            ? loadedPhotos.findIndex(photo => photo.index === index.index)
-            : loadedPhotos.findIndex(photo => photo.index === index);
-
-        if (photoPosition === -1) return;
-
-        currentPhotoPosition = photoPosition;
-        updateLightboxImage();
-        lb.style.display = 'flex';
+    gallery.addEventListener('click', e => {
+        const link = e.target.closest('.photo-link');
+        if (!link || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        e.preventDefault();
+        opener = link;
+        previousOverflow = document.body.style.overflow;
+        dialog.showModal();
         document.body.style.overflow = 'hidden';
-    }
-}
-
-window.changePhoto = function(direction) {
-    if (!currentAlbum || loadedPhotos.length === 0) return;
-
-    currentPhotoPosition += direction;
-    if (currentPhotoPosition >= loadedPhotos.length) currentPhotoPosition = 0;
-    if (currentPhotoPosition < 0) currentPhotoPosition = loadedPhotos.length - 1;
-
-    updateLightboxImage();
-}
-
-function updateLightboxImage() {
-    const lbImg = document.getElementById('lightbox-img');
-    const currentPhoto = loadedPhotos[currentPhotoPosition];
-
-    if (!lbImg || !currentPhoto) return;
-
-    lbImg.src = currentPhoto.src;
-    lbImg.alt = `Photo ${currentAlbum.title} ${currentPhoto.index}`;
-}
-
-window.closeLightbox = function() {
-    document.getElementById('lightbox').style.display = 'none';
-    document.body.style.overflow = 'auto';
-}
-
-document.addEventListener('keydown', (e) => {
-    if (document.getElementById('lightbox').style.display === 'flex') {
-        if (e.key === "ArrowLeft") changePhoto(-1);
-        if (e.key === "ArrowRight") changePhoto(1);
-        if (e.key === "Escape") closeLightbox();
-    }
-});
-
-function handleScroll() {
-    if (isLoading) return;
-    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-    if (scrollTop + clientHeight >= scrollHeight - 2000) {
-        if (photosLoadedCount < currentAlbum.count) {
-            loadNextBatch();
+        show(photos.indexOf(link));
+        close.focus();
+    });
+    close.addEventListener('click', () => dialog.close());
+    dialog.querySelector('.lightbox-prev').addEventListener('click', () => show(position - 1));
+    dialog.querySelector('.lightbox-next').addEventListener('click', () => show(position + 1));
+    dialog.addEventListener('keydown', e => {
+        if (e.key === 'Tab') {
+            const controls = [...dialog.querySelectorAll('button, a[href]')];
+            const first = controls[0];
+            const last = controls[controls.length - 1];
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
         }
-    }
-}
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+            e.preventDefault();
+            show(position + (e.key === 'ArrowRight' ? 1 : -1));
+        }
+    });
+    dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close(); });
+    dialog.addEventListener('close', () => {
+        document.body.style.overflow = previousOverflow;
+        if (opener) opener.focus({ preventScroll: true });
+    });
+    image.addEventListener('touchstart', e => {
+        touch = e.touches.length === 1 ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null;
+    }, { passive: true });
+    image.addEventListener('touchend', e => {
+        if (!touch || !e.changedTouches.length) return;
+        const dx = e.changedTouches[0].clientX - touch.x;
+        const dy = e.changedTouches[0].clientY - touch.y;
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) show(position + (dx < 0 ? 1 : -1));
+        touch = null;
+    }, { passive: true });
+})();

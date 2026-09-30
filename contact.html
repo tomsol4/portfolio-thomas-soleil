@@ -1,64 +1,63 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact | Thomas Soleil</title>
-        <link rel="icon" type="image/png" href="images/favicon1.png">
-    <link rel="apple-touch-icon" href="images/favicon1.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact | Votre projet photo avec Thomas Soleil</title>
+<meta name="description" content="Mariage, portrait, sport ou concert : contactez Thomas Soleil, photographe à Toulouse et Castres. Réponse personnalisée sous 24 h.">
+<meta name="author" content="Thomas Soleil">
+<meta name="theme-color" content="#f7f5f0">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+
+
+<link rel="canonical" href="https://www.tsoleil.fr/contact.html">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+<link rel="preload" href="fonts/Rosehot.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts/montserrat.css">
 <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
-    <meta name="description" content="Une question, un devis ou un projet photo ? Contactez Thomas Soleil, photographe à Toulouse. Réponse sous 24h.">
-    
-    <meta property="og:title" content="Contact | Thomas Soleil">
-    <meta property="og:description" content="Parlons de votre projet photo. Contactez-moi pour un devis ou une question.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.tsoleil.fr/contact.html">
-    <meta property="og:image" content="https://www.tsoleil.fr/images/hero-photo-accueil_2.webp">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Thomas Soleil — Photographe">
+<meta property="og:title" content="Contact | Votre projet photo avec Thomas Soleil">
+<meta property="og:description" content="Mariage, portrait, sport ou concert : contactez Thomas Soleil, photographe à Toulouse et Castres. Réponse personnalisée sous 24 h.">
+<meta property="og:url" content="https://www.tsoleil.fr/contact.html">
+<meta property="og:image" content="https://www.tsoleil.fr/images/optimized/og-home-cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Contact | Votre projet photo avec Thomas Soleil">
+<meta name="twitter:card" content="summary_large_image">
+
+<script src="js/main.js" defer></script>
+<script src="js/contact.js" defer></script>
 </head>
 <body>
-<nav>
-        <a href="index.html" class="logo"><img src="images/logo.png" alt="Logo Thomas Soleil"></a>
-        <div class="burger"><div></div><div></div><div></div></div>
-        <div class="nav-links">
-            <a href="index.html">Albums</a>
-            <a href="prestations.html">Prestations</a>
-            <a href="a-propos.html">À Propos</a>
-            <a href="contact.html">Contact</a>
-        </div>
-    </nav>
-    <main class="content-wrapper">
-        <div class="contact-header">
-            <h1>Parlons de votre projet.</h1>
-            <p>Une question, un devis ? Je vous réponds sous 24h.</p>
-        </div>
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+<nav class="site-nav" aria-label="Navigation principale">
+<a href="index.html" class="logo" aria-label="Thomas Soleil — Accueil"><img src="images/logo.png" width="46" height="58" alt=""><span>Thomas Soleil<br>Photographe</span></a>
+<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation" aria-label="Ouvrir le menu"><span aria-hidden="true"></span><span aria-hidden="true"></span></button>
+<div class="nav-links" id="navigation"><a href="index.html#albums">Albums</a>
+<a href="prestations.html">Prestations</a>
+<a href="a-propos.html">À propos</a>
+<a href="contact.html" aria-current="page" class="nav-contact">Contact</a>
+</div>
+</nav>
+<main id="contenu" class="container"><header class="page-header"><p class="eyebrow">Un premier échange</p><h1>Racontez-moi votre projet.</h1><p>Une date en tête, une idée à préciser ou simplement une question ? Je vous réponds personnellement sous 24 h.</p></header>
+<div class="contact-layout"><aside class="contact-aside"><h2>Échangeons simplement.</h2><p>Mariage, portrait, match ou concert : quelques mots suffisent pour commencer.</p><p>Basé à Toulouse, également présent à Castres. Précisez le lieu de votre projet, même s’il se situe ailleurs.</p><p>Vous préférez écrire directement ?<br><a class="email-link" href="mailto:thomas.soleil04@gmail.com">thomas.soleil04@gmail.com</a></p><p><a href="https://www.instagram.com/tomsol_photo/" target="_blank" rel="noopener noreferrer">Retrouvez-moi sur Instagram<span class="sr-only"> (nouvel onglet)</span></a></p></aside>
+<form id="contact-form" action="https://formspree.io/f/xblwgnop" method="POST" aria-describedby="form-help privacy-note">
+<p class="form-note" id="form-help">Votre nom, votre email et votre message sont nécessaires pour répondre à votre demande. Les autres champs sont facultatifs.</p>
+<div class="form-row"><div class="form-group"><label for="name">Votre nom</label><input id="name" name="nom" type="text" autocomplete="name" maxlength="120" required></div><div class="form-group"><label for="email">Votre email</label><input id="email" name="email" type="email" autocomplete="email" maxlength="254" required></div></div>
+<div class="form-group"><label for="project">Votre projet <span>(facultatif)</span></label><select id="project" name="projet"><option value="">Choisir un type de projet</option><option value="mariage">Mariage</option><option value="portrait">Portrait</option><option value="sport">Sport &amp; rugby</option><option value="concert">Concert &amp; événement</option><option value="autre">Autre projet ou question</option></select></div>
+<div class="form-row"><div class="form-group"><label for="date">Date envisagée <span>(facultatif)</span></label><input id="date" name="date" type="date"></div><div class="form-group"><label for="location">Lieu <span>(facultatif)</span></label><input id="location" name="lieu" type="text" maxlength="200" placeholder="Ville ou lieu de l’événement"></div></div>
+<div class="form-group"><label for="message">Votre message</label><textarea id="message" name="message" rows="6" maxlength="10000" required placeholder="Votre idée, vos envies, le déroulé de l’événement…"></textarea></div>
+<div class="honeypot" aria-hidden="true"><label for="website">Laisser ce champ vide</label><input id="website" name="_gotcha" type="text" tabindex="-1" autocomplete="off"></div>
+<p id="privacy-note" class="form-note">Vos informations sont transmises à Thomas Soleil via Formspree pour traiter votre demande. <a href="mentions.html#confidentialite">En savoir plus sur l’utilisation de vos données et vos droits.</a></p>
+<button type="submit" class="button">Envoyer ma demande</button><p id="form-status" class="form-status" role="status" aria-live="polite" tabindex="-1"></p>
+<p class="form-note">En cas de difficulté, écrivez à <a class="email-link" href="mailto:thomas.soleil04@gmail.com">thomas.soleil04@gmail.com</a>.</p>
+</form></div></main>
 
-        <form action="https://formspree.io/f/xblwgnop" method="POST">
-            <div class="form-group">
-                <label>Votre Nom</label>
-                <input type="text" name="nom" required>
-            </div>
-            <div class="form-group">
-                <label>Votre Email</label>
-                <input type="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label>Votre Message</label>
-                <textarea name="message" rows="4" required></textarea>
-            </div>
-            <button type="submit">Envoyer</button>
-        </form>
-
-    </main>
-
-    <script src="js/main.js"></script>
-    <footer>
-        <p>&copy; <span id="footer-year">2026</span> Thomas Soleil. Tous droits réservés.</p>
-        <p style="margin-top: 10px;">
-            <a href="mentions.html">Mentions Légales</a> | 
-            <a href="contact.html">Contact</a> |
-            <a href="https://www.instagram.com/tomsol_photo/" target="_blank" rel="noopener">Instagram</a>
-        </p>
-    </footer>
-</body>
-</html>
+<footer class="site-footer"><div class="container footer-inner">
+<p>© <span id="footer-year">2026</span> Thomas Soleil · Toulouse &amp; Castres</p>
+<div class="footer-links"><a href="mentions.html">Mentions légales &amp; confidentialité</a><a href="contact.html">Contact</a><a href="https://www.instagram.com/tomsol_photo/" target="_blank" rel="noopener noreferrer">Instagram<span class="sr-only"> (nouvel onglet)</span></a></div>
+</div></footer>
+</body></html>

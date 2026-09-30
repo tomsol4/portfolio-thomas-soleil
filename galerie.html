@@ -1,62 +1,50 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galerie | Thomas Soleil</title>
-        <link rel="icon" type="image/png" href="images/favicon1.png">
-    <link rel="apple-touch-icon" href="images/favicon1.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Les galeries | Thomas Soleil</title>
+<meta name="description" content="Tous les reportages photographiques de Thomas Soleil.">
+<meta name="author" content="Thomas Soleil">
+<meta name="theme-color" content="#f7f5f0">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://www.tsoleil.fr/galerie.html">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+<link rel="preload" href="fonts/Rosehot.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts/montserrat.css">
 <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
-    <meta name="description" content="Explorez les galeries photos de Thomas Soleil : reportages événementiels, portraits intimes, concerts et explorations en photographie argentique.">
-    
-    <meta property="og:title" content="Galerie | Thomas Soleil">
-    <meta property="og:description" content="Explorez mes derniers albums et reportages photos.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.tsoleil.fr/galerie.html">
-    <meta property="og:image" content="https://www.tsoleil.fr/images/hero-photo-accueil_2.webp">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Thomas Soleil — Photographe">
+<meta property="og:title" content="Les galeries | Thomas Soleil">
+<meta property="og:description" content="Tous les reportages photographiques de Thomas Soleil.">
+<meta property="og:url" content="https://www.tsoleil.fr/galerie.html">
+<meta property="og:image" content="https://www.tsoleil.fr/images/optimized/og-home.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Les galeries | Thomas Soleil">
+<meta name="twitter:card" content="summary_large_image">
+
+<script src="js/main.js" defer></script>
+<script src="js/config.js" defer></script>
 </head>
 <body>
-    <nav>
-        <a href="index.html" class="logo"><img src="images/logo.png" alt="Logo Thomas Soleil"></a>
-        <div class="burger"><div></div><div></div><div></div></div>
-        <div class="nav-links">
-            <a href="index.html">Albums</a>
-            <a href="prestations.html">Prestations</a>
-            <a href="a-propos.html">À Propos</a>
-            <a href="contact.html">Contact</a>
-        </div>
-    </nav>
-    <main>
-        <div class="gallery-header">
-            <a href="index.html" class="back-link">← Retour aux albums</a>
-            <h1 id="album-title">Chargement...</h1>
-            <p id="album-meta"></p>
-        </div>
-
-        <div class="masonry-wrapper" id="gallery-container"></div>
-    </main>
-
-    <div id="lightbox">
-        <span class="close-lb" onclick="closeLightbox()">&times;</span>
-        <div class="lb-content">
-            <button class="nav-btn prev" onclick="changePhoto(-1)">&#10094;</button>
-                <img id="lightbox-img" src="" alt="Agrandissement">
-            <button class="nav-btn next" onclick="changePhoto(1)">&#10095;</button>
-        </div>
-    </div>
-
-    <script src="js/config.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/gallery.js"></script>
-    
-    <footer>
-        <p>&copy; <span id="footer-year">2026</span> Thomas Soleil. Tous droits réservés.</p>
-        <p style="margin-top: 10px;">
-            <a href="mentions.html">Mentions Légales</a> | 
-            <a href="contact.html">Contact</a> |
-            <a href="https://www.instagram.com/tomsol_photo/" target="_blank" rel="noopener">Instagram</a>
-        </p>
-    </footer>
-</body>
-</html>
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+<nav class="site-nav" aria-label="Navigation principale">
+<a href="index.html" class="logo" aria-label="Thomas Soleil — Accueil"><img src="images/logo.png" width="46" height="58" alt=""><span>Thomas Soleil<br>Photographe</span></a>
+<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation" aria-label="Ouvrir le menu"><span aria-hidden="true"></span><span aria-hidden="true"></span></button>
+<div class="nav-links" id="navigation"><a href="index.html#albums" aria-current="page">Albums</a>
+<a href="prestations.html">Prestations</a>
+<a href="a-propos.html">À propos</a>
+<a href="contact.html" class="nav-contact">Contact</a>
+</div>
+</nav>
+<main id="contenu" class="container"><header class="page-header"><p class="eyebrow">Le portfolio</p><h1 id="gallery-heading">Choisissez un reportage</h1><p id="gallery-message">Retrouvez toutes les galeries de Thomas Soleil.</p></header><div class="albums-grid section"><a class="album-card" href="albums/co_mhr.html"><div class="album-image"><img src="images/optimized/rugby_co_mhr_co_mhr-16-480.webp" srcset="images/optimized/rugby_co_mhr_co_mhr-16-480.webp 480w, images/optimized/rugby_co_mhr_co_mhr-16-800.webp 800w" sizes="(max-width: 760px) 45vw, 30vw" width="800" height="600" alt="Rugby — Castres / Montpellier" loading="lazy" decoding="async"></div><div class="album-info"><h3>Rugby — Castres / Montpellier</h3><p>2026 · 77 photos</p></div></a><a class="album-card" href="albums/co_rct.html"><div class="album-image"><img src="images/optimized/rugby_co_rct_co_rct-109-480.webp" srcset="images/optimized/rugby_co_rct_co_rct-109-480.webp 480w, images/optimized/rugby_co_rct_co_rct-109-800.webp 800w" sizes="(max-width: 760px) 45vw, 30vw" width="800" height="533" alt="Rugby — Castres / Toulon" loading="lazy" decoding="async"></div><div class="album-info"><h3>Rugby — Castres / Toulon</h3><p>2026 · 81 photos</p></div></a><a class="album-card" href="albums/rugby.html"><div class="album-image"><img src="images/optimized/rugby_co_bayonne_espoirs_CO-BayonneEspoirs-209-480.webp" srcset="images/optimized/rugby_co_bayonne_espoirs_CO-BayonneEspoirs-209-480.webp 480w, images/optimized/rugby_co_bayonne_espoirs_CO-BayonneEspoirs-209-800.webp 800w" sizes="(max-width: 760px) 45vw, 30vw" width="800" height="600" alt="Rugby — Castres / Bayonne Espoirs" loading="lazy" decoding="async"></div><div class="album-info"><h3>Rugby — Castres / Bayonne Espoirs</h3><p>2026 · 101 photos</p></div></a><a class="album-card" href="albums/mariage.html"><div class="album-image"><img src="images/optimized/mariage_mariage1-10-480.webp" srcset="images/optimized/mariage_mariage1-10-480.webp 480w, images/optimized/mariage_mariage1-10-800.webp 800w" sizes="(max-width: 760px) 45vw, 30vw" width="800" height="477" alt="Un mariage à l’argentique" loading="lazy" decoding="async"></div><div class="album-info"><h3>Un mariage à l’argentique</h3><p>2026 · 40 photos</p></div></a><a class="album-card" href="albums/concertsinfonia.html"><div class="album-image"><img src="images/optimized/concert_concertsinfonia_concertsinfonia-61-480.webp" srcset="images/optimized/concert_concertsinfonia_concertsinfonia-61-480.webp 480w, images/optimized/concert_concertsinfonia_concertsinfonia-61-800.webp 800w" sizes="(max-width: 760px) 45vw, 30vw" width="800" height="533" alt="Concert Sinfonia Garonna" loading="lazy" decoding="async"></div><div class="album-info"><h3>Concert Sinfonia Garonna</h3><p>2026 · 63 photos</p></div></a><a class="album-card" href="albums/noel.html"><div class="album-image"><img src="images/optimized/concert_noelchorunum_chorunumnoel-2-480.webp" srcset="images/optimized/concert_noelchorunum_chorunumnoel-2-480.webp 480w, images/optimized/concert_noelchorunum_chorunumnoel-2-960.webp 960w" sizes="(max-width: 760px) 45vw, 30vw" width="2000" height="1333" alt="Concert de Noël — Chœur Unum" loading="lazy" decoding="async"></div><div class="album-info"><h3>Concert de Noël — Chœur Unum</h3><p>2025 · 206 photos</p></div></a><a class="album-card" href="albums/Argentique.html"><div class="album-image"><img src="images/optimized/argentique_argentique_couvent_argentiqueNB-6-480.webp" srcset="images/optimized/argentique_argentique_couvent_argentiqueNB-6-480.webp 480w, images/optimized/argentique_argentique_couvent_argentiqueNB-6-960.webp 960w" sizes="(max-width: 760px) 45vw, 30vw" width="3271" height="2016" alt="Argentique — Couvent" loading="lazy" decoding="async"></div><div class="album-info"><h3>Argentique — Couvent</h3><p>11 photos</p></div></a><a class="album-card" href="albums/argentique_toulouse.html"><div class="album-image"><img src="images/optimized/argentique_argentique_toulouse_argentiqueNB-9-480.webp" srcset="images/optimized/argentique_argentique_toulouse_argentiqueNB-9-480.webp 480w, images/optimized/argentique_argentique_toulouse_argentiqueNB-9-960.webp 960w" sizes="(max-width: 760px) 45vw, 30vw" width="3328" height="2056" alt="Argentique — Toulouse" loading="lazy" decoding="async"></div><div class="album-info"><h3>Argentique — Toulouse</h3><p>9 photos</p></div></a><a class="album-card" href="albums/montagne.html"><div class="album-image"><img src="images/optimized/montagne_Montagne-59-480.webp" srcset="images/optimized/montagne_Montagne-59-480.webp 480w, images/optimized/montagne_Montagne-59-960.webp 960w" sizes="(max-width: 760px) 45vw, 30vw" width="2000" height="1333" alt="Échappées en montagne" loading="lazy" decoding="async"></div><div class="album-info"><h3>Échappées en montagne</h3><p>2025 · 60 photos</p></div></a><a class="album-card" href="albums/autres.html"><div class="album-image"><img src="images/optimized/vrac_Concours-480.webp" srcset="images/optimized/vrac_Concours-480.webp 480w, images/optimized/vrac_Concours-960.webp 960w" sizes="(max-width: 760px) 45vw, 30vw" width="1333" height="2000" alt="Au fil des jours" loading="lazy" decoding="async"></div><div class="album-info"><h3>Au fil des jours</h3><p>22 photos</p></div></a></div></main>
+<footer class="site-footer"><div class="container footer-inner">
+<p>© <span id="footer-year">2026</span> Thomas Soleil · Toulouse &amp; Castres</p>
+<div class="footer-links"><a href="mentions.html">Mentions légales &amp; confidentialité</a><a href="contact.html">Contact</a><a href="https://www.instagram.com/tomsol_photo/" target="_blank" rel="noopener noreferrer">Instagram<span class="sr-only"> (nouvel onglet)</span></a></div>
+</div></footer>
+</body></html>

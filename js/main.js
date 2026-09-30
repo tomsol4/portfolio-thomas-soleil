@@ -1,88 +1,34 @@
-document.addEventListener("DOMContentLoaded", () => {
-
-    // 1. LE NAV ET LE FOOTER SONT MAINTENANT DU HTML STATIQUE (SEO + pas de flash au chargement).
-    // On se contente de les faire vivre :
-    highlightActiveLink();
-    updateFooterYear();
-    injectMetaThemeColor(); // Force la barre d'adresse en noir sur mobile
-
-    // 2. GESTION DU SCROLL NAV
-    const nav = document.querySelector("nav");
-    window.addEventListener("scroll", () => {
-        if (window.scrollY > 50) nav.classList.add("scrolled");
-        else nav.classList.remove("scrolled");
+(() => {
+    'use strict';
+    const nav = document.querySelector('.site-nav');
+    const toggle = document.querySelector('.menu-toggle');
+    const links = document.getElementById('navigation');
+    const mobile = matchMedia('(max-width: 760px)');
+    const year = document.getElementById('footer-year');
+    if (year) year.textContent = new Date().getFullYear();
+    if (!nav || !toggle || !links) return;
+    document.documentElement.classList.add('js');
+    if (document.body.classList.contains('home')) {
+        const updateNav = () => nav.classList.toggle('scrolled', window.scrollY > 50);
+        window.addEventListener('scroll', updateNav, { passive: true });
+        updateNav();
+    }
+    function setMenu(open, restore = false) {
+        toggle.setAttribute('aria-expanded', String(open));
+        toggle.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
+        nav.classList.toggle('menu-open', open);
+        links.inert = mobile.matches && !open;
+        if (restore) toggle.focus();
+    }
+    toggle.addEventListener('click', () => setMenu(toggle.getAttribute('aria-expanded') !== 'true'));
+    links.addEventListener('click', e => { if (e.target.closest('a')) setMenu(false); });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') setMenu(false, true);
     });
-
-    // 3. GESTION DU MENU MOBILE (Burger)
-    initMobileMenu();
-});
-
-/* --- FONCTION : MENU MOBILE --- */
-function initMobileMenu() {
-    const burger = document.querySelector('.burger');
-    const navLinks = document.querySelector('.nav-links');
-    const nav = document.querySelector('nav');
-    const links = document.querySelectorAll('.nav-links a');
-
-    if (burger) {
-        burger.addEventListener('click', () => {
-            // Bascule l'animation du burger et l'affichage du menu
-            navLinks.classList.toggle('nav-active');
-            burger.classList.toggle('toggle');
-            
-            // FIX MOBILE : Force le fond noir quand le menu est ouvert
-            nav.classList.toggle('menu-open');
-        });
-        
-        // Ferme le menu quand on clique sur un lien
-        links.forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('nav-active');
-                burger.classList.remove('toggle');
-                nav.classList.remove('menu-open');
-            });
-        });
-    }
-}
-
-/* --- FONCTION : ANNÉE DU FOOTER --- */
-function updateFooterYear() {
-    const yearEl = document.getElementById('footer-year');
-    if (yearEl) yearEl.textContent = new Date().getFullYear();
-}
-
-/* --- FONCTION : SOULIGNER LE LIEN ACTIF --- */
-function highlightActiveLink() {
-    let path = window.location.pathname.split("/").pop();
-    if (path === "") path = "index.html";
-    
-    // Si on est dans une galerie, on active "Albums"
-    if (path.includes("galerie.html")) path = "index.html";
-
-    const activeLink = document.querySelector(`.nav-links a[href="${path}"]`);
-    if (activeLink) activeLink.classList.add("active");
-}
-
-/* --- FONCTION : FORCER LA COULEUR DU NAVIGATEUR MOBILE --- */
-function injectMetaThemeColor() {
-    let meta = document.querySelector("meta[name='theme-color']");
-    if (!meta) {
-        meta = document.createElement('meta');
-        meta.name = "theme-color";
-        document.head.appendChild(meta);
-    }
-    meta.content = "#1c1c1c"; // Noir profond
-}
-
-// --- FONCTION : EMPÊCHER LE CLIC-DROIT SUR LES IMAGES ---
-document.addEventListener('contextmenu', function(e) {
-    if (e.target.tagName === 'IMG') {
-        e.preventDefault(); // Annule l'action par défaut du clic-droit
-    }
-});
-// --- FONCTION : EMPÊCHER LE GLISSER-DÉPOSER DES IMAGES ---
-document.addEventListener('dragstart', function(e) {
-    if (e.target.tagName === 'IMG') {
-        e.preventDefault(); // Annule le comportement de glisser-déposer
-    }
-}); 
+    document.addEventListener('click', e => { if (!nav.contains(e.target)) setMenu(false); });
+    nav.addEventListener('focusout', () => {
+        requestAnimationFrame(() => { if (!nav.contains(document.activeElement)) setMenu(false); });
+    });
+    mobile.addEventListener('change', () => setMenu(false));
+    setMenu(false);
+})();

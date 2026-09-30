@@ -1,0 +1,10 @@
+exclude:
+  - scripts
+  - templates
+  - data
+  - tests
+  - test-results
+  - audit-site
+  - Microsoft
+  - README.md
+  - requirements-dev.txt

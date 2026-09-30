@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /audit-site/
+Disallow: /test-results/
+Sitemap: https://www.tsoleil.fr/sitemap.xml
