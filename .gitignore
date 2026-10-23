@@ -2,6 +2,5 @@
 .backups/
 __pycache__/
 Microsoft/
-audit-site/*.png
-audit-site/*.json
+audit-site/
 test-results/

@@ -1,0 +1,19 @@
+<main id="contenu">
+  <header class="concert-opening frame">
+    <div class="concert-title-row">
+      <p class="kicker">Photographies de concert</p>
+      <h1>En scène.</h1>
+      <a class="concert-scroll" href="#reportages">Voir les reportages <span aria-hidden="true">↓</span></a>
+    </div>
+    <figure class="concert-cover">
+      {{CONCERT_HERO}}
+      <figcaption><span>La musique, en images.</span><span>Thomas Soleil</span></figcaption>
+    </figure>
+  </header>
+  <section id="reportages" class="concert-programme frame" aria-labelledby="programme-title">
+    <div class="concert-section-heading"><h2 id="programme-title">Les reportages</h2><p class="kicker">Concerts &amp; chœurs</p></div>
+    <div class="collection-grid concert-reportages">{{CONCERT_REPORTAGES}}</div>
+  </section>
+  {{PRESENTATION}}
+  <div class="concert-invitation frame"><p>Votre prochain concert.</p><a href="../contact.html?projet=concert">Demander un devis concert <span aria-hidden="true">↗</span></a></div>
+</main>

@@ -1,13 +1,15 @@
 (() => {
     'use strict';
-    const gallery = document.querySelector('.photo-grid');
+    const gallery = document.querySelector('.photo-grid, .art-slides');
     const dialog = document.getElementById('lightbox');
     if (!gallery || !dialog || typeof dialog.showModal !== 'function') return;
     const photos = [...gallery.querySelectorAll('.photo-link')];
+    if (!photos.length) return;
     const image = dialog.querySelector('img');
     const counter = document.getElementById('photo-counter');
     const status = document.getElementById('photo-status');
     const original = document.getElementById('photo-original');
+    const print = document.getElementById('photo-print');
     const close = dialog.querySelector('.lightbox-close');
     let position = 0, request = 0;
     let opener = null, touch = null;
@@ -20,6 +22,11 @@
         status.textContent = 'Chargement de la photo…';
         image.hidden = true;
         original.href = link.href;
+        if (print) {
+            print.hidden = !link.dataset.printReference;
+            if (link.dataset.printReference) print.href = `../regards/tirages.html?photo=${encodeURIComponent(link.dataset.printReference)}#demande`;
+            else print.removeAttribute('href');
+        }
         image.alt = link.querySelector('img').alt;
         image.onload = () => {
             if (id !== request) return;
@@ -27,13 +34,18 @@
             status.textContent = '';
             for (const offset of [-1, 1]) {
                 const next = new Image();
-                next.src = photos[(position + offset + photos.length) % photos.length].href;
+                const neighbour = photos[(position + offset + photos.length) % photos.length];
+                next.sizes = '(max-width: 760px) calc(100vw - 24px), calc(100vw - 160px)';
+                next.srcset = neighbour.dataset.viewerSrcset || '';
+                next.src = neighbour.dataset.viewerSrc || neighbour.href;
             }
         };
         image.onerror = () => {
             if (id === request) status.textContent = 'Cette photo ne peut pas être chargée. Essayez la suivante ou ouvrez le fichier.';
         };
-        image.src = link.href;
+        image.sizes = '(max-width: 760px) calc(100vw - 24px), calc(100vw - 160px)';
+        image.srcset = link.dataset.viewerSrcset || '';
+        image.src = link.dataset.viewerSrc || link.href;
     }
     gallery.addEventListener('click', e => {
         const link = e.target.closest('.photo-link');

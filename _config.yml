@@ -1,4 +1,6 @@
 exclude:
+  - .tools
+  - .backups
   - scripts
   - templates
   - data

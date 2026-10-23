@@ -1,0 +1,47 @@
+.concerts-page{--bg:#1b1013;--ink:#f4eadb;--muted:#c0afa9;--line:#bda57b40;--accent:#d3bc92}
+.concerts-page h1,.concerts-page h2,.concert-invitation>p,.concerts-page .tariff-quote{font-family:Rosehot,Georgia,serif;font-weight:400;letter-spacing:0;text-transform:none}
+.concerts-page .logo strong,.concerts-page .button{font-weight:400}.concerts-page .logo span{color:var(--accent)}
+.concerts-page .nav-links .nav-contact{border-color:var(--accent)}
+.concert-opening{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);align-items:center;gap:64px;max-width:1180px;padding-block:64px 40px}
+.concert-title-row{display:grid;grid-template-columns:1fr;align-items:start;gap:28px;padding:0}
+.concert-title-row .kicker{grid-column:1/-1;color:var(--accent)}
+.concert-title-row h1{font-size:clamp(3.5rem,7.5vw,7rem);line-height:1.05}
+.concert-scroll{display:inline-flex;align-items:center;gap:28px;min-height:44px;margin-bottom:12px;font-size:.75rem;text-decoration:none}
+.concert-scroll span{font-size:1.25rem;color:var(--accent)}.concert-scroll:hover{text-decoration:underline}
+.concert-cover{margin:0;min-width:0}.concert-cover>img{width:100%;height:auto}
+.concert-cover figcaption{display:flex;justify-content:space-between;gap:20px;padding-top:16px;font-size:.75rem;letter-spacing:.08em;color:var(--muted)}
+.concert-programme{max-width:1180px;padding-top:64px;scroll-margin-top:24px}
+.concert-section-heading{display:flex;align-items:baseline;justify-content:space-between;gap:24px;padding-bottom:28px;border-bottom:1px solid var(--line);margin-bottom:44px}
+.concert-section-heading h2{font-size:clamp(2.4rem,4vw,4rem)}.concert-section-heading .kicker{color:var(--accent)}
+.concerts-page .concert-reportages{grid-template-columns:1fr;gap:68px;padding-bottom:96px}
+.concerts-page .concert-reportages .collection-link{display:grid;grid-template-columns:100px minmax(0,1fr);gap:24px;align-items:center}
+.concert-entry-content{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.9fr);gap:36px;align-items:center}
+.concert-entry-meta{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding-top:12px;font-size:.75rem;letter-spacing:.1em;color:var(--muted)}
+.concert-entry-meta span:first-child{color:var(--accent)}
+.concerts-page .collection-image{aspect-ratio:auto;background:transparent}
+.concerts-page .collection-image img{height:auto;object-fit:contain}
+.concerts-page .collection-link:hover img,.concerts-page .collection-link:focus-visible img{transform:none}
+.concerts-page .collection-caption{margin-top:0;gap:20px}
+.concerts-page .collection-caption h2{font-size:clamp(1.65rem,2.6vw,2.7rem);line-height:1.15}
+.concerts-page .collection-caption>span{font-size:1.5rem;color:var(--accent)}
+.concert-invitation{display:flex;align-items:center;justify-content:space-between;gap:24px;border-top:1px solid var(--line);padding-block:42px 64px}
+.concert-invitation>p{font-size:clamp(2rem,3.8vw,3.8rem);line-height:1.15}.concert-invitation>a{display:inline-flex;align-items:center;gap:28px;min-height:44px;font-size:.75rem;text-decoration:none}.concert-invitation>a:hover{text-decoration:underline}.concert-invitation a span{color:var(--accent)}
+.concerts-page .collection-gallery-header{padding-block:64px 48px;border-bottom:1px solid var(--line);margin-bottom:40px}
+.concerts-page .collection-gallery-header h1{max-width:22ch}.concerts-page .collection-gallery-header>a{color:var(--accent)}
+.concerts-page .personal-section{border-block:1px solid var(--line);background:#211418}
+.concerts-page .personal-page{max-width:1180px}.concerts-page .personal-portrait img{max-width:440px;max-height:550px}
+.concerts-page .concert-invitation{max-width:1180px;border-top:0;padding-top:64px}
+.concerts-page .lightbox,.concerts-page .lightbox::backdrop{background:#120b0d}.concerts-page .lightbox-close,.concerts-page .lightbox-prev,.concerts-page .lightbox-next{background:var(--bg);border-color:var(--line);color:var(--accent)}
+.concert-title-row,.concert-cover{animation:concert-entrance .9s ease-out both}.concert-cover{animation-delay:.12s}
+@keyframes concert-entrance{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:1000px){.concert-opening{gap:32px}.concerts-page .concert-reportages .collection-link{grid-template-columns:1fr;gap:16px}.concert-entry-meta{flex-direction:row;justify-content:space-between;padding:0}.concert-entry-content{gap:24px}}
+@media(max-width:760px){
+ .concert-opening{grid-template-columns:1fr;gap:26px;padding-block:38px 0}.concert-title-row{padding:0;gap:18px}.concert-title-row h1{font-size:clamp(4.25rem,18vw,7rem);grid-column:1/-1}.concert-title-row .kicker{font-size:.75rem}.concert-scroll{grid-column:1/-1;margin:0;gap:22px}
+ .concert-cover>img{max-height:none}.concert-cover figcaption{font-size:.75rem;letter-spacing:.02em;gap:12px}
+ .concert-programme{padding-top:68px}.concert-section-heading{align-items:flex-start;flex-direction:column;gap:12px;padding-bottom:22px;margin-bottom:30px}.concert-section-heading .kicker{font-size:.75rem}
+ .concerts-page .concert-reportages{gap:44px;padding-bottom:60px}.concerts-page .concert-reportages .collection-link{grid-template-columns:1fr;gap:14px}.concert-entry-meta{flex-direction:row;justify-content:space-between;padding:0;gap:20px;font-size:.75rem}
+ .concert-entry-content{grid-template-columns:1fr;gap:0}
+ .concerts-page .collection-caption{margin-top:16px;gap:18px}.concerts-page .collection-caption h2{font-size:clamp(1.6rem,6.8vw,2.4rem)}
+ .concert-invitation{flex-direction:column;align-items:flex-start;gap:18px;padding-block:32px 44px}
+ .concerts-page .collection-gallery-header{padding-block:32px;margin-bottom:24px}
+}

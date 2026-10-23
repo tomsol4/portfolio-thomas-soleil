@@ -3,6 +3,7 @@ from pathlib import Path
 from html.parser import HTMLParser
 from urllib.parse import urlsplit, unquote
 import json
+import re
 import sys
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -29,19 +30,23 @@ class Page(HTMLParser):
         if tag == 'link' and a.get('rel') == 'canonical': self.canonical.append(a.get('href'))
         for attr in ('src', 'href'):
             if a.get(attr): self.refs.append(a[attr])
-        for part in a.get('srcset', '').split(','):
+        for part in (a.get('srcset', '') + ',' + a.get('data-viewer-srcset', '')).split(','):
             if part.strip(): self.refs.append(part.strip().split()[0])
+        if a.get('data-viewer-src'): self.refs.append(a['data-viewer-src'])
 
 def check():
     pages = {}
     errors = []
-    files = sorted(ROOT.glob('*.html')) + sorted((ROOT / 'albums').glob('*.html'))
+    files = sorted(ROOT.glob('*.html'))
+    for folder in ('albums', 'rugby', 'instants-de-vie', 'concerts', 'regards'):
+        files += sorted((ROOT / folder).glob('*.html'))
     for f in files:
         p = Page(f);p.feed(f.read_text(encoding='utf-8'));pages[f.resolve()] = p
         if p.h1 != 1 or p.main != 1: errors.append(f'{f.name}: expected one h1 and one main')
         if len(p.ids) != len(set(p.ids)): errors.append(f'{f.name}: duplicate ids')
         if len(p.canonical) != 1: errors.append(f'{f.name}: canonical missing or duplicated')
         for field in p.fields:
+            if field.get('type') == 'hidden': continue
             if field.get('id') not in p.labels: errors.append(f'{f.name}: unlabelled field {field.get("name")}')
         for img in p.images:
             if 'alt' not in img: errors.append(f'{f.name}: missing alt')
@@ -59,10 +64,26 @@ def check():
     albums = json.loads((ROOT / 'data/albums.json').read_text(encoding='utf-8'))
     actual_images = {p.relative_to(ROOT).as_posix() for p in (ROOT / 'images').rglob('*') if p.is_file()}
     for a in albums:
+        if any(src not in a['photos'] or not alt.strip() for src,alt in a.get('photo_alts',{}).items()):
+            errors.append(f'{a["id"]}: image descriptions must refer to selected photographs')
         for src in [a['cover'], *a['photos']]:
             if src not in actual_images: errors.append(f'{a["id"]}: exact filename case does not match: {src}')
         content = (ROOT / 'albums' / (a['id'] + '.html')).read_text(encoding='utf-8')
         if content.count('class="photo-link"') != len(a['photos']): errors.append(f'{a["id"]}: wrong photo count')
+    descriptions = json.loads((ROOT / 'data/photo-descriptions.json').read_text(encoding='utf-8'))
+    for src,alt in descriptions.items():
+        if src not in actual_images or not alt.strip(): errors.append(f'Invalid photo description: {src}')
+    for file in files:
+        content = file.read_text(encoding='utf-8')
+        if file.name != '404.html':
+            snippets = re.findall(r'<script type="application/ld\+json">(.*?)</script>',content,re.S)
+            if not snippets: errors.append(f'{file.name}: missing structured data')
+            for snippet in snippets:
+                try: json.loads(snippet)
+                except json.JSONDecodeError: errors.append(f'{file.name}: invalid structured data')
+    for css in (ROOT / 'css').glob('*.css'):
+        for ref in re.findall(r'url\([\'\"]?([^\)\'\"]+)',css.read_text(encoding='utf-8')):
+            if not urlsplit(ref).scheme and not (css.parent / ref).is_file(): errors.append(f'{css.name}: missing {ref}')
     if errors:
         print('\n'.join(errors));raise SystemExit(1)
     print(f'PASS: {len(pages)} pages, {len(albums)} albums, {sum(len(a["photos"]) for a in albums)} photo links, {total_refs} local references; headings, labels and fragments valid.')

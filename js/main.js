@@ -6,6 +6,21 @@
     const mobile = matchMedia('(max-width: 760px)');
     const year = document.getElementById('footer-year');
     if (year) year.textContent = new Date().getFullYear();
+    const backToTop = document.querySelector('.back-to-top');
+    if (backToTop) {
+        const updateBackToTop = () => {
+            // Keep a focused link available until the visitor moves focus away.
+            backToTop.hidden = window.scrollY < 700 && document.activeElement !== backToTop;
+        };
+        window.addEventListener('scroll', updateBackToTop, { passive: true });
+        backToTop.addEventListener('blur', updateBackToTop);
+        backToTop.addEventListener('click', () => {
+            const content = document.getElementById('contenu');
+            content.setAttribute('tabindex', '-1');
+            content.focus({ preventScroll: true });
+        });
+        updateBackToTop();
+    }
     if (!nav || !toggle || !links) return;
     document.documentElement.classList.add('js');
     if (document.body.classList.contains('home')) {

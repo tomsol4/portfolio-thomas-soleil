@@ -1,0 +1,23 @@
+/* Shared form, with colour variables supplied by each universe. */
+.contact-layout{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:64px;padding-bottom:80px;align-items:start}
+.contact-aside h2{font-size:2rem;margin-bottom:24px}
+.contact-aside p{font-size:.95rem;line-height:1.85;color:var(--muted);margin-bottom:22px}
+.email-link{overflow-wrap:anywhere}
+.form-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.form-group{min-width:0;margin-bottom:22px}
+label{display:block;font-size:.9rem;margin-bottom:8px;font-weight:500}
+label span{font-size:.8rem;color:var(--muted);font-weight:400}
+input,textarea,select{width:100%;min-width:0;max-width:100%;padding:13px 14px;border:1px solid #8b8175;border-radius:0;background:#fff;color:var(--ink);font-size:1rem}
+textarea{resize:vertical;min-height:155px}
+input:focus,textarea:focus,select:focus{border-color:var(--ink)}
+.form-note{font-size:.85rem;color:var(--muted);line-height:1.8;margin:0 0 20px}
+.form-status{font-size:.95rem;line-height:1.8;margin:20px 0;scroll-margin-top:110px}
+.form-status:empty{display:none}
+.form-status[data-state=error]{color:#8a2929}.form-status[data-state=success]{color:#27573a}
+.honeypot{display:none}button:disabled{cursor:wait;opacity:.7}
+.rugby-page input,.rugby-page textarea,.rugby-page select{border-color:#6d8193;background:#122536;color-scheme:dark}
+.rugby-page input::placeholder,.rugby-page textarea::placeholder{color:#b5bfca}
+.rugby-page .form-status[data-state=error]{color:#ffc8bc}.rugby-page .form-status[data-state=success]{color:var(--accent)}
+@media(max-width:1000px){.contact-layout{gap:35px}}
+@media(max-width:760px){.contact-layout{grid-template-columns:1fr;gap:30px;padding-bottom:50px}.contact-aside{order:2}}
+@media(max-width:380px){.form-row{grid-template-columns:1fr;gap:0}}

@@ -4,9 +4,27 @@
     if (!form) return;
     const project = document.getElementById('project');
     const requested = new URLSearchParams(location.search).get('projet');
-    if ([...project.options].some(option => option.value === requested)) project.value = requested;
+    if (project?.options && [...project.options].some(option => option.value === requested)) project.value = requested;
+    // Reset clears the message while retaining the project selected by the incoming link.
+    if (project?.options) for (const option of project.options) option.defaultSelected = option.selected;
+    const offer = document.getElementById('wedding-offer');
+    const offerGroup = document.getElementById('wedding-offer-group');
+    if (offer && offerGroup) {
+        const requestedOffer = new URLSearchParams(location.search).get('offre');
+        if (requested === 'mariage' && [...offer.options].some(option => option.value === requestedOffer)) offer.value = requestedOffer;
+        for (const option of offer.options) option.defaultSelected = option.selected;
+        const updateOffer = () => {
+            const wedding = project.value === 'mariage';
+            offerGroup.hidden = !wedding;
+            offer.disabled = !wedding;
+        };
+        project.addEventListener('change', updateOffer);
+        form.addEventListener('reset', () => requestAnimationFrame(updateOffer));
+        updateOffer();
+    }
     const status = document.getElementById('form-status');
     const submit = form.querySelector('[type="submit"]');
+    const submitLabel = submit.textContent;
     let sending = false;
     form.addEventListener('submit', async e => {
         e.preventDefault();
@@ -26,18 +44,18 @@
             });
             if (!response.ok) throw new Error('submission-failed');
             form.reset();
-            status.textContent = 'Merci, votre message a bien été envoyé. Je vous réponds sous 24 h.';
+            status.textContent = form.dataset.successMessage || 'Merci, votre message a bien été envoyé. Je vous réponds personnellement pour échanger sur votre projet.';
             status.dataset.state = 'success';
         } catch (error) {
             status.textContent = error.name === 'AbortError'
-                ? 'La confirmation prend trop de temps. Votre message a peut-être été envoyé. Vous pouvez me contacter directement par email ci-dessous.'
-                : 'L’envoi n’a pas pu être confirmé. Votre texte est conservé : réessayez ou contactez-moi par email ci-dessous.';
+                ? 'La confirmation prend trop de temps. Votre message a peut-être été envoyé. Vous pouvez me contacter sur Instagram.'
+                : 'L’envoi n’a pas pu être confirmé. Votre texte est conservé : réessayez ou contactez-moi sur Instagram.';
             status.dataset.state = 'error';
         } finally {
             clearTimeout(timeout);
             sending = false;
             submit.disabled = false;
-            submit.textContent = 'Envoyer ma demande';
+            submit.textContent = submitLabel;
             form.removeAttribute('aria-busy');
             status.focus();
         }
