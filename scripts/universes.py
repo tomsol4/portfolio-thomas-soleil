@@ -26,7 +26,7 @@ def shell(body, title, description, path, universe, prefix='', cover='', scripts
         links = [('index.html#haut', 'Tous les univers'), (universe + '/index.html#reportages', 'Reportages'),
                  ('concerts/index.html#presentation', 'À propos'),
                  ('concerts/tarifs.html', 'Tarifs'),
-                 ('contact.html?projet=concert', 'Contact')]
+                 ('concerts/contact.html', 'Contact')]
     else:
         links = [('a-propos.html', 'À propos'), ('contact.html', 'Contact')]
     nav = '\n'.join(f'<a href="{prefix}{href}"' + (' class="nav-contact"' if label == 'Contact' else '') +
@@ -119,6 +119,21 @@ def inline_presentation(universe, picture):
     return content.replace('<h1>', '<h2 id="presentation-title">', 1).replace('</h1>', '</h2>', 1)
 
 
+def build_concert_contact(write):
+    contact = (ROOT / 'templates/contact.html').read_text(encoding='utf-8')
+    contact = contact.replace('class="container"', 'class="frame contact-page"')
+    contact = contact.replace('Racontez-moi votre projet.', 'Votre prochain concert.')
+    contact = contact.replace('Sport, mariage, événement ou concert : quelques mots suffisent pour commencer.',
+                              'Un concert, un chœur ou un événement musical : quelques mots suffisent pour commencer.')
+    contact = contact.replace('<option value="concert">', '<option value="concert" selected>')
+    contact = contact.replace('href="mentions.html#confidentialite"', 'href="../mentions.html#confidentialite"')
+    contact = contact.replace('Votre idée, vos envies, le déroulé de l’événement…',
+                              'Le concert, le lieu, la date et les images dont vous avez besoin…')
+    write('concerts/contact.html', shell(contact, 'Votre projet concert | Contacter Thomas Soleil',
+          'Un concert, un chœur ou un événement musical ? Contactez Thomas Soleil, photographe entre Toulouse et Castres.',
+          'concerts/contact.html', 'concerts', '../', 'images/optimized/og-concertsinfonia.jpg', ('contact.js',)))
+
+
 def build_universes(albums, picture, write, home_cover, asset):
     rugby = [a for a in albums if a['category'] == 'Rugby']
     by_id = {a['id']: a for a in albums}
@@ -187,6 +202,7 @@ def build_universes(albums, picture, write, home_cover, asset):
     write('concerts/index.html', shell(body, 'En scène. | Concerts — Thomas Soleil',
           'Concerts, chœurs et musique en images. Les reportages de Thomas Soleil, photographe à Toulouse et Castres.',
           'concerts/index.html', 'concerts', '../', 'images/optimized/og-concertsinfonia.jpg'))
+    build_concert_contact(write)
     build_life_universe(albums, picture, write)
     print_references = build_prints(albums, picture, write, shell)
     artistic_albums = [a for a in albums if a['category'] in ('Argentique', 'Autres regards')]

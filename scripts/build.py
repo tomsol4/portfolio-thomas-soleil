@@ -245,15 +245,14 @@ def build():
             write(path, universe_shell(body, a['title'] + ' | Thomas Soleil', description, path, 'regards', '../', og, ('gallery.js',)))
         elif a['category'] in ('Mariage', 'Concerts'):
             universe = 'instants-de-vie' if a['category'] == 'Mariage' else 'concerts'
-            project = 'mariage' if a['category'] == 'Mariage' else 'concert'
-            contact_href = '../instants-de-vie/contact.html' if universe == 'instants-de-vie' else '../contact.html?projet=' + project
+            contact_href = f'../{universe}/contact.html'
             body = f'''<main id="contenu" class="frame"><header class="collection-gallery-header"><a href="../{universe}/index.html">← Les reportages</a><h1>{e(a['title'])}</h1>{context}</header><ul class="photo-grid" aria-label="Photographies du reportage">{''.join(items)}</ul><div class="gallery-end"><a href="../{universe}/index.html">← Les reportages</a><a href="{contact_href}">Contact ↗</a></div>{top_link}</main>{dialog}'''
             write(path, universe_shell(body, a['title'] + ' | Thomas Soleil', description, path, universe, '../', og, ('gallery.js',)))
         else:
             write(path, layout(body, a['title'] + ' | Thomas Soleil', description, path, '', '../', ('gallery.js',), cover=og, schema=schema))
     missing = '<main id="contenu" class="container section"><p class="eyebrow">Erreur 404</p><h1>Cette page a changé de chemin.</h1><p>Retrouvez les reportages ou contactez-moi pour trouver ce que vous cherchez.</p><div class="actions"><a class="button" href="/index.html#univers">Découvrir les univers</a><a class="text-link" href="/contact.html">Me contacter</a></div></main>'
     write('404.html', layout(missing, 'Page introuvable | Thomas Soleil', 'Retrouvez les reportages de Thomas Soleil.', '404.html', prefix='/', noindex=True))
-    urls = ['', 'rugby/index.html', 'rugby/contact.html', 'rugby/tarifs.html', 'instants-de-vie/index.html', 'instants-de-vie/prestations.html', 'instants-de-vie/contact.html', 'concerts/index.html', 'concerts/tarifs.html', 'regards/index.html', 'regards/tirages.html'] + [name + '.html' for name, _, _ in pages] + [f'albums/{a["id"]}.html' for a in ALBUMS]
+    urls = ['', 'rugby/index.html', 'rugby/contact.html', 'rugby/tarifs.html', 'instants-de-vie/index.html', 'instants-de-vie/prestations.html', 'instants-de-vie/contact.html', 'concerts/index.html', 'concerts/tarifs.html', 'concerts/contact.html', 'regards/index.html', 'regards/tirages.html'] + [name + '.html' for name, _, _ in pages] + [f'albums/{a["id"]}.html' for a in ALBUMS]
     write('sitemap.xml', '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + '\n'.join(f'<url><loc>{BASE}/{url}</loc></url>' for url in urls) + '\n</urlset>\n')
     write('robots.txt', 'User-agent: *\nAllow: /\nDisallow: /test-results/\nSitemap: ' + BASE + '/sitemap.xml\n')
     prune_optimized_images()

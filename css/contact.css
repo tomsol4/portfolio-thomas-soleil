@@ -18,6 +18,14 @@ input:focus,textarea:focus,select:focus{border-color:var(--ink)}
 .rugby-page input,.rugby-page textarea,.rugby-page select{border-color:#6d8193;background:#122536;color-scheme:dark}
 .rugby-page input::placeholder,.rugby-page textarea::placeholder{color:#b5bfca}
 .rugby-page .form-status[data-state=error]{color:#ffc8bc}.rugby-page .form-status[data-state=success]{color:var(--accent)}
+.concerts-page .contact-page{max-width:1180px}
+.concerts-page .contact-page .page-header{padding:64px 0 40px;max-width:1000px}
+.concerts-page .contact-page .page-header h1{font-size:clamp(2.8rem,5.5vw,5.5rem);margin:20px 0}
+.concerts-page .contact-page .page-header p:not(.eyebrow){max-width:60ch;color:var(--muted)}
+.concerts-page .contact-page .eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.15em;color:var(--accent)}
+.concerts-page input,.concerts-page textarea,.concerts-page select{border-color:#89755e;background:#291b20;color-scheme:dark}
+.concerts-page input::placeholder,.concerts-page textarea::placeholder{color:var(--muted);opacity:1}
+.concerts-page .form-status[data-state=error]{color:#ffc8bc}.concerts-page .form-status[data-state=success]{color:var(--accent)}
 @media(max-width:1000px){.contact-layout{gap:35px}}
 @media(max-width:760px){.contact-layout{grid-template-columns:1fr;gap:30px;padding-bottom:50px}.contact-aside{order:2}}
 @media(max-width:380px){.form-row{grid-template-columns:1fr;gap:0}}
