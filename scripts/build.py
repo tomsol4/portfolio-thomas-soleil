@@ -9,7 +9,7 @@ import re
 from html import escape
 from urllib.parse import quote
 from PIL import Image, ImageOps
-from universes import build_universes, shell as universe_shell, rugby_cta
+from universes import build_universes, shell as universe_shell
 from site_metadata import structured_data, PHOTO_DESCRIPTIONS
 from gallery_markup import lightbox_markup
 

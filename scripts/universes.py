@@ -103,10 +103,6 @@ def shell(body, title, description, path, universe, prefix='', cover='', scripts
 </body></html>'''
 
 
-def rugby_cta(prefix=''):
-    return f'''<div class="frame rugby-contact-link"><a href="{prefix}rugby/contact.html">Un projet ? Contact ↗</a></div>'''
-
-
 def inline_presentation(universe, picture):
     template = {'rugby': 'rugby-about.html', 'instants-de-vie': 'life-about.html', 'concerts': 'concerts-about.html'}[universe]
     prefix = '../'
@@ -166,7 +162,7 @@ def build_universes(albums, picture, write, home_cover, asset):
     body = body.replace('{{HERO_IMAGE}}', picture(by_id['co_rct']['cover'], 'Une touche sous les projecteurs, Castres face à Toulon', '../',
                         loading='eager', sizes='(max-width: 800px) 100vw, 800px', hero=True))
     body = body.replace('{{HERO_DATE}}', escape(by_id['co_rct'].get('date', '')))
-    body = body.replace('{{RUGBY_CARDS}}', ''.join(cards)).replace('{{RUGBY_CTA}}', rugby_cta('../'))
+    body = body.replace('{{RUGBY_CARDS}}', ''.join(cards))
     body = body.replace('{{PRESENTATION}}', inline_presentation('rugby', picture))
     write('rugby/index.html', shell(body, 'Rugby & sport | Thomas Soleil, photographe à Toulouse et Castres',
           'Reportages rugby au cœur du jeu. Découvrez les rencontres du Castres Olympique photographiées par Thomas Soleil et préparons votre projet sportif.',
