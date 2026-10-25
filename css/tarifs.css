@@ -2,3 +2,40 @@
 @media(max-width:1000px){.tariff-feature{gap:32px}.rugby-page .nav-links{gap:16px}.rugby-page .nav-links a{font-size:.75rem}}
 .booking-process{margin-top:56px;border-top:1px solid var(--line);padding-top:36px}.booking-process h2{font-size:clamp(1.8rem,3vw,3rem);margin-bottom:28px}.booking-process ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px;padding-left:24px;margin:0}.booking-process li{font-size:.95rem;line-height:1.8;color:var(--muted);padding-left:4px}.booking-process strong{display:block;font-weight:500;color:var(--ink);margin-bottom:12px}
 @media(max-width:760px){.tariff-page{padding-block:40px 54px}.tariff-header{margin-bottom:32px}.tariff-header h1{font-size:clamp(2.5rem,10vw,4rem)}.tariff-feature{grid-template-columns:1fr;gap:30px;margin-bottom:36px}.tariff-option{grid-template-columns:1fr;gap:16px;padding-block:24px}.tariff-option h2{font-size:1.8rem}.booking-process ol{grid-template-columns:1fr;gap:24px}}
+
+/* Concise Sport pricing: three offers and one enquiry action. */
+.rugby-pricing{padding-block:40px 48px}
+.rugby-pricing-opening{margin-bottom:32px}
+.rugby-pricing-intro .kicker{color:var(--accent);margin-bottom:16px}
+.rugby-pricing-intro h1{font-size:clamp(2.5rem,4.6vw,4.6rem);line-height:1.05;margin-bottom:20px}
+.rugby-pricing-intro>p:not(.kicker){max-width:48ch;font-size:1rem;line-height:1.7;color:var(--muted)}
+.rugby-pricing-intro strong{color:var(--accent);font-weight:600;white-space:nowrap}
+.rugby-pricing-offers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.rugby-pricing-card{min-width:0;overflow:hidden;border:1px solid var(--line);border-top:2px solid var(--accent);background:#101f2e}
+.rugby-pricing-card-photo img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
+.rugby-pricing-card-photo--tournament img{object-position:center 18%}
+.rugby-pricing-card-copy{padding:24px}
+.rugby-pricing-card h2{font-size:clamp(1.5rem,2.4vw,2rem);line-height:1.15;margin-bottom:12px}
+.rugby-pricing-card p{max-width:32ch;font-size:1rem;line-height:1.65;color:var(--muted)}
+.rugby-pricing-summary{display:flex;align-items:center;justify-content:space-between;gap:32px;margin-top:28px;padding-top:28px;border-top:1px solid var(--line)}
+.rugby-pricing-summary>div{max-width:58ch}
+.rugby-pricing-summary h2{font-size:1.35rem;line-height:1.3;margin-bottom:8px}
+.rugby-pricing-summary p{font-size:1rem;line-height:1.65;color:var(--muted)}
+.rugby-pricing-summary .button{flex-shrink:0;gap:16px;font-size:.85rem;text-align:center}
+.rugby-pricing-note{font-size:.85rem;line-height:1.7;color:var(--muted);margin-top:20px}
+@media(max-width:1000px){.rugby-pricing-card-copy{padding:20px}.rugby-pricing-summary{gap:24px}}
+@media(max-width:760px){
+ .rugby-pricing{padding-block:28px 36px}
+ .rugby-pricing-opening{margin-bottom:20px}
+ .rugby-pricing-intro .kicker{margin-bottom:12px}
+ .rugby-pricing-intro h1{font-size:clamp(2rem,8.5vw,3.2rem);margin-bottom:16px}
+ .rugby-pricing-intro>p:not(.kicker){line-height:1.6}
+ .rugby-pricing-offers{grid-template-columns:1fr;gap:10px}
+ .rugby-pricing-card-copy{padding:16px 18px}
+ .rugby-pricing-card h2{font-size:1.45rem;margin-bottom:6px}
+ .rugby-pricing-card p{max-width:none;line-height:1.55}
+ .rugby-pricing-summary{flex-direction:column;align-items:stretch;gap:20px;margin-top:24px;padding-top:24px}
+ .rugby-pricing-summary h2{font-size:1.25rem}
+ .rugby-pricing-summary .button{width:100%;padding-inline:16px}
+ .rugby-pricing-note{font-size:.8rem;margin-top:16px}
+}

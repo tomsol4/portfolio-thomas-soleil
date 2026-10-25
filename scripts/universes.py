@@ -239,8 +239,16 @@ def build_universes(albums, picture, write, home_cover, asset):
         ('concerts', 'concertsinfonia', 'Tarifs concerts | Thomas Soleil', 'Reportages de concerts, chœurs et événements musicaux : une couverture sur devis adaptée à votre scène.')]:
         album = by_id[album_id]
         content = (ROOT / 'templates' / (universe + '-tarifs.html')).read_text(encoding='utf-8')
-        content = content.replace('{{PHOTO}}', picture(album['cover'], album['title'], '../', loading='eager',
-                                  sizes='(max-width: 760px) 90vw, 45vw', large=universe == 'concerts'))
+        if universe == 'rugby':
+            for token, src, alt in [
+                ('MATCH_PHOTO', 'images/rugby/co_rct/26_06_CO-RCT-1078.jpg', 'Action de jeu entre le Castres Olympique et le RC Toulon'),
+                ('TOURNAMENT_PHOTO', 'images/rugby/TouchCO-5783.jpg', 'Vue du tournoi TouchCO sur les terrains du stade Pierre-Fabre'),
+                ('CLUB_PHOTO', 'images/rugby/12_06_26_PierreFabrepREAPATIF-8203.jpg', 'Entretien de la pelouse devant les tribunes du stade Pierre-Fabre')]:
+                content = content.replace('{{' + token + '}}', picture(src, alt, '../',
+                                          sizes='(max-width: 760px) calc(100vw - 40px), 33vw'))
+        else:
+            content = content.replace('{{PHOTO}}', picture(album['cover'], album['title'], '../', loading='eager',
+                                      sizes='(max-width: 760px) 90vw, 45vw', large=True))
         path = universe + '/tarifs.html'
         write(path, shell(content, title, description, path, universe, '../', 'images/optimized/og-' + album_id + '.jpg'))
     return print_references

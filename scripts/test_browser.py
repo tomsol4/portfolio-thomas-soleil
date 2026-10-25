@@ -360,9 +360,17 @@ def run():
             link = page.locator('#navigation a').filter(has_text='Tarifs')
             link.click()
             page.wait_for_url('**/' + universe + '/tarifs.html')
-            expect(page.locator('.tariff-quote')).to_have_text('Sur devis')
+            if universe == 'rugby':
+                expect(page.locator('.rugby-pricing-intro')).to_contain_text('sur devis')
+                expect(page.locator('.rugby-pricing-card')).to_have_count(3)
+                expect(page.locator('main a[href="contact.html"]')).to_have_count(1)
+                expect(page.locator('.booking-process')).to_have_count(0)
+                request_link = page.locator('.rugby-pricing-summary .button')
+            else:
+                expect(page.locator('.tariff-quote')).to_have_text('Sur devis')
+                request_link = page.locator('.tariff-feature .button')
             assert '600' not in page.locator('main').inner_text(), universe
-            page.locator('.tariff-feature .button').click()
+            request_link.click()
             page.wait_for_url('**' + contact_path)
             expect(page.locator('#project')).to_have_value(project)
         results.append('Separate Sport and Concert prices; contextual contact links')
@@ -506,6 +514,8 @@ def run():
             page.goto(base+'/'+path)
             if path == 'instants-de-vie/prestations.html':
                 expect(page.locator('.life-offer-notes')).to_contain_text('Déplacements : à votre charge')
+            elif path == 'rugby/tarifs.html':
+                expect(page.locator('.rugby-pricing-note')).to_contain_text('Frais de déplacement à votre charge')
             else:
                 expect(page.locator('.booking-process')).to_contain_text('Les frais de déplacement sont à votre charge')
         page.goto(base+'/albums/co_mhr.html')

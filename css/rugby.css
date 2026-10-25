@@ -1,4 +1,4 @@
-.rugby-page{--bg:#0b1622;--ink:#f2f4ec;--muted:#aab8c5;--accent:#d5fc60;--line:#ffffff29;--nav-height:89px}
+.rugby-page{--bg:#0b1622;--ink:#f2f4ec;--muted:#aab8c5;--accent:#55abe0;--line:#ffffff29;--nav-height:89px}
 .rugby-contact-link{padding-bottom:50px;font-size:.75rem}.rugby-contact-link a{display:inline-flex;align-items:center;min-height:44px}.rugby-hero .hero-actions{margin-top:32px}
 .rugby-page h1,.rugby-page h2,.rugby-page h3{font-family:Arial,Helvetica,sans-serif;font-weight:900;letter-spacing:-.045em}.rugby-page .logo span{color:var(--accent)}.rugby-page .nav-contact{background:var(--accent);color:var(--bg);border-color:var(--accent)}
 .rugby-hero{position:relative;isolation:isolate;height:calc(100vh - var(--nav-height));height:calc(100dvh - var(--nav-height));display:flex;align-items:center;overflow:hidden}.rugby-hero>img{position:absolute;inset:0;z-index:-2;width:100%;height:100%;max-height:none;object-fit:cover;object-position:center}.rugby-hero::after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#081321eb 0%,#081321a8 30%,#08132118 70%),linear-gradient(0deg,#0b1622bf,transparent 35%)}
