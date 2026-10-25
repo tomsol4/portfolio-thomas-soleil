@@ -38,7 +38,9 @@ Les albums se découvrent depuis les quatre univers de l’accueil. Les galeries
 
 Les formulaires préremplissent le projet selon le lien utilisé. Les offres mariage préremplissent également la formule. Les prix et les choix de photographies proviennent des contenus existants.
 
-Les albums conservent leur sélection complète et leur ordre de publication. Les galeries présentent les images de gauche à droite, leur description et leur nombre de photographies. La visionneuse choisit une image adaptée à l’écran et garde un lien vers le fichier source. Les séries personnelles indiquent leur position et le lien pour les ouvrir.
+Les albums conservent leur sélection complète et leur ordre de publication. Les galeries présentent les images de gauche à droite, leur description et leur nombre de photographies. La visionneuse choisit une image adaptée à l’écran, sans bouton d’ouverture du fichier source. Les séries personnelles indiquent leur position et le lien pour les ouvrir.
+
+Le clic droit et le glisser-déposer sont bloqués sur les photographies lorsque JavaScript est actif. Les styles limitent aussi le menu d’enregistrement par appui long sur les navigateurs compatibles. La navigation, les gestes de balayage et le zoom restent disponibles. Ces mesures découragent l’enregistrement courant ; les fichiers servis au navigateur et les captures d’écran restent accessibles. Elles ne remplacent pas un contrôle d’accès pour des photographies privées.
 
 Le reportage mariage utilise les 38 fichiers JPEG de remplacement dans `images/mariage/`. Les miniatures sont générées en WebP ; la visionneuse propose aussi le fichier source en pleine définition pour les grands écrans. Les noms des originaux sont conservés, y compris les espaces, qui sont encodés dans les liens. Les fichiers optimisés ont des noms compatibles avec les URL.
 

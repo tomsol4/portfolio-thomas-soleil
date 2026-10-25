@@ -1,8 +1,20 @@
 (() => {
     'use strict';
+    // Deter ordinary image saving while keeping clicks, scrolling and zoom available.
+    const photoSelector = 'main img, .lightbox img, .photo-link, .art-image-link';
+    document.querySelectorAll('main img, .lightbox img, .photo-link, .art-image-link').forEach(photo => {
+        photo.setAttribute('draggable', 'false');
+    });
+    for (const eventName of ['contextmenu', 'dragstart']) {
+        document.addEventListener(eventName, event => {
+            if (event.target instanceof Element &&
+                (event.target.closest(photoSelector) || event.target.matches('.portal-hero'))) event.preventDefault();
+        });
+    }
     const nav = document.querySelector('.site-nav');
     const toggle = document.querySelector('.menu-toggle');
     const links = document.getElementById('navigation');
+    const portal = document.body.classList.contains('portal-page');
     const mobile = matchMedia('(max-width: 760px)');
     const year = document.getElementById('footer-year');
     if (year) year.textContent = new Date().getFullYear();
@@ -32,7 +44,7 @@
         toggle.setAttribute('aria-expanded', String(open));
         toggle.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
         nav.classList.toggle('menu-open', open);
-        links.inert = mobile.matches && !open;
+        links.inert = (portal || mobile.matches) && !open;
         if (restore) toggle.focus();
     }
     toggle.addEventListener('click', () => setMenu(toggle.getAttribute('aria-expanded') !== 'true'));

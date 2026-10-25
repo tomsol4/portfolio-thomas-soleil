@@ -6,6 +6,9 @@ body{margin:0;color:var(--ink);font:400 1rem/1.75 var(--body);background:var(--p
 body:has(dialog[open]){overscroll-behavior:none}
 main{flex:1;min-width:0}
 img{max-width:100%;height:auto;display:block}
+/* Discourage saving photographs through native image menus and dragging. */
+main img,.lightbox img,.photo-link,.art-image-link{-webkit-user-drag:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.portal-hero{-webkit-touch-callout:none}
 a{color:inherit;text-underline-offset:.25em;text-decoration-thickness:1px}
 a:hover{color:var(--accent)}
 button,input,textarea,select{font:inherit}

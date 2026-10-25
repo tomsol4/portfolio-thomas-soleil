@@ -27,6 +27,10 @@ def shell(body, title, description, path, universe, prefix='', cover='', scripts
                  ('concerts/index.html#presentation', 'À propos'),
                  ('concerts/tarifs.html', 'Tarifs'),
                  ('concerts/contact.html', 'Contact')]
+    elif portal:
+        links = [('rugby/index.html', 'Sport'), ('instants-de-vie/index.html', 'Mariage &amp; événements'),
+                 ('concerts/index.html', 'Concerts'), ('regards/index.html', 'Projets personnels'),
+                 ('a-propos.html', 'À propos'), ('contact.html', 'Contact')]
     else:
         links = [('a-propos.html', 'À propos'), ('contact.html', 'Contact')]
     nav = '\n'.join(f'<a href="{prefix}{href}"' + (' class="nav-contact"' if label == 'Contact' else '') +

@@ -8,7 +8,6 @@
     const image = dialog.querySelector('img');
     const counter = document.getElementById('photo-counter');
     const status = document.getElementById('photo-status');
-    const original = document.getElementById('photo-original');
     const print = document.getElementById('photo-print');
     const close = dialog.querySelector('.lightbox-close');
     let position = 0, request = 0;
@@ -21,7 +20,6 @@
         counter.textContent = `${position + 1} / ${photos.length}`;
         status.textContent = 'Chargement de la photo…';
         image.hidden = true;
-        original.href = link.href;
         if (print) {
             print.hidden = !link.dataset.printReference;
             if (link.dataset.printReference) print.href = `../regards/tirages.html?photo=${encodeURIComponent(link.dataset.printReference)}#demande`;
@@ -41,7 +39,7 @@
             }
         };
         image.onerror = () => {
-            if (id === request) status.textContent = 'Cette photo ne peut pas être chargée. Essayez la suivante ou ouvrez le fichier.';
+            if (id === request) status.textContent = 'Cette photo ne peut pas être chargée. Essayez la suivante.';
         };
         image.sizes = '(max-width: 760px) calc(100vw - 24px), calc(100vw - 160px)';
         image.srcset = link.dataset.viewerSrcset || '';
@@ -49,7 +47,7 @@
     }
     gallery.addEventListener('click', e => {
         const link = e.target.closest('.photo-link');
-        if (!link || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        if (!link || e.button !== 0) return;
         e.preventDefault();
         opener = link;
         previousOverflow = document.body.style.overflow;
@@ -57,6 +55,9 @@
         document.body.style.overflow = 'hidden';
         show(photos.indexOf(link));
         close.focus();
+    });
+    gallery.addEventListener('auxclick', e => {
+        if (e.target.closest('.photo-link')) e.preventDefault();
     });
     close.addEventListener('click', () => dialog.close());
     dialog.querySelector('.lightbox-prev').addEventListener('click', () => show(position - 1));
