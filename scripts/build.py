@@ -238,18 +238,18 @@ def build():
         schema = {'@context': 'https://schema.org', '@type': 'CollectionPage', 'name': a['title'], 'description': description, 'url': BASE + '/' + path, 'image': BASE + '/' + og, 'author': {'@type': 'Person', 'name': 'Thomas Soleil'}}
         if a['category'] == 'Rugby':
             body = f'''<main id="contenu"><div class="frame"><header class="rugby-gallery-header"><a href="../rugby/index.html#reportages">← Les reportages rugby</a><h1>{e(a['title'].removeprefix('Rugby — '))}</h1><p class="gallery-description">{e(description)}</p></header><ul class="photo-grid" aria-label="Photographies du reportage">{''.join(items)}</ul><div class="gallery-end"><a href="../rugby/index.html#reportages">← Les reportages</a><a class="button outline" href="../rugby/contact.html">Demander un reportage sport ↗</a></div></div>{top_link}</main>{dialog}'''
-            write(path, universe_shell(body, a['title'] + ' | Thomas Soleil Rugby', description, path, 'rugby', '../', og, ('gallery.js',)))
+            write(path, universe_shell(body, a['title'] + ' | Thomas Soleil Rugby', description, path, 'rugby', '../', og, ('masonry.js', 'gallery.js')))
         elif a['category'] in ('Argentique', 'Autres regards'):
             gallery_label = 'Photographies individuelles' if a.get('presentation') == 'individual' else 'Photographies de la série'
             body = f'''<main id="contenu" class="frame art-gallery"><header class="art-gallery-header"><h1>{e(a['title'])}</h1>{context}</header><ul class="photo-grid" aria-label="{gallery_label}">{''.join(items)}</ul><div class="gallery-end"><a href="../regards/index.html">← Les projets personnels</a></div>{top_link}</main>{dialog}'''
-            write(path, universe_shell(body, a['title'] + ' | Thomas Soleil', description, path, 'regards', '../', og, ('gallery.js',)))
+            write(path, universe_shell(body, a['title'] + ' | Thomas Soleil', description, path, 'regards', '../', og, ('masonry.js', 'gallery.js')))
         elif a['category'] in ('Mariage', 'Concerts'):
             universe = 'instants-de-vie' if a['category'] == 'Mariage' else 'concerts'
             contact_href = f'../{universe}/contact.html'
             body = f'''<main id="contenu" class="frame"><header class="collection-gallery-header"><a href="../{universe}/index.html">← Les reportages</a><h1>{e(a['title'])}</h1>{context}</header><ul class="photo-grid" aria-label="Photographies du reportage">{''.join(items)}</ul><div class="gallery-end"><a href="../{universe}/index.html">← Les reportages</a><a href="{contact_href}">Contact ↗</a></div>{top_link}</main>{dialog}'''
-            write(path, universe_shell(body, a['title'] + ' | Thomas Soleil', description, path, universe, '../', og, ('gallery.js',)))
+            write(path, universe_shell(body, a['title'] + ' | Thomas Soleil', description, path, universe, '../', og, ('masonry.js', 'gallery.js')))
         else:
-            write(path, layout(body, a['title'] + ' | Thomas Soleil', description, path, '', '../', ('gallery.js',), cover=og, schema=schema))
+            write(path, layout(body, a['title'] + ' | Thomas Soleil', description, path, '', '../', ('masonry.js', 'gallery.js'), cover=og, schema=schema))
     missing = '<main id="contenu" class="container section"><p class="eyebrow">Erreur 404</p><h1>Cette page a changé de chemin.</h1><p>Retrouvez les reportages ou contactez-moi pour trouver ce que vous cherchez.</p><div class="actions"><a class="button" href="/index.html#univers">Découvrir les univers</a><a class="text-link" href="/contact.html">Me contacter</a></div></main>'
     write('404.html', layout(missing, 'Page introuvable | Thomas Soleil', 'Retrouvez les reportages de Thomas Soleil.', '404.html', prefix='/', noindex=True))
     urls = ['', 'rugby/index.html', 'rugby/contact.html', 'rugby/tarifs.html', 'instants-de-vie/index.html', 'instants-de-vie/prestations.html', 'instants-de-vie/contact.html', 'concerts/index.html', 'concerts/tarifs.html', 'concerts/contact.html', 'regards/index.html', 'regards/tirages.html'] + [name + '.html' for name, _, _ in pages] + [f'albums/{a["id"]}.html' for a in ALBUMS]

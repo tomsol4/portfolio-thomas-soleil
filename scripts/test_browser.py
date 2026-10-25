@@ -23,6 +23,40 @@ def contrast_ratio(first, second):
     light,dark = sorted([luminance(first),luminance(second)], reverse=True)
     return (light+.05)/(dark+.05)
 
+def check_masonry(page, viewport_width):
+    grid = page.locator('.photo-grid')
+    expect(grid).to_have_class(re.compile(r'\bis-masonry\b'))
+    expected_columns = 2 if viewport_width <= 760 else 3 if viewport_width < 1200 else 4
+    geometry = grid.evaluate('''grid => {
+        const bounds = grid.getBoundingClientRect();
+        return {width: bounds.width, height: bounds.height,
+            gap: parseFloat(getComputedStyle(grid).getPropertyValue('--gallery-gap')),
+            photos: Array.from(grid.children).map(item => {
+                const box = item.getBoundingClientRect();
+                const image = item.querySelector('img');
+                const photo = image.getBoundingClientRect();
+                return {x:box.left-bounds.left, y:box.top-bounds.top,
+                    width:box.width, height:box.height,
+                    imageWidth:photo.width, imageHeight:photo.height,
+                    ratio:Number(image.getAttribute('width'))/Number(image.getAttribute('height'))};
+            })};
+    }''')
+    columns = sorted({round(photo['x'], 2) for photo in geometry['photos']})
+    assert len(columns) == expected_columns, (viewport_width, columns)
+    previous_bottom = {}
+    previous_top = -1
+    for photo in geometry['photos']:
+        column = round(photo['x'], 2)
+        assert photo['width'] > 0 and photo['x'] >= -.1
+        assert photo['x'] + photo['width'] <= geometry['width'] + 1
+        assert photo['y'] >= previous_top - .1, 'Masonry must preserve top-to-bottom publication order'
+        expected_top = previous_bottom.get(column, -geometry['gap']) + geometry['gap']
+        assert abs(photo['y'] - expected_top) <= 1.5, 'No overlapping photos or empty row-sized gaps'
+        assert abs(photo['imageHeight'] - photo['imageWidth'] / photo['ratio']) <= 1.5, 'Keep complete photo proportions'
+        previous_bottom[column] = photo['y'] + photo['height']
+        previous_top = photo['y']
+    assert abs(max(previous_bottom.values()) - geometry['height']) <= 1.5, 'Reserve the full gallery height before the footer'
+
 def run():
     server = http.server.ThreadingHTTPServer(('127.0.0.1', 0), functools.partial(QuietHandler, directory=str(ROOT)))
     threading.Thread(target=server.serve_forever, daemon=True).start()
@@ -53,6 +87,8 @@ def run():
                     page.screenshot(path=str(OUT / f'overflow-{width}.png'), full_page=True)
                 assert not overflow, f'Horizontal overflow: {path} at {width}px'
                 expect(page.locator('h1')).to_have_count(1)
+                if path.startswith('albums/'):
+                    check_masonry(page, width)
                 if path == 'instants-de-vie/index.html':
                     for photo in page.locator('.life-hero-image img, .life-diptych img, .life-stories img, #presentation img').all():
                         photo.scroll_into_view_if_needed()
@@ -339,10 +375,14 @@ def run():
             assert links == album['photos'], 'The original photo selection and order must be preserved'
             schema = page.locator('script[type="application/ld+json"]').text_content()
             assert any(node['@type'] == 'CollectionPage' for node in json.loads(schema)['@graph'])
-            boxes = [photo.bounding_box() for photo in page.locator('.photo-link').all()[:8]]
-            for current,following in zip(boxes,boxes[1:]):
-                assert following['y'] > current['y'] + 1 or (abs(following['y']-current['y']) < 1 and following['x'] > current['x']), 'Gallery should follow horizontal reading order'
-        results.append('Albums: original photo selection/order, visible descriptions, structured data and reading order')
+            check_masonry(page, page.viewport_size['width'])
+        for width in [320, 1440, 768, 390]:
+            page.set_viewport_size({'width':width, 'height':844})
+            page.wait_for_function('(columns) => getComputedStyle(document.querySelector(".photo-grid")).getPropertyValue("--gallery-columns").trim() === String(columns)', arg=2 if width <= 760 else 3 if width < 1200 else 4)
+            # Layout is scheduled in an animation frame after ResizeObserver.
+            page.evaluate('() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))')
+            check_masonry(page, width)
+        results.append('Albums: selected photo order, descriptions, structured data and Masonry without gaps or overlaps across resizing')
         page.goto(base + '/albums/co_mhr.html')
         first = page.locator('.photo-link').first
         first.focus();page.keyboard.press('Enter')
@@ -441,6 +481,8 @@ def run():
         expect(fallback.locator('.art-controls')).to_be_hidden()
         fallback.locator('.art-series-link').first.click()
         expect(fallback.locator('.photo-link')).to_have_count(len(art_albums[0]['photos']))
+        expect(fallback.locator('.photo-grid')).to_have_css('display', 'grid')
+        expect(fallback.locator('.photo-grid')).not_to_have_class(re.compile(r'\bis-masonry\b'))
         fallback.goto(base+'/albums/co_mhr.html')
         expect(fallback.locator('.photo-link')).to_have_count(rugby_count)
         expect(fallback.locator('#navigation a').first).to_be_visible()
