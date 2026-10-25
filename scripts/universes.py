@@ -163,9 +163,10 @@ def build_universes(albums, picture, write, home_cover, asset):
         title = album['title'].removeprefix('Rugby — ')
         cards.append(f'''<a class="rugby-reportage" href="../albums/{album['id']}.html"><div class="rugby-reportage-image">{image}</div><div class="reportage-copy"><div><h3>{escape(title)}</h3></div><span class="reportage-arrow" aria-hidden="true">↗</span></div></a>''')
     body = (ROOT / 'templates/rugby.html').read_text(encoding='utf-8')
-    hero_dimensions = asset(by_id['co_rct']['cover'], large=True)
+    hero_source = 'images/rugby/co_rct/26_06_CO-RCT-0796.jpg'
+    hero_dimensions = asset(hero_source, large=True)
     hero_width_in_vh = 100 * hero_dimensions['width'] / hero_dimensions['height']
-    body = body.replace('{{HERO_IMAGE}}', picture(by_id['co_rct']['cover'], 'Une touche sous les projecteurs, Castres face à Toulon', '../',
+    body = body.replace('{{HERO_IMAGE}}', picture(hero_source, 'Une touche sous les projecteurs, Castres face à Toulon', '../',
                         loading='eager', sizes=f'max(100vw, {hero_width_in_vh:.2f}dvh)', hero=True))
     body = body.replace('{{HERO_DATE}}', escape(by_id['co_rct'].get('date', '')))
     body = body.replace('{{RUGBY_CARDS}}', ''.join(cards))
