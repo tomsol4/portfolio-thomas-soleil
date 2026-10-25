@@ -164,7 +164,7 @@ def build_universes(albums, picture, write, home_cover, asset):
         cards.append(f'''<a class="rugby-reportage" href="../albums/{album['id']}.html"><div class="rugby-reportage-image">{image}</div><div class="reportage-copy"><div><h3>{escape(title)}</h3></div><span class="reportage-arrow" aria-hidden="true">↗</span></div></a>''')
     body = (ROOT / 'templates/rugby.html').read_text(encoding='utf-8')
     body = body.replace('{{HERO_IMAGE}}', picture(by_id['co_rct']['cover'], 'Une touche sous les projecteurs, Castres face à Toulon', '../',
-                        loading='eager', sizes='(max-width: 800px) 100vw, 800px', hero=True))
+                        loading='eager', sizes='(max-width: 1280px) 100vw, 1280px', hero=True))
     body = body.replace('{{HERO_DATE}}', escape(by_id['co_rct'].get('date', '')))
     body = body.replace('{{RUGBY_CARDS}}', ''.join(cards))
     body = body.replace('{{PRESENTATION}}', inline_presentation('rugby', picture))
