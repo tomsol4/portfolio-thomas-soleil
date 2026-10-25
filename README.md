@@ -78,6 +78,8 @@ python -m http.server 8000 --bind 127.0.0.1
 
 L’aperçu est accessible à `http://127.0.0.1:8000`. Les tests utilisent Chrome installé sur Windows, ou `CHROME_PATH`. Les requêtes du formulaire sont simulées : aucun email réel n’est envoyé. Les captures sont régénérées dans `test-results/`, un dossier temporaire ignoré par Git.
 
+`check_site.py` contrôle les liens et les fichiers référencés. `test_browser.py` parcourt les pages à quatre largeurs d’écran, puis vérifie les menus, les galeries, les contacts propres aux univers et les freins à l’enregistrement des photos. Le rapport `test-results/results.json` indique l’état de la dernière exécution : `running`, `passed` ou `failed`. Un échec remplace l’ancien rapport de réussite pour éviter de le confondre avec le résultat actuel. `test_prints.py` vérifie séparément la page des tirages.
+
 ## Publication
 
 Publier les fichiers HTML générés, les dossiers des univers, `albums/`, `images/`, `fonts/`, `css/`, `js/`, `CNAME`, `sitemap.xml`, `robots.txt` et la page 404. `_config.yml` exclut les outils, les sources et les résultats de tests pour GitHub Pages. Appliquer les mêmes exclusions pour un autre hébergement.

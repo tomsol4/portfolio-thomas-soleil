@@ -41,7 +41,7 @@ def run():
         page = context.new_page()
         page.on('pageerror', lambda err: errors.append(str(err)))
         page.on('response', lambda response: errors.append(f'{response.status}: {response.url}') if response.status >= 400 and response.url.startswith(base) else None)
-        paths = ['index.html','rugby/index.html','rugby/contact.html','rugby/a-propos.html','rugby/tarifs.html','instants-de-vie/index.html','instants-de-vie/a-propos.html','instants-de-vie/prestations.html','instants-de-vie/contact.html','concerts/index.html','concerts/tarifs.html','regards/index.html','regards/tirages.html','a-propos.html','contact.html','mentions.html','404.html'] + [f'albums/{a["id"]}.html' for a in albums]
+        paths = ['index.html','rugby/index.html','rugby/contact.html','rugby/a-propos.html','rugby/tarifs.html','instants-de-vie/index.html','instants-de-vie/a-propos.html','instants-de-vie/prestations.html','instants-de-vie/contact.html','concerts/index.html','concerts/tarifs.html','concerts/contact.html','regards/index.html','regards/tirages.html','a-propos.html','contact.html','mentions.html','404.html'] + [f'albums/{a["id"]}.html' for a in albums]
         check_paths = ['index.html', 'regards/index.html', 'instants-de-vie/index.html', 'instants-de-vie/a-propos.html', 'instants-de-vie/prestations.html'] if '--interactions-only' in sys.argv else paths
         for width in [320, 390, 768, 1440]:
             page.set_viewport_size({'width': width, 'height': 900})
@@ -138,14 +138,26 @@ def run():
         expect(menu).to_be_focused()
         assert page.locator('#navigation').evaluate('(el) => el.inert')
         page.set_viewport_size({'width': 1440, 'height': 900})
-        page.wait_for_function('!document.getElementById("navigation").inert')
-        results.append('Mobile menu: keyboard, Escape, focus and desktop resize')
+        # The portal keeps its hamburger menu on desktop as well as mobile.
+        expect(menu).to_be_visible()
+        expect(menu).to_have_attribute('aria-expanded', 'false')
+        assert page.locator('#navigation').evaluate('(el) => el.inert')
+        menu.click()
+        expect(menu).to_have_attribute('aria-expanded', 'true')
+        assert not page.locator('#navigation').evaluate('(el) => el.inert')
+        page.keyboard.press('Escape')
+        expect(menu).to_be_focused()
+        page.goto(base + '/rugby/index.html')
+        expect(page.locator('.menu-toggle')).to_be_hidden()
+        expect(page.locator('#navigation')).to_be_visible()
+        assert not page.locator('#navigation').evaluate('(el) => el.inert')
+        results.append('Menus: mobile keyboard/focus, desktop portal toggle and desktop universe navigation')
 
         page.goto(base + '/index.html')
         hero = page.locator('.portal-hero')
         assert abs(hero.bounding_box()['height'] - 900) < 1
         expect(hero.locator('h1')).to_have_text('Thomas Soleil')
-        expect(hero.locator('.portal-hero-copy p').first).to_have_text('Photographe — sport, mariage & événements, concerts et projets personnels')
+        expect(hero.locator('.portal-hero-copy p').first).to_have_text('Photographe')
         expect(hero.locator('.portal-location')).to_have_text('Toulouse & Castres')
         assert 'hero-photo-accueil_2.webp' in hero.evaluate('(el) => getComputedStyle(el).backgroundImage')
         assert 'gradient' not in hero.evaluate('(el) => getComputedStyle(el).backgroundImage')
@@ -258,7 +270,8 @@ def run():
         expect(page.locator('#presentation .personal-portrait img')).to_be_visible()
         assert '/portrait-' + portrait_digest + '-' in page.locator('#presentation img').get_attribute('src')
         page.locator('.personal-actions .button').click()
-        page.wait_for_url('**/contact.html?projet=concert')
+        page.wait_for_url('**/concerts/contact.html')
+        expect(page.locator('body')).to_have_class('concerts-page')
         expect(page.locator('#project')).to_have_value('concert')
         results.append('Concert presentation: current portrait, navigation anchor and contact preset')
         page.goto(base + '/index.html')
@@ -306,7 +319,7 @@ def run():
         expect(page.locator('body')).to_have_class('instants-de-vie-page')
         results.append('Regular portal and bold Sport; inline presentations with current portrait; Wedding prices and contact presets')
 
-        for universe, contact_path, project in [('rugby', '/rugby/contact.html', 'sport'), ('concerts', '/contact.html?projet=concert', 'concert')]:
+        for universe, contact_path, project in [('rugby', '/rugby/contact.html', 'sport'), ('concerts', '/concerts/contact.html', 'concert')]:
             page.goto(base + '/' + universe + '/index.html')
             link = page.locator('#navigation a').filter(has_text='Tarifs')
             link.click()
@@ -357,7 +370,30 @@ def run():
         expect(page.locator('.photo-link').last).to_be_focused()
         results.append('Gallery: complete navigation, wrapping, keyboard, modal focus, responsive controls')
 
+        # Saving deterrents must not break the viewer or ordinary text/form menus.
+        for path in ['index.html', 'a-propos.html', 'regards/index.html', 'albums/Argentique.html']:
+            page.goto(base + '/' + path)
+            photo = page.locator('main img').first
+            expect(photo).to_have_attribute('draggable', 'false')
+            for event_name in ['contextmenu', 'dragstart']:
+                assert photo.evaluate('(el, name) => !el.dispatchEvent(new MouseEvent(name, {bubbles:true, cancelable:true}))', event_name), (path, event_name)
+            expect(photo).to_have_css('user-select', 'none')
+            assert page.locator('h1').evaluate('(el) => el.dispatchEvent(new MouseEvent("contextmenu", {bubbles:true, cancelable:true}))'), path
+            expect(page.locator('#photo-original')).to_have_count(0)
+        first = page.locator('.photo-link').first
+        first.click(modifiers=['Control'])
+        expect(page.get_by_role('dialog')).to_be_visible()
+        expect(page.locator('#lightbox img')).to_be_visible()
+        assert page.locator('#lightbox img').evaluate('(el) => !el.dispatchEvent(new MouseEvent("contextmenu", {bubbles:true, cancelable:true}))')
+        page.keyboard.press('ArrowRight')
+        expect(page.locator('#photo-counter')).to_have_text('2 / 10')
+        page.keyboard.press('Escape')
+        expect(first).to_be_focused()
+        assert first.evaluate('(el) => !el.dispatchEvent(new MouseEvent("auxclick", {bubbles:true, cancelable:true, button:1}))')
+        results.append('Photo saving deterrents: image menus/dragging, no original button, modified clicks and working viewer')
+
         # Load failure stays recoverable and does not close or trap the gallery.
+        page.goto(base + '/albums/co_mhr.html')
         failed_paths = [part.strip().split()[0].removeprefix('../') for part in page.locator('.photo-link').first.get_attribute('data-viewer-srcset').split(',')]
         for path in failed_paths:
             page.route('**/'+path, lambda route: route.fulfill(status=404,body='not available'))
@@ -374,6 +410,7 @@ def run():
 
         page.goto(base + '/contact.html?projet=mariage')
         expect(page.locator('#project')).to_have_value('mariage')
+        assert page.locator('#message').evaluate('(el) => el.dispatchEvent(new MouseEvent("contextmenu", {bubbles:true, cancelable:true}))')
         page.locator('#name').fill('Test local')
         page.locator('#email').fill('test@example.invalid')
         page.locator('#message').fill('Message de test intercepté, sans envoi réel.')
@@ -448,7 +485,15 @@ def run():
         assert not errors, '\n'.join(errors)
         browser.close()
     server.shutdown()
-    (OUT/'results.json').write_text(json.dumps({'passed':results,'errors':errors},ensure_ascii=False,indent=2),encoding='utf-8')
+    (OUT/'results.json').write_text(json.dumps({'status':'passed','passed':results,'errors':errors},ensure_ascii=False,indent=2),encoding='utf-8')
     print('PASS: '+str(len(results))+' groups of browser checks; no unexpected console or HTTP errors.')
 
-if __name__=='__main__':run()
+if __name__=='__main__':
+    report = OUT / 'results.json'
+    report.write_text(json.dumps({'status':'running'}), encoding='utf-8')
+    try:
+        run()
+    except Exception as error:
+        # Do not leave an earlier successful report behind after a failed run.
+        report.write_text(json.dumps({'status':'failed','error':str(error)},ensure_ascii=False,indent=2),encoding='utf-8')
+        raise
