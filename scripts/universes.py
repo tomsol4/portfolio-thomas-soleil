@@ -297,8 +297,9 @@ def build_life_universe(albums, picture, write):
         write(path, shell(content, title, description, path, 'instants-de-vie', '../', cover))
     contact = (ROOT / 'templates/contact.html').read_text(encoding='utf-8')
     contact = contact.replace('Racontez-moi votre projet.', 'Parlons de votre histoire.')
-    contact = contact.replace('Sport, mariage, événement ou concert : quelques mots suffisent pour commencer.',
-                              'Mariage, événement, couple ou famille : racontez-moi le moment que vous souhaitez photographier.')
+    contact = contact.replace('<h2>Échangeons simplement.</h2>', '')
+    contact = contact.replace('<p>Sport, mariage, événement ou concert : quelques mots suffisent pour commencer.</p>', '')
+    contact = contact.replace('<p>Basé à Toulouse, également présent à Castres. Précisez le lieu de votre projet, même s’il se situe ailleurs.</p>', '')
     contact = contact.replace('<option value="mariage">', '<option value="mariage" selected>')
     contact = contact.replace('<option value="portrait">Portrait</option><option value="sport">Sport</option><option value="concert">Concert</option>',
                               '<option value="bapteme">Baptême</option><option value="fiancailles">Fiançailles</option><option value="couple">Couple</option><option value="famille">Famille</option>')
