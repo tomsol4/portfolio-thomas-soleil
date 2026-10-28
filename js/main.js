@@ -35,9 +35,10 @@
     }
     if (!nav || !toggle || !links) return;
     document.documentElement.classList.add('js');
-    if (document.body.classList.contains('home') || document.querySelector('.life-home')) {
+    if (document.body.classList.contains('home') || document.querySelector('.life-home, [data-theatre]')) {
         const updateNav = () => nav.classList.toggle('scrolled', window.scrollY > 50);
         window.addEventListener('scroll', updateNav, { passive: true });
+        window.addEventListener('pageshow', updateNav);
         updateNav();
     }
     function setMenu(open, restore = false) {

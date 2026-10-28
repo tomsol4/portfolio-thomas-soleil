@@ -1,18 +1,41 @@
 <main id="contenu">
-  <header class="concert-opening frame">
+  <header class="concert-opening" data-theatre>
+    <div class="theatre-interior" aria-hidden="true">
+      <div class="theatre-arch"></div>
+      <div class="theatre-floor"></div>
+      <div class="theatre-footlights"><span></span><span></span><span></span><span></span><span></span></div>
+    </div>
+    <div class="theatre-scenery" aria-hidden="true">
+      <div class="theatre-beam theatre-beam--left"></div><div class="theatre-beam theatre-beam--right"></div>
+      <div class="theatre-glow"></div>
+      <div class="theatre-curtain theatre-curtain--left"></div><div class="theatre-curtain theatre-curtain--right"></div>
+    </div>
+    <div class="theatre-entry" hidden>
+      <p class="kicker">Photographies de concert</p>
+      <p class="theatre-entry-title" role="heading" aria-level="1">En scène.</p>
+      <button class="theatre-enter" type="button">Lever le rideau <span aria-hidden="true">↗</span></button>
+    </div>
+    <div class="concert-stage-content">
     <div class="concert-title-row">
       <p class="kicker">Photographies de concert</p>
       <h1>En scène.</h1>
+      <p class="concert-opening-line">La musique se vit. L’image reste.</p>
     </div>
     <figure class="concert-cover">
       {{CONCERT_HERO}}
-      <figcaption><span>La musique, en images.</span><span>Thomas Soleil</span></figcaption>
+      <figcaption><span class="concert-cover-title">Sinfonia Garonna</span><span class="concert-cover-label">Voir le reportage <span aria-hidden="true">↗</span></span></figcaption>
+      <a class="concert-cover-open" href="../albums/concertsinfonia.html" aria-label="Voir le reportage Sinfonia Garonna"></a>
     </figure>
+    <div class="concert-opening-actions">
+      <a class="concert-scroll" href="#reportages">Découvrir les reportages <span aria-hidden="true">↓</span></a>
+      <button class="theatre-replay" type="button" aria-label="Rejouer le lever de rideau" hidden><span class="theatre-replay-label">Rejouer l’ouverture</span><span aria-hidden="true">↻</span></button>
+    </div>
+    </div>
   </header>
   <section id="reportages" class="concert-programme frame" aria-labelledby="programme-title">
-    <div class="concert-section-heading"><h2 id="programme-title">Les reportages</h2><p class="kicker">Concerts &amp; chœurs</p></div>
+    <div class="concert-section-heading"><div><p class="kicker">Au programme</p><h2 id="programme-title">Les reportages</h2></div><p class="concert-programme-note">Les voix. Les regards. L’instant.</p></div>
     <div class="collection-grid concert-reportages">{{CONCERT_REPORTAGES}}</div>
   </section>
   {{PRESENTATION}}
-  <div class="concert-invitation frame"><p>Votre prochain concert.</p><a href="contact.html">Demander un devis concert <span aria-hidden="true">↗</span></a></div>
+  <section class="concert-invitation frame" aria-labelledby="concert-invitation-title"><div><p class="kicker">Votre prochaine scène</p><h2 id="concert-invitation-title">Un concert à raconter ?</h2></div><a class="button" href="contact.html">Parlons de votre concert <span aria-hidden="true">↗</span></a></section>
 </main>

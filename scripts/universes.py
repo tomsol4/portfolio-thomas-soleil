@@ -49,6 +49,9 @@ def shell(body, title, description, path, universe, prefix='', cover='', scripts
 <a class="logo" href="{brand_link}" aria-label="Thomas Soleil — Accueil">{brand}</a>
 <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation" aria-label="Ouvrir le menu"><span aria-hidden="true"></span><span aria-hidden="true"></span></button>
 <div class="nav-links" id="navigation">{nav}</div></nav>'''
+    if path == 'concerts/index.html':
+        drape = (ROOT / 'templates/theatre-nav.svg').read_text(encoding='utf-8')
+        navigation = navigation.replace('<a class="logo"', drape + '\n<a class="logo"', 1)
     footer = f'''<footer class="site-footer"><div class="frame footer-inner"><p>© <span id="footer-year">2026</span> Thomas Soleil · Toulouse &amp; Castres</p><div class="footer-links"><a href="{prefix}index.html#haut">Tous les univers</a><a href="{prefix}mentions.html">Mentions légales &amp; confidentialité</a><a href="https://www.instagram.com/tomsol_photo/" target="_blank" rel="noopener noreferrer">Instagram<span class="sr-only"> (nouvel onglet)</span></a></div></div></footer>'''
     if artistic:
         destination = 'index.html#haut' if path == 'regards/index.html' else 'regards/index.html'
@@ -197,16 +200,16 @@ def build_universes(albums, picture, write, home_cover, asset):
         image = picture(album['cover'], album['title'], '../', loading='lazy',
                         sizes='(max-width: 760px) calc(100vw - 40px), (max-width: 1000px) 60vw, 40vw', large=True)
         year = escape(album.get('date', ''))
-        entries.append(f'''<a class="collection-link" href="../albums/{album['id']}.html"><div class="concert-entry-meta"><span>Reportage {index:02d}</span><span>{year}</span></div><div class="concert-entry-content"><div class="collection-image">{image}</div><div class="collection-caption"><h2>{escape(album['title'])}</h2><span aria-hidden="true">↗</span></div></div></a>''')
+        entries.append(f'''<a class="collection-link" href="../albums/{album['id']}.html"><div class="concert-entry-meta"><span class="concert-entry-number"><span class="sr-only">Reportage </span>{index:02d}</span><span>{year}</span></div><div class="concert-entry-content"><div class="collection-image">{image}</div><div class="collection-caption"><div><p class="concert-entry-kind">Concert &amp; chœur</p><h2>{escape(album['title'])}</h2><span class="concert-entry-open">Voir le reportage <span aria-hidden="true">↗</span></span></div></div></div></a>''')
     body = (ROOT / 'templates/concerts.html').read_text(encoding='utf-8')
-    body = body.replace('{{CONCERT_HERO}}', picture(by_id['noel']['cover'],
-                        'Le Chœur Unum réuni dans une église pour son concert de Noël', '../',
-                        loading='eager', sizes='(max-width: 760px) calc(100vw - 40px), (max-width: 1280px) 55vw, 680px', hero=True, large=True))
+    body = body.replace('{{CONCERT_HERO}}', picture(by_id['concertsinfonia']['cover'],
+                        'Le chœur Sinfonia Garonna et les musiciens réunis autour de leur chef', '../',
+                        loading='eager', sizes='(max-width: 760px) calc(100vw - 64px), min(800px, 76svh)', hero=True, large=True))
     body = body.replace('{{CONCERT_REPORTAGES}}', ''.join(entries))
     body = body.replace('{{PRESENTATION}}', inline_presentation('concerts', picture))
     write('concerts/index.html', shell(body, 'En scène. | Concerts — Thomas Soleil',
           'Concerts, chœurs et musique en images. Les reportages de Thomas Soleil, photographe à Toulouse et Castres.',
-          'concerts/index.html', 'concerts', '../', 'images/optimized/og-concertsinfonia.jpg'))
+          'concerts/index.html', 'concerts', '../', 'images/optimized/og-concertsinfonia.jpg', ('theatre.js',)))
     build_concert_contact(write)
     build_life_universe(albums, picture, write)
     print_references = build_prints(albums, picture, write, shell)
@@ -297,9 +300,17 @@ def build_life_universe(albums, picture, write):
         write(path, shell(content, title, description, path, 'instants-de-vie', '../', cover))
     contact = (ROOT / 'templates/contact.html').read_text(encoding='utf-8')
     contact = contact.replace('Racontez-moi votre projet.', 'Parlons de votre histoire.')
-    contact = contact.replace('<h2>Échangeons simplement.</h2>', '')
-    contact = contact.replace('<p>Sport, mariage, événement ou concert : quelques mots suffisent pour commencer.</p>', '')
-    contact = contact.replace('<p>Basé à Toulouse, également présent à Castres. Précisez le lieu de votre projet, même s’il se situe ailleurs.</p>', '')
+    contact = contact.replace('class="container"', 'class="container life-contact-page"', 1)
+    before_aside, _, aside_and_form = contact.partition('<aside class="contact-aside">')
+    _, _, after_aside = aside_and_form.partition('</aside>')
+    contact_photo = picture('images/mariage/mariage15NB.jpg',
+                            'Les mariés côte à côte pendant la cérémonie, en noir et blanc', '../',
+                            loading='lazy', sizes='(max-width: 1000px) 300px, 344px', large=True)
+    contact = before_aside + f'<div class="life-contact-photo">{contact_photo}</div>' + after_aside
+    contact = contact.replace('<div class="form-group"><label for="project">',
+                              '<div class="form-row life-project-row"><div class="form-group"><label for="project">', 1)
+    contact = contact.replace('</select></div>\n<div class="form-row"><div class="form-group"><label for="date">',
+                              '</select></div></div>\n<div class="form-row"><div class="form-group"><label for="date">', 1)
     contact = contact.replace('<option value="mariage">', '<option value="mariage" selected>')
     contact = contact.replace('<option value="portrait">Portrait</option><option value="sport">Sport</option><option value="concert">Concert</option>',
                               '<option value="bapteme">Baptême</option><option value="fiancailles">Fiançailles</option><option value="couple">Couple</option><option value="famille">Famille</option>')

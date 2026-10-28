@@ -26,9 +26,36 @@
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="En scène. | Concerts — Thomas Soleil"><meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Person", "@id": "https://www.tsoleil.fr/#photographer", "name": "Thomas Soleil", "jobTitle": "Photographe", "url": "https://www.tsoleil.fr/", "sameAs": ["https://www.instagram.com/tomsol_photo/"], "knowsAbout": ["Photographie sportive", "Photographie de mariage", "Photographie de concert", "Photographie argentique"]}, {"@type": "WebSite", "@id": "https://www.tsoleil.fr/#website", "url": "https://www.tsoleil.fr/", "name": "Thomas Soleil — Photographe", "inLanguage": "fr-FR", "publisher": {"@id": "https://www.tsoleil.fr/#photographer"}}, {"@type": "WebPage", "@id": "https://www.tsoleil.fr/concerts/index.html#page", "url": "https://www.tsoleil.fr/concerts/index.html", "name": "En scène. | Concerts — Thomas Soleil", "description": "Concerts, chœurs et musique en images. Les reportages de Thomas Soleil, photographe à Toulouse et Castres.", "inLanguage": "fr-FR", "isPartOf": {"@id": "https://www.tsoleil.fr/#website"}, "author": {"@id": "https://www.tsoleil.fr/#photographer"}, "image": "https://www.tsoleil.fr/images/optimized/og-concertsinfonia.jpg"}]}</script>
-<script src="../js/main.js" defer></script></head><body class="concerts-page">
+<script src="../js/main.js" defer></script>
+<script src="../js/theatre.js" defer></script></head><body class="concerts-page">
 <a class="skip-link" href="#contenu">Aller au contenu</a>
 <nav class="site-nav" aria-label="Navigation principale">
+<svg class="theatre-nav-drape" viewBox="0 0 1440 122" preserveAspectRatio="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="theatre-velvet-fold" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#260811"/><stop offset=".27" stop-color="#551126"/>
+      <stop offset=".43" stop-color="#76203a"/><stop offset=".62" stop-color="#3a0a19"/>
+      <stop offset=".84" stop-color="#4f1024"/><stop offset="1" stop-color="#260811"/>
+    </linearGradient>
+    <pattern id="theatre-velvet" width="96" height="122" patternUnits="userSpaceOnUse">
+      <rect width="96" height="122" fill="url(#theatre-velvet-fold)"/>
+    </pattern>
+    <linearGradient id="theatre-velvet-shade" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#10040b" stop-opacity=".8"/>
+      <stop offset=".65" stop-color="#14050c" stop-opacity=".48"/>
+      <stop offset="1" stop-color="#090206" stop-opacity=".12"/>
+    </linearGradient>
+    <clipPath id="theatre-pelmet-edge">
+      <path d="M0 0H1440V100Q1200 140 960 100Q720 140 480 100Q240 140 0 100Z"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#theatre-pelmet-edge)">
+    <rect width="1440" height="122" fill="url(#theatre-velvet)"/>
+    <rect width="1440" height="122" fill="url(#theatre-velvet-shade)"/>
+  </g>
+  <path d="M0 100Q240 140 480 100Q720 140 960 100Q1200 140 1440 100" fill="none" stroke="#b69964" stroke-width="1.3" vector-effect="non-scaling-stroke"/>
+</svg>
+
 <a class="logo" href="../concerts/index.html" aria-label="Thomas Soleil — Accueil"><img class="brand-mark" src="../images/logo.png" width="56" height="56" alt=""><span class="brand-copy"><strong>Thomas Soleil</strong><span>Concerts</span></span></a>
 <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation" aria-label="Ouvrir le menu"><span aria-hidden="true"></span><span aria-hidden="true"></span></button>
 <div class="nav-links" id="navigation"><a href="../index.html#haut">Tous les univers</a>
@@ -37,19 +64,42 @@
 <a href="../concerts/tarifs.html">Tarifs</a>
 <a href="../concerts/contact.html" class="nav-contact">Contact</a></div></nav>
 <main id="contenu">
-  <header class="concert-opening frame">
+  <header class="concert-opening" data-theatre>
+    <div class="theatre-interior" aria-hidden="true">
+      <div class="theatre-arch"></div>
+      <div class="theatre-floor"></div>
+      <div class="theatre-footlights"><span></span><span></span><span></span><span></span><span></span></div>
+    </div>
+    <div class="theatre-scenery" aria-hidden="true">
+      <div class="theatre-beam theatre-beam--left"></div><div class="theatre-beam theatre-beam--right"></div>
+      <div class="theatre-glow"></div>
+      <div class="theatre-curtain theatre-curtain--left"></div><div class="theatre-curtain theatre-curtain--right"></div>
+    </div>
+    <div class="theatre-entry" hidden>
+      <p class="kicker">Photographies de concert</p>
+      <p class="theatre-entry-title" role="heading" aria-level="1">En scène.</p>
+      <button class="theatre-enter" type="button">Lever le rideau <span aria-hidden="true">↗</span></button>
+    </div>
+    <div class="concert-stage-content">
     <div class="concert-title-row">
       <p class="kicker">Photographies de concert</p>
       <h1>En scène.</h1>
+      <p class="concert-opening-line">La musique se vit. L’image reste.</p>
     </div>
     <figure class="concert-cover">
-      <img src="../images/optimized/concert_noelchorunum_chorunumnoel-2-480.webp" srcset="../images/optimized/concert_noelchorunum_chorunumnoel-2-480.webp 480w, ../images/optimized/concert_noelchorunum_chorunumnoel-2-960.webp 960w, ../images/optimized/concert_noelchorunum_chorunumnoel-2-1600.webp 1600w, ../images/concert/noelchorunum/chorunumnoel-2.webp 2000w" sizes="(max-width: 760px) calc(100vw - 40px), (max-width: 1280px) 55vw, 680px" width="2000" height="1333" alt="Le Chœur Unum réuni face à son chef dans une église pour le concert de Noël" loading="eager" decoding="async" fetchpriority="high" style="--source-width:2000px">
-      <figcaption><span>La musique, en images.</span><span>Thomas Soleil</span></figcaption>
+      <img src="../images/optimized/concert_concertsinfonia_IMG_8628-480.webp" srcset="../images/optimized/concert_concertsinfonia_IMG_8628-480.webp 480w, ../images/optimized/concert_concertsinfonia_IMG_8628-960.webp 960w, ../images/optimized/concert_concertsinfonia_IMG_8628-1600.webp 1600w, ../images/optimized/concert_concertsinfonia_IMG_8628-2560.webp 2560w, ../images/concert/concertsinfonia/IMG_8628.jpg 4346w" sizes="(max-width: 760px) calc(100vw - 64px), min(800px, 76svh)" width="4346" height="2898" alt="Le chœur Sinfonia Garonna et ses musiciens vus depuis la tribune, sur un tapis rouge" loading="eager" decoding="async" fetchpriority="high" style="--source-width:4346px">
+      <figcaption><span class="concert-cover-title">Sinfonia Garonna</span><span class="concert-cover-label">Voir le reportage <span aria-hidden="true">↗</span></span></figcaption>
+      <a class="concert-cover-open" href="../albums/concertsinfonia.html" aria-label="Voir le reportage Sinfonia Garonna"></a>
     </figure>
+    <div class="concert-opening-actions">
+      <a class="concert-scroll" href="#reportages">Découvrir les reportages <span aria-hidden="true">↓</span></a>
+      <button class="theatre-replay" type="button" aria-label="Rejouer le lever de rideau" hidden><span class="theatre-replay-label">Rejouer l’ouverture</span><span aria-hidden="true">↻</span></button>
+    </div>
+    </div>
   </header>
   <section id="reportages" class="concert-programme frame" aria-labelledby="programme-title">
-    <div class="concert-section-heading"><h2 id="programme-title">Les reportages</h2><p class="kicker">Concerts &amp; chœurs</p></div>
-    <div class="collection-grid concert-reportages"><a class="collection-link" href="../albums/concertsinfonia.html"><div class="concert-entry-meta"><span>Reportage 01</span><span>2026</span></div><div class="concert-entry-content"><div class="collection-image"><img src="../images/optimized/concert_concertsinfonia_IMG_8628-480.webp" srcset="../images/optimized/concert_concertsinfonia_IMG_8628-480.webp 480w, ../images/optimized/concert_concertsinfonia_IMG_8628-960.webp 960w, ../images/optimized/concert_concertsinfonia_IMG_8628-1600.webp 1600w, ../images/optimized/concert_concertsinfonia_IMG_8628-2560.webp 2560w, ../images/concert/concertsinfonia/IMG_8628.jpg 4346w" sizes="(max-width: 760px) calc(100vw - 40px), (max-width: 1000px) 60vw, 40vw" width="4346" height="2898" alt="Le chœur Sinfonia Garonna et ses musiciens vus depuis la tribune, sur un tapis rouge" loading="lazy" decoding="async"></div><div class="collection-caption"><h2>Concert Sinfonia Garonna</h2><span aria-hidden="true">↗</span></div></div></a><a class="collection-link" href="../albums/noel.html"><div class="concert-entry-meta"><span>Reportage 02</span><span>2025</span></div><div class="concert-entry-content"><div class="collection-image"><img src="../images/optimized/concert_noelchorunum_chorunumnoel-2-480.webp" srcset="../images/optimized/concert_noelchorunum_chorunumnoel-2-480.webp 480w, ../images/optimized/concert_noelchorunum_chorunumnoel-2-960.webp 960w, ../images/optimized/concert_noelchorunum_chorunumnoel-2-1600.webp 1600w, ../images/concert/noelchorunum/chorunumnoel-2.webp 2000w" sizes="(max-width: 760px) calc(100vw - 40px), (max-width: 1000px) 60vw, 40vw" width="2000" height="1333" alt="Le Chœur Unum réuni face à son chef dans une église pour le concert de Noël" loading="lazy" decoding="async"></div><div class="collection-caption"><h2>Concert de Noël — Chœur Unum</h2><span aria-hidden="true">↗</span></div></div></a></div>
+    <div class="concert-section-heading"><div><p class="kicker">Au programme</p><h2 id="programme-title">Les reportages</h2></div><p class="concert-programme-note">Les voix. Les regards. L’instant.</p></div>
+    <div class="collection-grid concert-reportages"><a class="collection-link" href="../albums/concertsinfonia.html"><div class="concert-entry-meta"><span class="concert-entry-number"><span class="sr-only">Reportage </span>01</span><span>2026</span></div><div class="concert-entry-content"><div class="collection-image"><img src="../images/optimized/concert_concertsinfonia_IMG_8628-480.webp" srcset="../images/optimized/concert_concertsinfonia_IMG_8628-480.webp 480w, ../images/optimized/concert_concertsinfonia_IMG_8628-960.webp 960w, ../images/optimized/concert_concertsinfonia_IMG_8628-1600.webp 1600w, ../images/optimized/concert_concertsinfonia_IMG_8628-2560.webp 2560w, ../images/concert/concertsinfonia/IMG_8628.jpg 4346w" sizes="(max-width: 760px) calc(100vw - 40px), (max-width: 1000px) 60vw, 40vw" width="4346" height="2898" alt="Le chœur Sinfonia Garonna et ses musiciens vus depuis la tribune, sur un tapis rouge" loading="lazy" decoding="async"></div><div class="collection-caption"><div><p class="concert-entry-kind">Concert &amp; chœur</p><h2>Concert Sinfonia Garonna</h2><span class="concert-entry-open">Voir le reportage <span aria-hidden="true">↗</span></span></div></div></div></a><a class="collection-link" href="../albums/noel.html"><div class="concert-entry-meta"><span class="concert-entry-number"><span class="sr-only">Reportage </span>02</span><span>2025</span></div><div class="concert-entry-content"><div class="collection-image"><img src="../images/optimized/concert_noelchorunum_chorunumnoel-2-480.webp" srcset="../images/optimized/concert_noelchorunum_chorunumnoel-2-480.webp 480w, ../images/optimized/concert_noelchorunum_chorunumnoel-2-960.webp 960w, ../images/optimized/concert_noelchorunum_chorunumnoel-2-1600.webp 1600w, ../images/concert/noelchorunum/chorunumnoel-2.webp 2000w" sizes="(max-width: 760px) calc(100vw - 40px), (max-width: 1000px) 60vw, 40vw" width="2000" height="1333" alt="Le Chœur Unum réuni face à son chef dans une église pour le concert de Noël" loading="lazy" decoding="async"></div><div class="collection-caption"><div><p class="concert-entry-kind">Concert &amp; chœur</p><h2>Concert de Noël — Chœur Unum</h2><span class="concert-entry-open">Voir le reportage <span aria-hidden="true">↗</span></span></div></div></div></a></div>
   </section>
   <section class="personal-section" id="presentation" aria-labelledby="presentation-title"><div class="frame personal-page">
   <div class="personal-grid">
@@ -64,7 +114,7 @@
   </div>
 </div></section>
 
-  <div class="concert-invitation frame"><p>Votre prochain concert.</p><a href="contact.html">Demander un devis concert <span aria-hidden="true">↗</span></a></div>
+  <section class="concert-invitation frame" aria-labelledby="concert-invitation-title"><div><p class="kicker">Votre prochaine scène</p><h2 id="concert-invitation-title">Un concert à raconter ?</h2></div><a class="button" href="contact.html">Parlons de votre concert <span aria-hidden="true">↗</span></a></section>
 </main>
 
 <footer class="site-footer"><div class="frame footer-inner"><p>© <span id="footer-year">2026</span> Thomas Soleil · Toulouse &amp; Castres</p><div class="footer-links"><a href="../index.html#haut">Tous les univers</a><a href="../mentions.html">Mentions légales &amp; confidentialité</a><a href="https://www.instagram.com/tomsol_photo/" target="_blank" rel="noopener noreferrer">Instagram<span class="sr-only"> (nouvel onglet)</span></a></div></div></footer>

@@ -35,16 +35,21 @@
         form.setAttribute('aria-busy', 'true');
         submit.textContent = 'Envoi en cours…';
         status.textContent = '';
+        delete status.dataset.state;
+        const payload = new FormData(form);
+        const submittedValues = JSON.stringify([...payload]);
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 20000);
         try {
             const response = await fetch(form.action, {
-                method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' },
+                method: 'POST', body: payload, headers: { Accept: 'application/json' },
                 signal: controller.signal
             });
             if (!response.ok) throw new Error('submission-failed');
-            form.reset();
+            const edited = JSON.stringify([...new FormData(form)]) !== submittedValues;
+            if (!edited) form.reset();
             status.textContent = form.dataset.successMessage || 'Merci, votre message a bien été envoyé. Je vous réponds personnellement pour échanger sur votre projet.';
+            if (edited) status.textContent += ' Vos modifications récentes sont conservées dans le formulaire et n’ont pas été envoyées.';
             status.dataset.state = 'success';
         } catch (error) {
             status.textContent = error.name === 'AbortError'
@@ -57,7 +62,7 @@
             submit.disabled = false;
             submit.textContent = submitLabel;
             form.removeAttribute('aria-busy');
-            status.focus();
+            if (!form.contains(document.activeElement) || document.activeElement === submit) status.focus();
         }
     });
 })();

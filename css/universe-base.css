@@ -22,7 +22,7 @@ h1,h2,h3,p{margin:0}h1,h2,h3{line-height:1.1;overflow-wrap:anywhere}a,button{-we
 @media(max-width:1000px){.frame{width:calc(100% - 56px)}.nav-links{gap:20px}}
 @media(max-width:760px){
  :root{--nav-height:76px}.frame{width:calc(100% - 40px)}.site-nav{padding:14px 20px;flex-wrap:wrap;gap:0}.logo{gap:10px}.logo .brand-mark{width:48px;height:48px}.logo .brand-copy{max-width:140px}.logo strong{font-size:.75rem}.logo span{font-size:.75rem}.nav-links{width:100%;justify-content:center;flex-wrap:wrap;gap:10px 20px;padding-top:12px}
- .js .menu-toggle{display:block}.js .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg);padding:20px;border-bottom:1px solid var(--line)}.js .menu-open .nav-links{display:flex;flex-direction:column;align-items:stretch;gap:8px}.js .nav-links a{justify-content:center;padding:12px}
+ .js .menu-toggle{display:block}.js .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg);padding:20px;border-bottom:1px solid var(--line);max-height:calc(100dvh - var(--nav-height) - 8px);overflow-y:auto;overscroll-behavior:contain}.js .menu-open .nav-links{display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:flex-start;align-items:stretch;gap:8px}.js .nav-links a{justify-content:center;padding:12px}
  .footer-inner{flex-direction:column;gap:8px}.footer-links{gap:10px 20px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}

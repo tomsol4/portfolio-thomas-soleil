@@ -1,0 +1,25 @@
+<svg class="theatre-nav-drape" viewBox="0 0 1440 122" preserveAspectRatio="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="theatre-velvet-fold" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#260811"/><stop offset=".27" stop-color="#551126"/>
+      <stop offset=".43" stop-color="#76203a"/><stop offset=".62" stop-color="#3a0a19"/>
+      <stop offset=".84" stop-color="#4f1024"/><stop offset="1" stop-color="#260811"/>
+    </linearGradient>
+    <pattern id="theatre-velvet" width="96" height="122" patternUnits="userSpaceOnUse">
+      <rect width="96" height="122" fill="url(#theatre-velvet-fold)"/>
+    </pattern>
+    <linearGradient id="theatre-velvet-shade" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#10040b" stop-opacity=".8"/>
+      <stop offset=".65" stop-color="#14050c" stop-opacity=".48"/>
+      <stop offset="1" stop-color="#090206" stop-opacity=".12"/>
+    </linearGradient>
+    <clipPath id="theatre-pelmet-edge">
+      <path d="M0 0H1440V100Q1200 140 960 100Q720 140 480 100Q240 140 0 100Z"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#theatre-pelmet-edge)">
+    <rect width="1440" height="122" fill="url(#theatre-velvet)"/>
+    <rect width="1440" height="122" fill="url(#theatre-velvet-shade)"/>
+  </g>
+  <path d="M0 100Q240 140 480 100Q720 140 960 100Q1200 140 1440 100" fill="none" stroke="#b69964" stroke-width="1.3" vector-effect="non-scaling-stroke"/>
+</svg>

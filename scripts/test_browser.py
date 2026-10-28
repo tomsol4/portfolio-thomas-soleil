@@ -533,6 +533,37 @@ def run():
         expect(page.locator('#project')).to_have_value('mariage')
         results.append('Form: project preset, mocked failure/success, preserved message, duplicate prevention')
 
+        held.clear()
+        page.locator('#name').fill('Test de modification')
+        page.locator('#email').fill('test@example.invalid')
+        page.locator('#message').fill('Message envoyé')
+        page.get_by_role('button',name='Envoyer ma demande').click()
+        expect(page.get_by_role('button',name='Envoi en cours…')).to_be_disabled()
+        page.locator('#message').fill('Nouveau texte pendant l’envoi')
+        page.wait_for_function('document.querySelector("#contact-form").getAttribute("aria-busy") === "true"')
+        assert len(held) == 1
+        held[0].fulfill(status=200,headers={'Access-Control-Allow-Origin':'*'},content_type='application/json',body='{"ok":true}')
+        expect(page.locator('#form-status')).to_contain_text('Vos modifications récentes sont conservées')
+        expect(page.locator('#message')).to_have_value('Nouveau texte pendant l’envoi')
+        expect(page.locator('#message')).to_be_focused()
+        results.append('Form: preserve edits and input focus while a submitted request completes')
+
+        page.set_viewport_size({'width':390,'height':320})
+        for path in ['rugby/index.html','instants-de-vie/index.html','concerts/index.html','contact.html']:
+            page.goto(base + '/' + path)
+            page.locator('.menu-toggle').click()
+            menu = page.locator('#navigation')
+            menu_box = menu.bounding_box()
+            assert menu_box['y'] + menu_box['height'] <= 320, f'Mobile menu leaves the viewport: {path}'
+            last = menu.locator('a').last
+            last.scroll_into_view_if_needed()
+            last_box = last.bounding_box()
+            assert last_box['y'] >= menu_box['y'] and last_box['y'] + last_box['height'] <= 320, path
+            assert abs(last_box['x'] - menu.locator('a').first.bounding_box()['x']) < 1, 'Mobile links stay in one scrollable column'
+            page.keyboard.press('Escape')
+            expect(menu).to_be_hidden()
+        results.append('Short mobile screens: every navigation link remains reachable')
+
         nojs=browser.new_context(java_script_enabled=False,viewport={'width':390,'height':844})
         nojs.route('https://**/*',lambda route:route.abort())
         fallback=nojs.new_page()

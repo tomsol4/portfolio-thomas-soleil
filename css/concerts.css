@@ -1,47 +1,139 @@
-.concerts-page{--bg:#1b1013;--ink:#f4eadb;--muted:#c0afa9;--line:#bda57b40;--accent:#d3bc92}
+.concerts-page{--bg:#110b0e;--ink:#f4eadb;--muted:#c0afa9;--line:#bda57b40;--accent:#d3bc92;--theatre-valance-height:24px}
 .concerts-page h1,.concerts-page h2,.concert-invitation>p,.concerts-page .tariff-quote{font-family:"Cormorant Garamond",Georgia,serif;font-weight:400;letter-spacing:0;text-transform:none}
 .concerts-page .logo strong,.concerts-page .button{font-weight:400}.concerts-page .logo span{color:var(--accent)}
 .concerts-page .nav-links .nav-contact{border-color:var(--accent)}
-.concert-opening{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);align-items:center;gap:64px;max-width:1180px;padding-block:64px 40px}
-.concert-title-row{display:grid;grid-template-columns:1fr;align-items:start;gap:28px;padding:0}
-.concert-title-row .kicker{grid-column:1/-1;color:var(--accent)}
-.concert-title-row h1{font-size:clamp(3.5rem,7.5vw,7rem);line-height:1.05}
-.concert-scroll{display:inline-flex;align-items:center;gap:28px;min-height:44px;margin-bottom:12px;font-size:.75rem;text-decoration:none}
+.concerts-page:has([data-theatre]) .site-nav{background:var(--bg);border-bottom-color:#d3bc9226}
+.js .concerts-page:has([data-theatre]) .site-nav{position:fixed;inset:0 0 auto;transition:background-color .25s,border-color .25s,box-shadow .25s}
+.js .concerts-page:has([data-theatre]) .site-nav:not(.scrolled):not(.menu-open){background:transparent;border-bottom-color:transparent}
+.js .concerts-page:has([data-theatre]) .site-nav.scrolled{box-shadow:0 4px 24px #0003}
+.concerts-page:has([data-theatre]) .site-nav{isolation:isolate;color:#fff}
+.concerts-page:has([data-theatre]) .site-nav .brand-copy strong{color:#fff}
+.concerts-page:has([data-theatre]) .site-nav .nav-links a{font-size:.85rem;font-weight:500;text-shadow:0 2px 8px #000;transition:color .2s}
+.concerts-page:has([data-theatre]) .site-nav .nav-links a:hover{color:#ead5ae;text-decoration:none}
+.theatre-nav-drape{position:absolute;inset:0 0 auto;width:100%;height:calc(100% + var(--theatre-valance-height));z-index:-1;pointer-events:none;filter:drop-shadow(0 8px 12px #0008);transition:opacity .35s}
+.site-nav.scrolled .theatre-nav-drape,.site-nav.menu-open .theatre-nav-drape{opacity:0}
+.concert-opening{position:relative;isolation:isolate;overflow:hidden;min-height:calc(100svh - var(--nav-height));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:46px max(32px,7vw) 28px;background:radial-gradient(ellipse at 50% 36%,#38232a 0%,#180d14 48%,#090709 100%)}
+.js .concert-opening{height:100svh;min-height:0;padding:calc(var(--nav-height) + var(--theatre-valance-height) + 16px) max(32px,7vw) 20px}
+.concert-stage-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:18px;width:100%;min-height:0}
+.js .concert-stage-content{flex:1;justify-content:center}
+.concert-opening::after{content:"";position:absolute;inset:auto 0 0;height:56px;z-index:-1;background:linear-gradient(transparent,#090709);pointer-events:none}
+.theatre-interior{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.theatre-arch{position:absolute;inset:calc(var(--nav-height) + 12px) 9% 28px;border:1px solid #d3bc921b;border-radius:46% 46% 0 0 / 15% 15% 0 0;box-shadow:0 0 0 7px #d3bc9203,inset 0 30px 70px #0003}
+.theatre-floor{position:absolute;bottom:-2px;left:-15%;width:130%;height:19%;transform:perspective(350px) rotateX(42deg);transform-origin:50% 100%;background:repeating-linear-gradient(90deg,transparent 0 89px,#d3bc920c 90px,#0002 91px,transparent 92px),linear-gradient(180deg,transparent,#70412618 40%,#160b10 100%);border-bottom:1px solid #d3bc9226}
+.theatre-footlights{position:absolute;bottom:8px;left:15%;right:15%;display:flex;justify-content:space-between}
+.theatre-footlights span{width:5px;height:3px;border-radius:50%;background:#d3bc92a6;box-shadow:0 0 10px 3px #dfb67b30,0 -10px 30px 6px #dfb67b12}
+.concert-title-row{position:relative;z-index:2;text-align:center}
+.concert-title-row .kicker{color:var(--accent);letter-spacing:.24em;margin-bottom:10px;font-size:.75rem}
+.concert-title-row h1{font-size:clamp(3.4rem,min(7vw,9svh),5.8rem);font-style:italic;line-height:.95;text-shadow:0 4px 30px #0008}
+.concert-opening-line{font-size:.8rem;letter-spacing:.08em;color:var(--muted);margin-top:12px}
+.concert-opening-actions{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:12px 36px;flex-wrap:wrap}
+.concert-scroll{display:inline-flex;align-items:center;gap:24px;min-height:44px;font-size:.75rem;text-decoration:none}
 .concert-scroll span{font-size:1.25rem;color:var(--accent)}.concert-scroll:hover{text-decoration:underline}
-.concert-cover{margin:0;min-width:0}.concert-cover>img{width:100%;height:auto}
-.concert-cover figcaption{display:flex;justify-content:space-between;gap:20px;padding-top:16px;font-size:.75rem;letter-spacing:.08em;color:var(--muted)}
-.concert-programme{max-width:1180px;padding-top:64px;scroll-margin-top:24px}
+.theatre-replay{min-height:44px;display:inline-flex;align-items:center;gap:10px;background:none;border:0;padding:8px 0;color:var(--muted);font-size:.75rem;text-underline-offset:.4em}
+.theatre-replay:hover{text-decoration:underline;color:var(--ink)}
+.theatre-replay:disabled{cursor:default}
+.concert-cover{position:relative;z-index:2;width:min(880px,76svh);max-width:100%;margin:0;min-width:0;padding:8px 8px 0;border:1px solid #d3bc925c;background:#0c070a;box-shadow:0 0 0 4px #d3bc9206,0 24px 70px #0009;transition:border-color .3s}
+.concert-cover>img{display:block;width:100%;height:auto;filter:none}
+.js .concert-cover{width:min(880px,100%);flex:0 1 auto;min-height:0;display:flex;flex-direction:column}
+.js .concert-cover>img{flex:0 1 auto;min-height:0;height:auto;object-fit:contain}
+.concert-cover figcaption{flex-shrink:0}
+.concert-cover figcaption{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:11px 4px;font-size:.75rem;letter-spacing:.03em;color:var(--muted)}
+.concert-cover-title{font:400 1.35rem/1.2 "Cormorant Garamond",Georgia,serif;color:var(--ink)}
+.concert-cover-label{display:inline-flex;align-items:center;gap:12px;font-size:.75rem;color:var(--accent)}
+.concert-cover-open{position:absolute;inset:0;text-decoration:none}
+.concert-cover:hover,.concert-cover:focus-within{border-color:var(--accent)}
+.concert-cover:hover .concert-cover-label{text-decoration:underline;text-underline-offset:.4em}
+.theatre-scenery{position:absolute;inset:0;pointer-events:none;z-index:3;overflow:hidden}
+.theatre-curtain{--curtain-gather:.13;position:absolute;top:0;bottom:0;width:51%;background:linear-gradient(180deg,#10040b88,transparent 28%,#19071033 70%,#080205aa),repeating-linear-gradient(90deg,#260811 0%,#551126 5.4%,#76203a 8.6%,#3a0a19 12.4%,#4f1024 16.8%,#260811 20%);border-bottom:4px solid #9c7945;box-shadow:0 8px 24px #000b;transform:scaleX(var(--curtain-gather))}
+.theatre-curtain::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,#ffffff03 0 1px,transparent 1px 4px)}
+.theatre-curtain--left{left:0;transform-origin:left top;clip-path:polygon(0 0,100% 0,97% 8%,91% 18%,82% 30%,76% 43%,74% 56%,77% 70%,85% 84%,100% 100%,0 100%)}
+.theatre-curtain--right{right:0;transform-origin:right top;clip-path:polygon(100% 0,0 0,3% 8%,9% 18%,18% 30%,24% 43%,26% 56%,23% 70%,15% 84%,0 100%,100% 100%)}
+.theatre-is-moving .theatre-curtain{will-change:transform,clip-path}
+.theatre-closed .theatre-curtain{transform:scaleX(1);clip-path:inset(0)}
+.theatre-entry{position:absolute;inset:var(--nav-height) 24px 24px;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center;color:#fff;text-shadow:0 2px 18px #0008}
+.theatre-entry .kicker{font-size:.8rem;letter-spacing:.26em;color:#ecdabc}
+.theatre-entry .kicker::before{content:"";display:block;width:38px;height:1px;background:var(--accent);margin:0 auto 24px;box-shadow:0 0 12px #d3bc9240}
+.theatre-entry-title{font:italic 400 clamp(4.5rem,min(12vw,18svh),10rem)/1 "Cormorant Garamond",Georgia,serif}
+.theatre-enter{display:inline-flex;align-items:center;justify-content:center;gap:28px;min-height:52px;padding:14px 26px;border:1px solid #ead7b5;background:#ead7b5;color:#250c17;font-size:.85rem;font-weight:500;text-shadow:none;box-shadow:0 8px 32px #0003;transition:background-color .2s,transform .2s}
+.theatre-enter:hover{background:#f5e8cd;transform:translateY(-2px)}
+.theatre-beam{position:absolute;top:-12%;width:60%;height:110%;background:radial-gradient(ellipse at 50% 0,#f0d3a322,transparent 66%);filter:blur(12px);opacity:.65}
+.theatre-beam--left{left:0;transform:rotate(-23deg);transform-origin:50% 0}
+.theatre-beam--right{right:0;transform:rotate(23deg);transform-origin:50% 0}
+.theatre-glow{position:absolute;left:50%;top:24%;width:90%;height:100%;background:radial-gradient(ellipse,#f7d6a018,transparent 65%);transform:translate3d(calc(-50% + var(--glow-x,0px)),calc(-50% + var(--glow-y,0px)),0);pointer-events:none}
+.concert-programme{max-width:1180px;padding-top:88px;scroll-margin-top:24px}
 .concert-section-heading{display:flex;align-items:baseline;justify-content:space-between;gap:24px;padding-bottom:28px;border-bottom:1px solid var(--line);margin-bottom:44px}
-.concert-section-heading h2{font-size:clamp(2.4rem,4vw,4rem)}.concert-section-heading .kicker{color:var(--accent)}
-.concerts-page .concert-reportages{grid-template-columns:1fr;gap:68px;padding-bottom:96px}
-.concerts-page .concert-reportages .collection-link{display:grid;grid-template-columns:100px minmax(0,1fr);gap:24px;align-items:center}
-.concert-entry-content{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.9fr);gap:36px;align-items:center}
-.concert-entry-meta{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding-top:12px;font-size:.75rem;letter-spacing:.1em;color:var(--muted)}
-.concert-entry-meta span:first-child{color:var(--accent)}
-.concerts-page .collection-image{aspect-ratio:auto;background:transparent}
+.concert-section-heading h2{font-size:clamp(2.4rem,4vw,4rem);margin-top:10px}.concert-section-heading .kicker{color:var(--accent)}
+.concert-programme-note{font-size:.85rem;color:var(--muted)}
+.concerts-page .concert-reportages{grid-template-columns:1fr;gap:28px;padding-bottom:88px}
+.concerts-page .concert-reportages .collection-link{--ink:#301c26;--muted:#6c5954;--accent:#795a32;--line:#a68a6445;display:grid;grid-template-columns:74px minmax(0,1fr);gap:28px;align-items:center;padding:30px;background:linear-gradient(135deg,#f2e7d6,#e9dac2);color:var(--ink);border:1px solid #d3bc9266;box-shadow:0 12px 35px #0002;transition:box-shadow .3s}
+.concert-entry-content{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:32px;align-items:center}
+.concert-entry-meta{display:flex;flex-direction:column;align-items:center;justify-content:center;align-self:stretch;gap:12px;padding-right:24px;border-right:1px dashed var(--line);font-size:.75rem;letter-spacing:.1em;color:var(--muted)}
+.concert-entry-number{font:400 3.4rem/1 "Cormorant Garamond",Georgia,serif;color:var(--accent)}
+.concert-entry-kind{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.concert-entry-open{display:inline-flex;align-items:center;gap:18px;min-height:44px;margin-top:18px;font-size:.8rem;color:var(--accent);text-decoration:underline;text-underline-offset:.4em}
+.concerts-page .collection-image{aspect-ratio:auto;background:transparent;border:1px solid #d3bc9233;padding:8px}
 .concerts-page .collection-image img{height:auto;object-fit:contain}
 .concerts-page .collection-link:hover img,.concerts-page .collection-link:focus-visible img{transform:none}
 .concerts-page .collection-caption{margin-top:0;gap:20px}
-.concerts-page .collection-caption h2{font-size:clamp(1.65rem,2.6vw,2.7rem);line-height:1.15}
+.concerts-page .collection-caption h2{font-size:clamp(1.9rem,2.8vw,2.7rem);line-height:1.12}
 .concerts-page .collection-caption>span{font-size:1.5rem;color:var(--accent)}
+.concerts-page .concert-reportages .collection-link:hover .collection-image{border-color:var(--accent)}
+.concerts-page .concert-reportages .collection-link:hover .collection-caption h2{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.2em}
+.concerts-page .concert-reportages .collection-link:hover{box-shadow:0 18px 45px #0004}
 .concert-invitation{display:flex;align-items:center;justify-content:space-between;gap:24px;border-top:1px solid var(--line);padding-block:42px 64px}
 .concert-invitation>p{font-size:clamp(2rem,3.8vw,3.8rem);line-height:1.15}.concert-invitation>a{display:inline-flex;align-items:center;gap:28px;min-height:44px;font-size:.75rem;text-decoration:none}.concert-invitation>a:hover{text-decoration:underline}.concert-invitation a span{color:var(--accent)}
+.concert-invitation .kicker{color:var(--accent);margin-bottom:14px}
+.concert-invitation h2{font-size:clamp(2.5rem,4vw,4.2rem);line-height:1.1}
+.concert-invitation .button{font-size:.85rem;flex-shrink:0}
+.concert-invitation .button span{color:inherit}
 .concerts-page .collection-gallery-header{padding-block:64px 48px;border-bottom:1px solid var(--line);margin-bottom:40px}
 .concerts-page .collection-gallery-header h1{max-width:22ch}.concerts-page .collection-gallery-header>a{color:var(--accent)}
-.concerts-page .personal-section{border-block:1px solid var(--line);background:#211418}
+.concerts-page .personal-section{border-block:1px solid var(--line);background:radial-gradient(ellipse at 20% 50%,#32171e,#160e12 75%)}
 .concerts-page .personal-page{max-width:1180px}.concerts-page .personal-portrait img{max-width:440px;max-height:550px}
 .concerts-page .concert-invitation{max-width:1180px;border-top:0;padding-top:64px}
 .concerts-page .lightbox,.concerts-page .lightbox::backdrop{background:#120b0d}.concerts-page .lightbox-close,.concerts-page .lightbox-prev,.concerts-page .lightbox-next{background:var(--bg);border-color:var(--line);color:var(--accent)}
-.concert-title-row,.concert-cover{animation:concert-entrance .9s ease-out both}.concert-cover{animation-delay:.12s}
-@keyframes concert-entrance{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:1000px){.concert-opening{gap:32px}.concerts-page .concert-reportages .collection-link{grid-template-columns:1fr;gap:16px}.concert-entry-meta{flex-direction:row;justify-content:space-between;padding:0}.concert-entry-content{gap:24px}}
+.theatre-reveal{opacity:0;transform:translateY(28px);transition:opacity .8s,transform .8s}
+.theatre-reveal.is-visible,.theatre-reveal:focus-within{opacity:1;transform:none}
+@media(max-width:1000px){.concerts-page .concert-reportages .collection-link{grid-template-columns:1fr;gap:18px;padding:24px}.concert-entry-meta{flex-direction:row;justify-content:space-between;padding:0 0 16px;border-right:0;border-bottom:1px dashed var(--line)}.concert-entry-number{font-size:2rem}.concert-entry-content{gap:24px}}
 @media(max-width:760px){
- .concert-opening{grid-template-columns:1fr;gap:26px;padding-block:38px 0}.concert-title-row{padding:0;gap:18px}.concert-title-row h1{font-size:clamp(4.25rem,18vw,7rem);grid-column:1/-1}.concert-title-row .kicker{font-size:.75rem}.concert-scroll{grid-column:1/-1;margin:0;gap:22px}
- .concert-cover>img{max-height:none}.concert-cover figcaption{font-size:.75rem;letter-spacing:.02em;gap:12px}
+ .concerts-page{--theatre-valance-height:22px}
+ .concert-opening{padding:52px 32px 28px;gap:28px;min-height:calc(100svh - 81px)}
+ .js .concert-opening{height:100svh;min-height:0;padding:calc(var(--nav-height) + var(--theatre-valance-height) + 12px) 24px 16px}
+ .concert-stage-content{gap:14px}
+ .concert-title-row h1{font-size:clamp(3.2rem,min(18vw,10svh),5rem)}
+ .concert-title-row .kicker{font-size:.75rem;letter-spacing:.13em}
+ .concert-opening-line{max-width:none;margin:10px auto 0;line-height:1.6;font-size:.75rem}
+ .concert-opening-actions{flex-direction:row;flex-wrap:nowrap;gap:10px;flex-shrink:0}
+ .concert-scroll{gap:12px}
+ .theatre-replay{justify-content:center;min-width:44px}
+ .theatre-replay-label{display:none}
+ .concert-cover{width:100%;padding:6px 6px 0}
+ .concert-cover figcaption{font-size:.75rem;letter-spacing:0;gap:8px;flex-wrap:wrap;padding:10px 2px}
+ .concert-cover-title{font-size:1.1rem}
+ .concert-cover-label{gap:8px}
+ .theatre-arch{inset:calc(var(--nav-height) + 8px) 5% 20px}
+ .theatre-floor{height:13%}
+ .theatre-curtain{--curtain-gather:.12}
  .concert-programme{padding-top:68px}.concert-section-heading{align-items:flex-start;flex-direction:column;gap:12px;padding-bottom:22px;margin-bottom:30px}.concert-section-heading .kicker{font-size:.75rem}
- .concerts-page .concert-reportages{gap:44px;padding-bottom:60px}.concerts-page .concert-reportages .collection-link{grid-template-columns:1fr;gap:14px}.concert-entry-meta{flex-direction:row;justify-content:space-between;padding:0;gap:20px;font-size:.75rem}
+ .concerts-page .concert-reportages{gap:24px;padding-bottom:56px}.concerts-page .concert-reportages .collection-link{grid-template-columns:1fr;gap:18px;padding:20px}.concert-entry-meta{flex-direction:row;justify-content:space-between;gap:20px;font-size:.75rem}
  .concert-entry-content{grid-template-columns:1fr;gap:0}
  .concerts-page .collection-caption{margin-top:16px;gap:18px}.concerts-page .collection-caption h2{font-size:clamp(1.6rem,6.8vw,2.4rem)}
+ .concert-entry-kind{margin-bottom:8px}
+ .concert-entry-open{margin-top:10px}
  .concert-invitation{flex-direction:column;align-items:flex-start;gap:18px;padding-block:32px 44px}
  .concerts-page .collection-gallery-header{padding-block:32px;margin-bottom:24px}
+}
+@media(max-height:650px){
+ .concerts-page{--theatre-valance-height:18px}
+ .concert-stage-content{gap:10px}
+ .concert-title-row .kicker{margin-bottom:6px}
+ .concert-title-row h1{font-size:clamp(2.5rem,8svh,4rem)}
+ .concert-opening-line{display:none}
+ .js .concert-opening{padding-top:calc(var(--nav-height) + var(--theatre-valance-height) + 8px);padding-bottom:12px}
+ .concert-cover figcaption{padding-block:6px;font-size:.75rem}
+}
+@media(prefers-reduced-motion:reduce){
+ .theatre-curtain{transition:none;will-change:auto}
+ .theatre-replay{display:none}
+ .theatre-reveal{opacity:1;transform:none;transition:none}
 }
