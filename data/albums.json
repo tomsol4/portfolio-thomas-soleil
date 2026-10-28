@@ -232,6 +232,7 @@
   {
     "id": "mariage",
     "title": "Un mariage à l’argentique",
+    "reportage_title": "Mariage de M et C-I",
     "cover": "images/mariage/may (3).jpg",
     "date": "2026",
     "photos": [
@@ -275,7 +276,7 @@
       "images/mariage/n (11).jpg"
     ],
     "category": "Mariage",
-    "description": "Les moments d’un mariage racontés sur pellicule : une approche argentique, attentive aux instants partagés.",
+    "description": "Quelques photos faites à l’argentique lors du mariage d’un ami.",
     "project": "mariage"
   },
   {

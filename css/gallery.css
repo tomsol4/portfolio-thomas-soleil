@@ -3,7 +3,6 @@
 .photo-grid li{min-width:0;background:var(--line)}
 .photo-grid.is-masonry{display:block;height:var(--gallery-height)}
 .photo-grid.is-masonry>li{position:absolute;top:0;left:0;width:var(--gallery-item-width);transform:translate(var(--gallery-x),var(--gallery-y))}
-@media(min-width:1200px){.photo-grid{--gallery-columns:4}}
 .photo-link{display:block;cursor:zoom-in}
 .photo-link img{width:100%;height:auto;transition:filter .2s}
 .photo-link:hover img{filter:brightness(.96)}

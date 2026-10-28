@@ -1,45 +1,64 @@
 .instants-de-vie-page{--bg:#f7f5f0;--ink:#2c2928;--muted:#625d58;--line:#d8d2c8;--accent:#735538}
 .instants-de-vie-page h1,.instants-de-vie-page h2,.instants-de-vie-page h3{font-family:"Cormorant Garamond",Georgia,serif;font-weight:400;letter-spacing:.025em}
-.instants-de-vie-page .logo strong,.instants-de-vie-page .button{font-weight:400}
+.instants-de-vie-page .button{font-weight:400}
 .instants-de-vie-page .logo span{color:var(--muted)}
+.instants-de-vie-page .logo .brand-mark{width:62px;height:62px}
+.instants-de-vie-page .brand-copy>span{margin-top:0}
+.instants-de-vie-page .site-nav{padding-block:13px}
 .instants-de-vie-page .nav-links{gap:22px}
 .instants-de-vie-page .button{background:var(--ink);color:var(--bg);border-color:var(--ink);font-size:.85rem}
 
-/* The opening photograph keeps its complete framing and native proportions. */
-.life-hero{max-width:1220px;padding-top:28px}
-.life-hero>.kicker{font-size:.78rem;letter-spacing:.1em;color:var(--muted);margin-bottom:18px}
-.life-hero-heading{display:flex;align-items:end;justify-content:space-between;gap:32px;margin-bottom:28px}
-.life-hero h1{font-size:clamp(2.9rem,4.8vw,4.6rem);line-height:1.03;letter-spacing:0}
-.life-specialties{font-size:.85rem;line-height:1.8;letter-spacing:.02em;color:var(--muted);padding-bottom:6px}
-.life-hero-image img{width:auto;max-width:min(100%,var(--source-width));height:auto;max-height:min(68svh,720px);margin-inline:auto;object-fit:contain}
-.life-discover{display:flex;align-items:center;justify-content:center;gap:18px;min-height:44px;width:max-content;margin:12px auto 0;font-size:.85rem;text-decoration:none}
+/* One photograph fills the opening viewport beneath the navigation. */
+.instants-de-vie-page:has(.life-home){--nav-height:90px}
+.js .instants-de-vie-page:has(.life-home) .site-nav{position:fixed;inset:0 0 auto;transition:background-color .25s,color .25s,border-color .25s,box-shadow .25s}
+.js .instants-de-vie-page:has(.life-home) .site-nav:not(.scrolled):not(.menu-open){--ink:#fff;--muted:#fff;--line:#fff7;--accent:#fff;background:transparent;border-color:transparent;color:#fff}
+.js .instants-de-vie-page:has(.life-home) .site-nav:not(.scrolled):not(.menu-open) .brand-mark{filter:invert(1)}
+.js .instants-de-vie-page:has(.life-home) .site-nav.scrolled{box-shadow:0 3px 18px #0000000d}
+.life-hero{position:relative;isolation:isolate;min-height:calc(100svh - var(--nav-height));padding:clamp(40px,6vh,72px) 24px 100px;color:#fff;background:#242820;display:flex;flex-direction:column;align-items:center}
+.js .instants-de-vie-page .life-hero{min-height:100svh;padding-top:calc(var(--nav-height) + clamp(40px,6vh,72px))}
+.life-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#0009 0%,#0003 38%,transparent 60%,#0008 100%);pointer-events:none}
+.life-hero-heading{text-align:center}
+.life-hero-heading>.kicker{font-size:.75rem;letter-spacing:.12em;margin-bottom:14px}
+.life-hero h1{font-size:clamp(3.5rem,6vw,6.4rem);line-height:1.02;letter-spacing:-.025em}
+.life-hero h1 em{font-weight:400;white-space:nowrap}
+.life-specialties{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 22px;font-size:.78rem;line-height:1.7;margin-top:16px}
+.life-hero-image{position:absolute;inset:0;z-index:-2}
+.life-hero-image img{width:100%;height:100%;object-fit:cover;object-position:center 55%}
+.life-hero :focus-visible{outline-color:currentColor}
+.life-discover{position:absolute;bottom:24px;display:flex;align-items:center;justify-content:center;gap:18px;min-height:44px;width:fit-content;font-size:.78rem;text-decoration:none}
 .life-discover:hover{text-decoration:underline}
 
-.life-intro{max-width:1000px;padding-block:48px 56px;display:grid;grid-template-columns:1fr 1.2fr;align-items:center;gap:clamp(32px,6vw,88px)}
-.life-intro h2{font-size:clamp(2rem,3vw,2.8rem);line-height:1.15}
-.life-intro-copy p{max-width:48ch;font-size:.95rem;line-height:1.85;color:var(--muted)}
-.life-intro-copy a{display:inline-flex;align-items:center;gap:12px;min-height:44px;margin-top:8px;font-size:.85rem}
+/* A short introduction between the photographic opening and the reportage. */
+.life-intro{max-width:1060px;padding-block:88px 80px;display:grid;grid-template-columns:1fr 1.1fr;align-items:center;gap:clamp(40px,7vw,110px)}
+.life-intro h2{font-size:clamp(2.7rem,4vw,4rem);line-height:1.05;letter-spacing:-.02em}
+.life-intro-copy p{max-width:43ch;font-size:.95rem;line-height:1.9;color:var(--muted)}
+.life-intro-copy a{display:inline-flex;align-items:center;gap:12px;min-height:44px;margin-top:12px;font-size:.85rem}
 
-.life-diptych{display:grid;grid-template-columns:.78fr 1.22fr;align-items:start;gap:clamp(24px,5vw,72px)}
-.life-diptych img{width:100%;height:auto;object-fit:contain}
-.life-detail{padding-top:72px}
-.life-stories{padding-block:72px 80px}
+/* A single framed cover opens the wedding reportage. */
+.life-stories{max-width:720px;padding-bottom:88px}
 .life-stories .collection-grid.single{max-width:none;padding-bottom:0}
-.life-stories .collection-link{display:grid;grid-template-columns:1.4fr 1fr;align-items:center;gap:clamp(32px,6vw,88px)}
-.life-stories .collection-image{aspect-ratio:auto;background:none}
-.life-stories .collection-image img{width:100%;height:auto;object-fit:contain}
+.life-stories .collection-link{display:grid;grid-template-columns:1fr;gap:20px;padding:24px;border:1px solid var(--line);text-decoration:none;transition:border-color .2s}
+.life-stories .collection-link:hover,.life-stories .collection-link:focus-visible{border-color:var(--ink)}
+.life-stories .life-story-title{font-size:clamp(2rem,3.5vw,3rem);line-height:1.1;text-align:center;letter-spacing:-.02em}
+.life-stories .collection-image{aspect-ratio:auto;background:none;min-width:0}
+.life-stories .collection-image img{display:block;width:100%;height:auto;object-fit:contain}
 .life-stories .collection-link:hover img,.life-stories .collection-link:focus-visible img{transform:none}
-.life-stories .collection-caption{display:block;margin:0}
-.life-stories .collection-caption .kicker{font-size:.78rem;letter-spacing:.1em;color:var(--muted);margin-bottom:20px}
-.life-stories .collection-caption h3{font-size:clamp(1.9rem,3vw,3rem);line-height:1.18;max-width:14ch}
-.life-story-open{display:inline-flex;align-items:center;gap:16px;min-height:44px;margin-top:20px;font-size:.9rem;text-decoration:underline;text-underline-offset:.3em}
+.life-stories .collection-caption{display:block;margin:0;text-align:center}
+.life-story-open{display:inline-flex;align-items:center;gap:20px;min-height:44px;font-size:.88rem;text-decoration:underline;text-underline-offset:.45em}
 
-.life-invitation{text-align:center;padding:48px 0;background:#ece7de;border-block:1px solid var(--line)}
-.life-invitation h2{font-size:clamp(2rem,3.4vw,3.3rem);line-height:1.15}
-.life-actions{display:flex;gap:28px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:24px}
-.life-actions>a:not(.button){font-size:.85rem;display:inline-flex;align-items:center;gap:12px;min-height:44px}
+/* The photographer and contact follow the same paper background. */
+.instants-de-vie-page .life-home .personal-section{background:none;border:0}
+.instants-de-vie-page .life-home .personal-page{border-top:1px solid var(--line);padding-block:64px 72px}
+.instants-de-vie-page .life-home .personal-grid{grid-template-columns:minmax(0,.85fr) minmax(0,1fr);max-width:1120px}
+.instants-de-vie-page .life-home .personal-portrait img{max-height:560px}
+.life-home .personal-copy .button{background:transparent;color:var(--ink);border:0;border-bottom:1px solid var(--ink);padding:10px 0;min-height:44px}
+.life-invitation{text-align:center;padding:64px 0 80px;border-top:1px solid var(--line)}
+.life-invitation h2{max-width:15ch;margin-inline:auto;font-size:clamp(2.8rem,5vw,5rem);line-height:1.06;letter-spacing:-.025em}
+.life-actions{display:flex;gap:28px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:30px}
+.life-actions>a{font-size:.85rem;display:inline-flex;align-items:center;gap:12px;min-height:44px}
+.life-invitation .button{background:transparent;color:var(--ink);border:0;border-bottom:1px solid var(--ink);padding:10px 0}
 
-/* Contact pages share the same typography and paper colour. */
+/* Contact pages retain their existing layout. */
 .instants-de-vie-page .container{width:min(1360px,calc(100% - 96px));margin-inline:auto}
 .instants-de-vie-page .page-header{padding:64px 0 40px;max-width:950px}
 .instants-de-vie-page .page-header h1{font-size:clamp(2.7rem,5vw,5rem);margin:20px 0}
@@ -52,24 +71,30 @@
  .instants-de-vie-page .container{width:calc(100% - 56px)}
 }
 @media(max-width:760px){
- .life-hero{padding-top:24px}
- .life-hero>.kicker{font-size:.75rem;letter-spacing:.04em;margin-bottom:16px}
- .life-hero-heading{display:block;margin-bottom:24px}
- .life-hero h1{font-size:clamp(2.9rem,11vw,4.3rem)}
- .life-specialties{font-size:.85rem;margin-top:16px;padding:0}
- .life-intro{grid-template-columns:1fr;gap:16px;padding-block:36px 32px}
- .life-intro h2{font-size:2rem}
+ .instants-de-vie-page .logo .brand-mark{width:54px;height:54px}
+ .instants-de-vie-page:has(.life-home){--nav-height:82px}
+ .life-hero{padding:32px 20px 88px}
+ .life-hero-heading>.kicker{max-width:32ch;margin:0 auto 16px;font-size:.75rem;letter-spacing:.07em}
+ .life-hero h1{font-size:clamp(2.85rem,12vw,4.6rem);line-height:.98}
+ .life-specialties{font-size:.75rem;gap:4px 16px;margin-top:16px}
+ .life-hero-image img{object-position:29% center}
+ .life-discover{bottom:20px}
+ .life-intro{grid-template-columns:1fr;gap:22px;padding-block:52px 48px}
+ .life-intro h2{font-size:2.8rem}
  .life-intro h2 br{display:none}
- .life-diptych{grid-template-columns:1fr;gap:24px}
- .life-detail{width:78%;padding-top:0}
- .life-moment{width:100%}
- .life-stories{padding-block:40px 48px}
- .life-stories .collection-link{grid-template-columns:1fr;gap:22px}
- .life-stories .collection-caption .kicker{margin-bottom:12px}
- .life-stories .collection-caption h3{font-size:2rem;max-width:none}
- .life-story-open{margin-top:12px}
- .life-invitation{padding-block:40px}
- .life-actions{gap:12px;flex-direction:column}
+ .life-intro-copy p{font-size:.9rem;max-width:44ch}
+ .life-intro-copy a{margin-top:8px}
+ .life-stories{padding-bottom:48px}
+ .life-stories .collection-link{gap:20px;padding:16px}
+ .life-stories .life-story-title{font-size:clamp(2rem,8vw,3rem);margin-bottom:2px}
+ .life-story-open{gap:10px;font-size:.8rem;line-height:1.7}
+ .instants-de-vie-page .life-home .personal-page{padding-block:40px 44px}
+ .instants-de-vie-page .life-home .personal-grid{grid-template-columns:1fr}
+ .instants-de-vie-page .life-home .personal-portrait{width:min(100%,300px);margin-inline:auto}
+ .instants-de-vie-page .life-home .personal-portrait img{max-height:450px}
+ .life-invitation{padding-block:44px 56px}
+ .life-invitation h2{font-size:clamp(2.7rem,11vw,4rem)}
+ .life-actions{gap:14px;flex-direction:column;margin-top:22px}
  .instants-de-vie-page .container{width:calc(100% - 40px)}
  .instants-de-vie-page .page-header{padding-top:40px}
 }

@@ -26,7 +26,7 @@ def contrast_ratio(first, second):
 def check_masonry(page, viewport_width):
     grid = page.locator('.photo-grid')
     expect(grid).to_have_class(re.compile(r'\bis-masonry\b'))
-    expected_columns = 2 if viewport_width <= 760 else 3 if viewport_width < 1200 else 4
+    expected_columns = 2 if viewport_width <= 760 else 3
     geometry = grid.evaluate('''grid => {
         const bounds = grid.getBoundingClientRect();
         return {width: bounds.width, height: bounds.height,
@@ -123,10 +123,27 @@ def run():
                 if path.startswith('albums/'):
                     check_masonry(page, width)
                 if path == 'instants-de-vie/index.html':
-                    for photo in page.locator('.life-hero-image img, .life-diptych img, .life-stories img, #presentation img').all():
+                    for photo in page.locator('.life-stories img, #presentation img').all():
                         photo.scroll_into_view_if_needed()
                         page.wait_for_function('(image) => image.complete && image.naturalWidth > 0', arg=photo.element_handle())
                         assert photo.evaluate('(image) => Math.abs(image.clientWidth / image.clientHeight - image.naturalWidth / image.naturalHeight) < .025'), 'Wedding images must preserve their complete framing'
+                    hero = page.locator('.life-hero')
+                    assert hero.locator('img').count() == 1, 'The wedding opening uses one full-screen photograph'
+                    hero_box = hero.bounding_box()
+                    assert abs(hero_box['width'] - width) < 1, 'Wedding cover spans the viewport width'
+                    assert abs(hero_box['height'] - 900) <= 2, 'Wedding cover fills the viewport behind navigation'
+                    page.evaluate('scrollTo(0, 0)')
+                    nav = page.locator('.site-nav')
+                    expect(nav).not_to_have_class(re.compile(r'\bscrolled\b'))
+                    assert nav.evaluate('(el) => getComputedStyle(el).backgroundColor') == 'rgba(0, 0, 0, 0)', 'Wedding navigation starts transparent'
+                    page.evaluate('scrollTo(0, 150)')
+                    expect(nav).to_have_class(re.compile(r'\bscrolled\b'))
+                    assert nav.evaluate('(el) => getComputedStyle(el).backgroundColor') == 'rgb(247, 245, 240)', 'Wedding navigation becomes opaque on scroll'
+                    for story in page.locator('.life-stories .collection-link').all():
+                        assert story.locator('img').count() == 1, 'Each wedding reportage has a single cover photograph'
+                        heading = story.locator('h3').bounding_box()
+                        cover = story.locator('.collection-image').bounding_box()
+                        assert heading['y'] + heading['height'] <= cover['y'], 'The wedding title belongs above its photographs'
                     page.evaluate('scrollTo(0, 0)')
                 if path == 'instants-de-vie/prestations.html':
                     expect(page.locator('.life-price-row')).to_have_count(3)
@@ -176,7 +193,7 @@ def run():
                         assert second['y'] >= first['y'] + first['height'], 'Concert reportages must follow one another vertically'
                 if width in [390, 1440] and path in ['index.html', 'rugby/index.html', 'instants-de-vie/index.html', 'concerts/index.html']:
                     # Load the below-the-fold selection before making the review artifact.
-                    for photo in page.locator('.universe-door img, .life-diptych img, .life-stories img, #presentation img, .concert-reportages img').all():
+                    for photo in page.locator('.universe-door img, .life-hero-image img, .life-stories img, #presentation img, .concert-reportages img').all():
                         photo.scroll_into_view_if_needed()
                         page.wait_for_function('(image) => image.complete && image.naturalWidth > 0', arg=photo.element_handle())
                     if path in ['rugby/index.html', 'instants-de-vie/index.html', 'concerts/index.html']:
@@ -421,7 +438,7 @@ def run():
             check_masonry(page, page.viewport_size['width'])
         for width in [320, 1440, 768, 390]:
             page.set_viewport_size({'width':width, 'height':844})
-            page.wait_for_function('(columns) => getComputedStyle(document.querySelector(".photo-grid")).getPropertyValue("--gallery-columns").trim() === String(columns)', arg=2 if width <= 760 else 3 if width < 1200 else 4)
+            page.wait_for_function('(columns) => getComputedStyle(document.querySelector(".photo-grid")).getPropertyValue("--gallery-columns").trim() === String(columns)', arg=2 if width <= 760 else 3)
             # Layout is scheduled in an animation frame after ResizeObserver.
             page.evaluate('() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))')
             check_masonry(page, width)

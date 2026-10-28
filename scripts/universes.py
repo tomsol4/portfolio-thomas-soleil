@@ -41,9 +41,10 @@ def shell(body, title, description, path, universe, prefix='', cover='', scripts
                              'CollectionPage' if path.startswith('albums/') else 'WebPage')
     tags = '\n'.join(f'<script src="{prefix}js/{script}" defer></script>' for script in ('main.js', *scripts))
     labels = {'rugby': 'Sport', 'instants-de-vie': 'Mariage &amp; événements', 'concerts': 'Concerts'}
+    brand_name = '' if universe == 'instants-de-vie' else '<strong>Thomas Soleil</strong>'
     brand = (f'<img src="{prefix}images/logo.png" width="55" height="70" alt="">' if portal else
              f'<img class="brand-mark" src="{prefix}images/logo.png" width="56" height="56" alt="">'
-             f'<span class="brand-copy"><strong>Thomas Soleil</strong><span>{labels.get(universe, "Photographe")}</span></span>')
+             f'<span class="brand-copy">{brand_name}<span>{labels.get(universe, "Photographe")}</span></span>')
     navigation = f'''<nav class="site-nav" aria-label="Navigation principale">
 <a class="logo" href="{brand_link}" aria-label="Thomas Soleil — Accueil">{brand}</a>
 <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation" aria-label="Ouvrir le menu"><span aria-hidden="true"></span><span aria-hidden="true"></span></button>
@@ -260,24 +261,17 @@ def build_life_universe(albums, picture, write):
     selected = [a for a in albums if a['category'] == 'Mariage']
     cover = 'images/optimized/og-mariage.jpg'
     body = (ROOT / 'templates/life-home.html').read_text(encoding='utf-8')
-    for token, src, alt in [
-        ('WEDDING_HERO', 'images/mariage/n (13).jpg', 'Les mariés près d’une voiture ancienne, dans un parc'),
-        ('WEDDING_DETAIL', 'images/mariage/n (7).jpg', 'Le bouquet et les détails de la robe de la mariée'),
-        ('WEDDING_MOMENT', 'images/mariage/mariage19NB.jpg', 'Vue de la cérémonie de mariage dans une église, avec l’autel et les invités, en noir et blanc')]:
-        # Home selections must belong to the explicitly published reportage.
-        source = src if src in wedding['photos'] else wedding['cover']
-        if source != src:
-            alt = wedding['title']
-        hero = token == 'WEDDING_HERO'
-        sizes = ('(max-width: 760px) calc(100vw - 40px), (max-width: 1000px) calc(100vw - 56px), min(calc(100vw - 96px), 1220px)' if hero else
-                 '(max-width: 760px) calc(100vw - 40px), 35vw' if token == 'WEDDING_DETAIL' else
-                 '(max-width: 760px) calc(100vw - 40px), 55vw')
-        body = body.replace('{{' + token + '}}', picture(source, alt, '../', loading='eager' if hero else 'lazy',
-                            sizes=sizes, hero=hero, large=True))
+    source = 'images/mariage/n (13).jpg'
+    alt = 'Les mariés près d’une voiture ancienne, dans un parc'
+    # The cover must belong to the explicitly published reportage.
+    if source not in wedding['photos']:
+        source, alt = wedding['cover'], wedding['title']
+    body = body.replace('{{WEDDING_HERO}}', picture(source, alt, '../', loading='eager',
+                        sizes='max(100vw, 170svh)', hero=True, large=True))
     reportages = []
     for album in selected:
-        image = picture(album['cover'], album['title'], '../', sizes='(max-width: 760px) calc(100vw - 40px), 55vw', large=True)
-        reportages.append(f'''<a class="collection-link" href="../albums/{album['id']}.html"><div class="collection-image">{image}</div><div class="collection-caption"><p class="kicker">Quelques instants</p><h3>Photographies de mariage.</h3><span class="life-story-open">Voir les photographies <span aria-hidden="true">↗</span></span></div></a>''')
+        image = picture(album['cover'], album['title'], '../', sizes='(max-width: 760px) calc(100vw - 74px), 670px', large=True)
+        reportages.append(f'''<a class="collection-link" href="../albums/{album['id']}.html"><h3 class="life-story-title">{escape(album.get('reportage_title', album['title']))}</h3><div class="collection-image">{image}</div><div class="collection-caption"><span class="life-story-open">Voir le reportage <span aria-hidden="true">↗</span></span></div></a>''')
     body = body.replace('{{LIFE_REPORTAGES}}', ''.join(reportages))
     body = body.replace('{{PRESENTATION}}', inline_presentation('instants-de-vie', picture))
     write('instants-de-vie/index.html', shell(body, 'Mariage & événements | Thomas Soleil, Toulouse & Castres',
