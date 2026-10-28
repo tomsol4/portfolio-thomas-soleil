@@ -1,4 +1,4 @@
-.prints-page h1,.prints-page h2{font-family:Rosehot,Georgia,serif;font-weight:400}
+.prints-page h1,.prints-page h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:400}
 .prints-intro{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:72px;padding-block:140px 64px}
 .prints-copy h1{font-size:clamp(2.6rem,4.5vw,4.8rem);line-height:1.1;margin-bottom:24px}
 .prints-copy p{max-width:44ch;font-size:1rem;line-height:1.85;color:var(--muted);margin-bottom:18px}

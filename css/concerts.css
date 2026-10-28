@@ -1,5 +1,5 @@
 .concerts-page{--bg:#1b1013;--ink:#f4eadb;--muted:#c0afa9;--line:#bda57b40;--accent:#d3bc92}
-.concerts-page h1,.concerts-page h2,.concert-invitation>p,.concerts-page .tariff-quote{font-family:Rosehot,Georgia,serif;font-weight:400;letter-spacing:0;text-transform:none}
+.concerts-page h1,.concerts-page h2,.concert-invitation>p,.concerts-page .tariff-quote{font-family:"Cormorant Garamond",Georgia,serif;font-weight:400;letter-spacing:0;text-transform:none}
 .concerts-page .logo strong,.concerts-page .button{font-weight:400}.concerts-page .logo span{color:var(--accent)}
 .concerts-page .nav-links .nav-contact{border-color:var(--accent)}
 .concert-opening{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);align-items:center;gap:64px;max-width:1180px;padding-block:64px 40px}

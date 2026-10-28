@@ -125,7 +125,8 @@ def layout(body, title, description, path, active='', prefix='', scripts=(), cov
 <link rel="canonical" href="{e(url)}">
 <link rel="icon" type="image/png" sizes="32x32" href="{prefix}images/favicon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="{prefix}images/apple-touch-icon.png">
-<link rel="preload" href="{prefix}fonts/Rosehot.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{prefix}fonts/CormorantGaramond-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="{prefix}fonts/cormorant-garamond.css">
 <link rel="stylesheet" href="{prefix}fonts/montserrat.css">
 <link rel="stylesheet" href="{prefix}css/style.css">
 {extra_styles}

@@ -13,7 +13,7 @@ Site statique servi directement par GitHub Pages. Les fichiers HTML sont génér
 - `css/gallery.css` et `css/contact.css` : styles partagés de la visionneuse, des galeries et des formulaires.
 - `js/` : navigation, visionneuse et formulaire.
 - `images/` : photographies sources, logo et icônes. `images/optimized/` contient uniquement des fichiers générés.
-- `fonts/` : polices locales et licence Montserrat.
+- `fonts/` : polices locales et leurs licences.
 
 ## Pages et navigation
 
@@ -88,4 +88,4 @@ Publier les fichiers HTML générés, les dossiers des univers, `albums/`, `imag
 
 Les coordonnées, mentions, prestations et réglages du service de formulaire doivent correspondre aux informations réelles du propriétaire. La réception des messages et le domaine se vérifient sur le site publié.
 
-Montserrat est fourni sous SIL Open Font License, conservée dans `fonts/Montserrat-LICENSE.txt`. La police Rosehot et les photographies préexistantes conservent leurs droits d’origine.
+Montserrat et Cormorant Garamond sont fournies sous SIL Open Font License, conservée dans `fonts/Montserrat-LICENSE.txt` et `fonts/CormorantGaramond-LICENSE.txt`. Les titres utilisent Cormorant Garamond en romain et en italique, avec les jeux latin et latin étendu, pour afficher les accents français sans mélanger les polices. Les fichiers WOFF2 sont hébergés localement. Les anciennes polices Rosehot et Bodoni Moda ne sont plus chargées ; elles et les photographies préexistantes conservent leurs droits d’origine.

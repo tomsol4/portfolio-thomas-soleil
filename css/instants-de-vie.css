@@ -1,5 +1,5 @@
 .instants-de-vie-page{--bg:#f7f5f0;--ink:#2c2928;--muted:#625d58;--line:#d8d2c8;--accent:#735538}
-.instants-de-vie-page h1,.instants-de-vie-page h2,.instants-de-vie-page h3{font-family:Rosehot,Georgia,serif;font-weight:400;letter-spacing:.025em}
+.instants-de-vie-page h1,.instants-de-vie-page h2,.instants-de-vie-page h3{font-family:"Cormorant Garamond",Georgia,serif;font-weight:400;letter-spacing:.025em}
 .instants-de-vie-page .logo strong,.instants-de-vie-page .button{font-weight:400}
 .instants-de-vie-page .logo span{color:var(--muted)}
 .instants-de-vie-page .nav-links{gap:22px}

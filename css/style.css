@@ -1,5 +1,4 @@
-@font-face{font-family:Rosehot;src:url('../fonts/Rosehot.woff2') format('woff2');font-display:swap;font-weight:400}
-:root{--paper:#f7f5f0;--ink:#2c2928;--muted:#625d58;--line:#d8d2c8;--accent:#735538;--white:#fff;--title:Rosehot,Georgia,serif;--body:Montserrat,Arial,sans-serif;--nav:88px}
+:root{--paper:#f7f5f0;--ink:#2c2928;--muted:#625d58;--line:#d8d2c8;--accent:#735538;--white:#fff;--title:"Cormorant Garamond",Georgia,serif;--body:Montserrat,Arial,sans-serif;--nav:88px}
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:110px;background:var(--paper)}
 body{margin:0;color:var(--ink);font:400 1rem/1.75 var(--body);background:var(--paper);min-height:100vh;display:flex;flex-direction:column}

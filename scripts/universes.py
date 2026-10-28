@@ -81,7 +81,8 @@ def shell(body, title, description, path, universe, prefix='', cover='', scripts
 <link rel="canonical" href="{canonical}">
 <link rel="icon" type="image/png" sizes="32x32" href="{prefix}images/favicon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="{prefix}images/apple-touch-icon.png">
-<link rel="preload" href="{prefix}fonts/Rosehot.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{prefix}fonts/CormorantGaramond-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="{prefix}fonts/cormorant-garamond.css">
 <link rel="stylesheet" href="{prefix}fonts/montserrat.css">
 <link rel="stylesheet" href="{prefix}css/universe-base.css">
 {shared_gallery}
@@ -284,9 +285,12 @@ def build_life_universe(albums, picture, write):
           'instants-de-vie/index.html', 'instants-de-vie', '../', cover))
     for name, template, title, description in [
         ('a-propos', 'life-about', 'À propos | Thomas Soleil, mariage et événements', 'Le regard et le parcours de Thomas Soleil, photographe de mariage à Toulouse et Castres.'),
-        ('prestations', 'life-services', 'Tarifs mariage, baptême & événements | Thomas Soleil', 'Comparez les trois formules mariage : Cérémonie dès 600 €, Cérémonie et cocktail, Reportage complet. Baptême, couple, famille et autres événements sur devis.')]:
+        ('prestations', 'life-services', 'Tarifs mariage, baptême & événements | Thomas Soleil', 'Mariage : 600 €, 850 € ou 1 000 €. Baptême : 250 €. Fiançailles : 300 €. Couple et famille : 100 € en tarif de lancement. Numérique inclus, argentique en option.')]:
         content = (ROOT / 'templates' / (template + '.html')).read_text(encoding='utf-8')
         if template == 'life-services':
+            content = content.replace('{{WEDDING_SERVICES_PHOTO}}', picture(
+                'images/mariage/mariage21.jpg', 'Les mariés pendant la cérémonie, entourés de leurs proches', '../',
+                loading='eager', sizes='(max-width: 760px) calc(100vw - 40px), 46vw', large=True))
             for token, source, alt in [
                 ('BAPTISM_CEREMONY', 'images/bapteme/Aribastire-8289.jpg', 'Une main bénit un bébé en tenue blanche pendant son baptême, en noir et blanc'),
                 ('BAPTISM_DETAIL', 'images/bapteme/Aribastire-8443.jpg', 'Une médaille dorée tenue entre les doigts, près de la main d’un bébé')]:
@@ -303,7 +307,7 @@ def build_life_universe(albums, picture, write):
                               'Mariage, événement, couple ou famille : racontez-moi le moment que vous souhaitez photographier.')
     contact = contact.replace('<option value="mariage">', '<option value="mariage" selected>')
     contact = contact.replace('<option value="portrait">Portrait</option><option value="sport">Sport</option><option value="concert">Concert</option>',
-                              '<option value="bapteme">Baptême</option><option value="couple">Couple</option><option value="famille">Famille</option>')
+                              '<option value="bapteme">Baptême</option><option value="fiancailles">Fiançailles</option><option value="couple">Couple</option><option value="famille">Famille</option>')
     contact = contact.replace('href="mentions.html#confidentialite"', 'href="../mentions.html#confidentialite"')
     contact = contact.replace('Votre idée, vos envies, le déroulé de l’événement…', 'Votre histoire, le lieu, la date et les images qui vous tiennent à cœur…')
     write('instants-de-vie/contact.html', shell(contact, 'Votre histoire | Contacter Thomas Soleil',

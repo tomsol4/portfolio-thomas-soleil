@@ -57,6 +57,39 @@ def check_masonry(page, viewport_width):
         previous_top = photo['y']
     assert abs(max(previous_bottom.values()) - geometry['height']) <= 1.5, 'Reserve the full gallery height before the footer'
 
+def check_french_heading_font(page):
+    # Check the font that actually draws each glyph, rather than only CSS's
+    # requested family: missing accents can silently fall back to Georgia.
+    sample = 'Cérémonie Événements Baptême Fiançailles À bientôt Noël cœur Œuvre Ça ù ï ÿ Æ æ 1 000 €'
+    cdp = page.context.new_cdp_session(page)
+    cdp.send('DOM.enable')
+    cdp.send('CSS.enable')
+    try:
+        for style in ['normal', 'italic']:
+            page.evaluate('''({sample, style}) => {
+                let probe = document.getElementById('french-font-probe');
+                if (!probe) {
+                    probe = document.createElement('h2');
+                    probe.id = 'french-font-probe';
+                    probe.style.position = 'fixed';
+                    probe.style.left = '-10000px';
+                    document.querySelector('main').appendChild(probe);
+                }
+                probe.textContent = sample;
+                probe.style.fontStyle = style;
+                probe.getBoundingClientRect();
+            }''', {'sample': sample, 'style': style})
+            page.evaluate('document.fonts.ready')
+            document = cdp.send('DOM.getDocument')['root']['nodeId']
+            node = cdp.send('DOM.querySelector', {'nodeId': document, 'selector': '#french-font-probe'})['nodeId']
+            fonts = cdp.send('CSS.getPlatformFontsForNode', {'nodeId': node})['fonts']
+            assert fonts and all(font['isCustomFont'] and 'Cormorant Garamond' in font['familyName']
+                                 for font in fonts if font['glyphCount']), (style, fonts)
+    finally:
+        page.evaluate('document.getElementById("french-font-probe")?.remove()')
+        cdp.detach()
+
+
 def run():
     server = http.server.ThreadingHTTPServer(('127.0.0.1', 0), functools.partial(QuietHandler, directory=str(ROOT)))
     threading.Thread(target=server.serve_forever, daemon=True).start()
@@ -338,8 +371,10 @@ def run():
         expect(page.locator('h1')).to_have_count(1)
         page.locator('#navigation a').filter(has_text='Tarifs').click()
         page.wait_for_url('**/instants-de-vie/prestations.html')
-        expect(page.locator('.life-price').first).to_contain_text('600 €')
-        for project in ['bapteme', 'couple', 'famille', 'evenement']:
+        check_french_heading_font(page)
+        results.append('French title accents and italic use the local font without character fallback')
+        expect(page.locator('.life-price')).to_have_text(['600 €', '850 €', '1 000 €'])
+        for project in ['bapteme', 'fiancailles', 'couple', 'famille', 'evenement']:
             page.goto(base + '/instants-de-vie/prestations.html')
             page.locator('.life-services-page a[href$="projet=' + project + '"]').click()
             page.wait_for_url('**/instants-de-vie/contact.html?projet=' + project)
