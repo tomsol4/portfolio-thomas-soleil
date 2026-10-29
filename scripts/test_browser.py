@@ -38,7 +38,7 @@ def unlock_album(page):
 def check_masonry(page, viewport_width):
     grid = page.locator('.photo-grid')
     expect(grid).to_have_class(re.compile(r'\bis-masonry\b'))
-    expected_columns = 2 if viewport_width <= 760 else 3
+    expected_columns = 2 if viewport_width <= 760 else 4 if page.locator('body.concerts-page, body.rugby-page').count() else 3
     geometry = grid.evaluate('''grid => {
         const bounds = grid.getBoundingClientRect();
         return {width: bounds.width, height: bounds.height,

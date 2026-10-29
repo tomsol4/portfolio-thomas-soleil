@@ -102,6 +102,7 @@ html:has(.concerts-page){scroll-padding-top:calc(var(--concert-nav-height,var(--
 .concerts-page .lightbox,.concerts-page .lightbox::backdrop{background:#120b0d}.concerts-page .lightbox-close,.concerts-page .lightbox-prev,.concerts-page .lightbox-next{background:var(--bg);border-color:var(--line);color:var(--accent)}
 .theatre-reveal{opacity:0;transform:translateY(28px);transition:opacity .8s,transform .8s}
 .theatre-reveal.is-visible,.theatre-reveal:focus-within{opacity:1;transform:none}
+@media(min-width:761px){.concerts-page .photo-grid{--gallery-columns:4}}
 @media(max-width:1000px){.concerts-page .concert-reportages .collection-link{grid-template-columns:minmax(0,1fr) 88px;gap:22px;padding:28px}.concert-entry-meta{padding-left:20px}.concert-entry-number{font-size:2.8rem}.concert-entry-content{gap:24px}}
 @media(max-width:760px){
  .concerts-page{--theatre-valance-height:22px}
