@@ -71,6 +71,8 @@
         const title = document.querySelector('main h1');
         title.setAttribute('tabindex', '-1');
         title.focus({ preventScroll: true });
+        const grid = document.querySelector('.photo-grid');
+        grid.inert = true;
         try {
             await loadScript('masonry');
             await loadScript('gallery');
@@ -80,6 +82,9 @@
             note.className = 'album-access-note';
             note.textContent = 'La visionneuse n’a pas pu être chargée. Les photographies restent accessibles en cliquant dessus.';
             document.querySelector('.photo-grid').before(note);
+        } finally {
+            grid.inert = false;
+            document.getElementById('contenu').dataset.albumReady = 'true';
         }
     });
     field.addEventListener('input', () => field.removeAttribute('aria-invalid'));

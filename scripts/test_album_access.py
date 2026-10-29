@@ -67,6 +67,7 @@ def run():
                 page.locator('#album-password').fill(password)
                 page.keyboard.press('Enter')
                 expect(page.locator('.photo-link')).to_have_count(len(album['photos']))
+                expect(page.locator('#contenu')).to_have_attribute('data-album-ready', 'true')
                 check_masonry(page, width)
                 page.wait_for_function('document.querySelector("#lightbox .lightbox-close") !== null')
                 page.locator('.photo-link').first.click()
@@ -96,7 +97,8 @@ def run():
             page = fallback.new_page()
             page.goto(base + 'albums/noel.html')
             expect(page.locator('.photo-link')).to_have_count(0)
-            expect(page.locator('noscript')).to_contain_text('Activez JavaScript')
+            expect(page.locator('.album-access-note')).to_contain_text('Activez JavaScript')
+            expect(page.locator('.album-access-note')).to_be_visible()
             expect(page.locator('#album-access-form [type=submit]')).to_be_disabled()
             fallback.close()
             assert not errors, errors

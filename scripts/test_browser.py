@@ -32,6 +32,7 @@ def unlock_album(page):
     page.locator('#album-password').fill(password_for(album_id))
     page.locator('#album-access-form [type=submit]').click()
     expect(page.locator('.photo-grid')).to_be_visible()
+    expect(page.locator('#contenu')).to_have_attribute('data-album-ready', 'true')
 
 
 def check_masonry(page, viewport_width):
