@@ -1,9 +1,11 @@
 """Independent visual universes, sharing the existing album data and viewer."""
 from html import escape
 from pathlib import Path
+import re
 from site_metadata import structured_data
 from gallery_markup import lightbox_markup
 from prints import build_prints
+from album_access import lock_badge
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = 'https://www.tsoleil.fr'
@@ -117,7 +119,7 @@ def inline_presentation(universe, picture):
     prefix = '../'
     content = (ROOT / 'templates' / template).read_text(encoding='utf-8')
     content = content.replace('{{PORTRAIT}}', picture('images/portrait.jpg', 'Thomas Soleil, photographe à Toulouse et Castres',
-                              prefix, loading='lazy', sizes='(max-width: 760px) 90vw, 45vw'))
+                              prefix, loading='lazy', sizes='(max-width: 760px) 200px, 360px' if universe == 'concerts' else '(max-width: 760px) 90vw, 45vw'))
     content = content.replace('<main id="contenu" class="frame personal-page">',
                               '<section class="personal-section" id="presentation" aria-labelledby="presentation-title"><div class="frame personal-page">', 1)
     content = content.replace('</main>', '</div></section>', 1)
@@ -131,6 +133,7 @@ def build_concert_contact(write):
     contact = contact.replace('Sport, mariage, événement ou concert : quelques mots suffisent pour commencer.',
                               'Un concert, un chœur ou un événement musical : quelques mots suffisent pour commencer.')
     contact = contact.replace('<option value="concert">', '<option value="concert" selected>')
+    contact = re.sub(r'<div class="form-group" id="wedding-offer-group">.*?</select></div>\s*', '', contact, count=1, flags=re.S)
     contact = contact.replace('href="mentions.html#confidentialite"', 'href="../mentions.html#confidentialite"')
     contact = contact.replace('Votre idée, vos envies, le déroulé de l’événement…',
                               'Le concert, le lieu, la date et les images dont vous avez besoin…')
@@ -200,11 +203,11 @@ def build_universes(albums, picture, write, home_cover, asset):
         image = picture(album['cover'], album['title'], '../', loading='lazy',
                         sizes='(max-width: 760px) calc(100vw - 40px), (max-width: 1000px) 60vw, 40vw', large=True)
         year = escape(album.get('date', ''))
-        entries.append(f'''<a class="collection-link" href="../albums/{album['id']}.html"><div class="concert-entry-meta"><span class="concert-entry-number"><span class="sr-only">Reportage </span>{index:02d}</span><span>{year}</span></div><div class="concert-entry-content"><div class="collection-image">{image}</div><div class="collection-caption"><div><p class="concert-entry-kind">Concert &amp; chœur</p><h2>{escape(album['title'])}</h2><span class="concert-entry-open">Voir le reportage <span aria-hidden="true">↗</span></span></div></div></div></a>''')
+        entries.append(f'''<a class="collection-link concert-ticket" href="../albums/{album['id']}.html"><div class="concert-entry-meta"><span class="concert-ticket-stub-label" aria-hidden="true">Reportage</span><span class="concert-entry-number"><span class="sr-only">Reportage </span>{index:02d}</span><span>{year}</span><span class="concert-ticket-stub-brand" aria-hidden="true">Thomas Soleil</span></div><div class="concert-entry-content"><div class="collection-image">{image}{lock_badge(album)}</div><div class="collection-caption"><div><p class="concert-entry-kind">Concert &amp; chœur</p><h2>{escape(album['title'])}</h2><span class="concert-entry-open">Voir le reportage <span aria-hidden="true">↗</span></span></div></div></div></a>''')
     body = (ROOT / 'templates/concerts.html').read_text(encoding='utf-8')
     body = body.replace('{{CONCERT_HERO}}', picture(by_id['concertsinfonia']['cover'],
                         'Le chœur Sinfonia Garonna et les musiciens réunis autour de leur chef', '../',
-                        loading='eager', sizes='(max-width: 760px) calc(100vw - 64px), min(800px, 76svh)', hero=True, large=True))
+                        loading='eager', sizes='(max-width: 760px) calc(100vw - 40px), (max-height: 650px) min(680px, 86vw), min(1100px, max(480px, calc((100svh - 347px)*1.5)), 86vw)', hero=True, large=True))
     body = body.replace('{{CONCERT_REPORTAGES}}', ''.join(entries))
     body = body.replace('{{PRESENTATION}}', inline_presentation('concerts', picture))
     write('concerts/index.html', shell(body, 'En scène. | Concerts — Thomas Soleil',

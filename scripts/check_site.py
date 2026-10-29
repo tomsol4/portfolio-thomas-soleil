@@ -5,6 +5,7 @@ from urllib.parse import urlsplit, unquote
 import json
 import re
 import sys
+from album_access import expand_protected_page
 ROOT = Path(__file__).resolve().parents[1]
 
 class Page(HTMLParser):
@@ -41,7 +42,7 @@ def check():
     for folder in ('albums', 'rugby', 'instants-de-vie', 'concerts', 'regards'):
         files += sorted((ROOT / folder).glob('*.html'))
     for f in files:
-        p = Page(f);p.feed(f.read_text(encoding='utf-8'));pages[f.resolve()] = p
+        p = Page(f);p.feed(expand_protected_page(f.read_text(encoding='utf-8')));pages[f.resolve()] = p
         if p.h1 != 1 or p.main != 1: errors.append(f'{f.name}: expected one h1 and one main')
         if len(p.ids) != len(set(p.ids)): errors.append(f'{f.name}: duplicate ids')
         if len(p.canonical) != 1: errors.append(f'{f.name}: canonical missing or duplicated')
@@ -68,7 +69,7 @@ def check():
             errors.append(f'{a["id"]}: image descriptions must refer to selected photographs')
         for src in [a['cover'], *a['photos']]:
             if src not in actual_images: errors.append(f'{a["id"]}: exact filename case does not match: {src}')
-        content = (ROOT / 'albums' / (a['id'] + '.html')).read_text(encoding='utf-8')
+        content = expand_protected_page((ROOT / 'albums' / (a['id'] + '.html')).read_text(encoding='utf-8'))
         if content.count('class="photo-link"') != len(a['photos']): errors.append(f'{a["id"]}: wrong photo count')
     descriptions = json.loads((ROOT / 'data/photo-descriptions.json').read_text(encoding='utf-8'))
     for src,alt in descriptions.items():

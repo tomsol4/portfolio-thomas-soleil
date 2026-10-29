@@ -10,9 +10,46 @@
     const status = document.getElementById('photo-status');
     const print = document.getElementById('photo-print');
     const close = dialog.querySelector('.lightbox-close');
+    const concert = document.body.classList.contains('concerts-page');
+    const stage = dialog.querySelector('.lightbox-stage');
     let position = 0, request = 0;
     let opener = null, touch = null;
     let previousOverflow = '';
+    let resizeFrame = 0;
+    function viewerSizes(link) {
+        if (!concert) return '(max-width: 760px) calc(100vw - 24px), calc(100vw - 160px)';
+        const thumbnail = link.querySelector('img');
+        const ratio = Number(thumbnail.getAttribute('width')) / Number(thumbnail.getAttribute('height'));
+        const style = getComputedStyle(stage);
+        const width = stage.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+        const fittedWidth = Math.min(width, stage.clientHeight * ratio);
+        // Desktop views get at least two physical pixels per CSS pixel, while
+        // denser displays can still select exports up to the native resolution.
+        const detail = matchMedia('(min-width: 761px)').matches ? Math.max(1, 2 / (devicePixelRatio || 1)) : 1;
+        return `${Math.max(1, Math.ceil(fittedWidth * detail))}px`;
+    }
+    function preloadNeighbours() {
+        const connection = navigator.connection;
+        if (concert && (connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType || ''))) return;
+        for (const offset of concert ? [1] : [-1, 1]) {
+            const next = new Image();
+            const neighbour = photos[(position + offset + photos.length) % photos.length];
+            next.sizes = viewerSizes(neighbour);
+            if (concert) {
+                // Warm only a modest preview; the chosen photo alone gets full detail.
+                const candidates = (neighbour.dataset.viewerSrcset || '').split(',').filter(candidate => {
+                    const width = parseInt(candidate.trim().split(/\s+/)[1], 10);
+                    return width <= 1600;
+                });
+                if (!candidates.length) continue;
+                next.srcset = candidates.join(',');
+                next.src = candidates[candidates.length - 1].trim().split(/\s+/)[0];
+            } else {
+                next.srcset = neighbour.dataset.viewerSrcset || '';
+                next.src = neighbour.dataset.viewerSrc || neighbour.href;
+            }
+        }
+    }
     function show(index) {
         position = (index + photos.length) % photos.length;
         const link = photos[position];
@@ -30,18 +67,12 @@
             if (id !== request) return;
             image.hidden = false;
             status.textContent = '';
-            for (const offset of [-1, 1]) {
-                const next = new Image();
-                const neighbour = photos[(position + offset + photos.length) % photos.length];
-                next.sizes = '(max-width: 760px) calc(100vw - 24px), calc(100vw - 160px)';
-                next.srcset = neighbour.dataset.viewerSrcset || '';
-                next.src = neighbour.dataset.viewerSrc || neighbour.href;
-            }
+            preloadNeighbours();
         };
         image.onerror = () => {
             if (id === request) status.textContent = 'Cette photo ne peut pas être chargée. Essayez la suivante.';
         };
-        image.sizes = '(max-width: 760px) calc(100vw - 24px), calc(100vw - 160px)';
+        image.sizes = viewerSizes(link);
         image.srcset = link.dataset.viewerSrcset || '';
         image.src = link.dataset.viewerSrc || link.href;
     }
@@ -82,9 +113,16 @@
     });
     dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close(); });
     dialog.addEventListener('close', () => {
+        cancelAnimationFrame(resizeFrame);
         document.body.style.overflow = previousOverflow;
         if (opener) opener.focus({ preventScroll: true });
     });
+    if (concert) window.addEventListener('resize', () => {
+        cancelAnimationFrame(resizeFrame);
+        resizeFrame = requestAnimationFrame(() => {
+            if (dialog.open) image.sizes = viewerSizes(photos[position]);
+        });
+    }, { passive: true });
     image.addEventListener('touchstart', e => {
         touch = e.touches.length === 1 ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null;
     }, { passive: true });

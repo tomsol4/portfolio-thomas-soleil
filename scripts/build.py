@@ -12,6 +12,7 @@ from PIL import Image, ImageOps
 from universes import build_universes, shell as universe_shell
 from site_metadata import structured_data, PHOTO_DESCRIPTIONS
 from gallery_markup import lightbox_markup
+from album_access import protect_page, expand_protected_page
 
 BASE = 'https://www.tsoleil.fr'
 ALBUMS = json.loads((ROOT / 'data/albums.json').read_text(encoding='utf-8'))
@@ -26,6 +27,10 @@ def e(value):
 
 def write(path, content):
     target = ROOT / path
+    album = next((a for a in ALBUMS if path == f'albums/{a["id"]}.html' and a.get('password_protected')), None)
+    if album:
+        cover = picture(album['cover'], album['title'], '../', loading='eager', sizes='(max-width:760px) 90vw, 520px')
+        content = protect_page(content, album, cover, target.read_text(encoding='utf-8') if target.exists() else '')
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(content, encoding='utf-8')
     if target.suffix == '.html':
@@ -88,6 +93,36 @@ def picture(src, alt, prefix='', loading='lazy', sizes='(max-width: 760px) 45vw,
             f'loading="{loading}" decoding="async"' + (' fetchpriority="high"' if hero else '') +
             (f' style="--source-width:{a["width"]}px"' if hero else '') +
             (f' class="{css}"' if css else '') + '>')
+
+def concert_viewer_asset(src):
+    """Keep full source resolution available, with dedicated high-quality web exports."""
+    normal = asset(src, large=not src.startswith('images/concert/concertsinfonia/'))
+    if not src.startswith('images/concert/concertsinfonia/'):
+        # The other concert already uses compact WebP masters; keep them intact.
+        return {**normal, 'variants': [v for v in normal['variants'] if v[1] < normal['width']] + [(src, normal['width'])]}
+    cache_key = (src, 'concert-viewer')
+    if cache_key in CACHE:
+        return CACHE[cache_key]
+    source = ROOT / src
+    base = Path(normal['variants'][0][0]).stem.removesuffix('-480')
+    variants = [v for v in normal['variants'] if v[1] <= 480]
+    with Image.open(source) as original:
+        image = None
+        for width in (size for size in (960, 1600, 2560, 3840) if size < normal['width']):
+            target = ASSETS / f'{base}-viewer-hq-{width}.webp'
+            if not target.exists() or target.stat().st_size == 0 or target.stat().st_mtime < source.stat().st_mtime:
+                if image is None:
+                    image = ImageOps.exif_transpose(original).convert('RGB')
+                export = image.resize(
+                    (width, max(1, round(normal['height'] * width / normal['width']))), Image.Resampling.LANCZOS)
+                export.save(target, 'WEBP', quality=95, method=4)
+            variants.append((target.relative_to(ROOT).as_posix(), width))
+    # Exceptional very large displays can still choose the untouched master.
+    variants.append((src, normal['width']))
+    result = {**normal, 'variants': variants}
+    CACHE[cache_key] = result
+    return result
+
 
 def social_image(src, name):
     target = ASSETS / f'og-{name}.jpg'
@@ -168,7 +203,7 @@ def prune_optimized_images():
     sources = GENERATED_PAGES | set((ROOT / 'css').glob('*.css')) | set((ROOT / 'js').glob('*.js'))
     sources.add(ROOT / 'data/albums.json')
     for source in sources:
-        references.update(re.findall(r'images/optimized/([A-Za-z0-9_.-]+)', source.read_text(encoding='utf-8')))
+        references.update(re.findall(r'images/optimized/([A-Za-z0-9_.-]+)', expand_protected_page(source.read_text(encoding='utf-8'))))
     missing = [name for name in references if not (ASSETS / name).is_file()]
     if missing:
         raise ValueError(f'Missing optimized images: {missing}')
@@ -217,13 +252,13 @@ def build():
         items = []
         for i, src in enumerate(a['photos']):
             alt = a.get('photo_alts', {}).get(src, PHOTO_DESCRIPTIONS.get(src, f'{a["title"]} — photographie {i + 1}'))
-            viewer = asset(src, large=True)
+            viewer = concert_viewer_asset(src) if a['category'] == 'Concerts' else asset(src, large=True)
             img = picture(src, alt, '../', loading='eager' if i < 3 else 'lazy')
             candidates = viewer['variants']
             if a['category'] == 'Mariage':
                 # Offer the replacement master for large/dense screens and the original-file link.
                 candidates = [v for v in candidates if v[1] < viewer['width']] + [(src, viewer['width'])]
-            elif src.startswith(HIGH_RES_SOURCE_PREFIXES) and candidates[-1][1] < viewer['width']:
+            elif a['category'] != 'Concerts' and src.startswith(HIGH_RES_SOURCE_PREFIXES) and candidates[-1][1] < viewer['width']:
                 candidates = [*candidates, (src, viewer['width'])]
             viewer_srcset = ', '.join(f'../{quote(p, safe="/")} {w}w' for p, w in candidates)
             ratio = viewer['width'] / viewer['height']
@@ -247,7 +282,8 @@ def build():
         elif a['category'] in ('Mariage', 'Concerts'):
             universe = 'instants-de-vie' if a['category'] == 'Mariage' else 'concerts'
             contact_href = f'../{universe}/contact.html'
-            body = f'''<main id="contenu" class="frame"><header class="collection-gallery-header"><a href="../{universe}/index.html">← Les reportages</a><h1>{e(a['title'])}</h1>{context}</header><ul class="photo-grid" aria-label="Photographies du reportage">{''.join(items)}</ul><div class="gallery-end"><a href="../{universe}/index.html">← Les reportages</a><a href="{contact_href}">Contact ↗</a></div>{top_link}</main>{dialog}'''
+            return_href = f'../{universe}/index.html' + ('#reportages' if a['category'] == 'Concerts' else '')
+            body = f'''<main id="contenu" class="frame"><header class="collection-gallery-header"><a href="{return_href}">← Les reportages</a><h1>{e(a['title'])}</h1>{context}</header><ul class="photo-grid" aria-label="Photographies du reportage">{''.join(items)}</ul><div class="gallery-end"><a href="{return_href}">← Les reportages</a><a href="{contact_href}">Contact ↗</a></div>{top_link}</main>{dialog}'''
             write(path, universe_shell(body, a['title'] + ' | Thomas Soleil', description, path, universe, '../', og, ('masonry.js', 'gallery.js')))
         else:
             write(path, layout(body, a['title'] + ' | Thomas Soleil', description, path, '', '../', ('masonry.js', 'gallery.js'), cover=og, schema=schema))

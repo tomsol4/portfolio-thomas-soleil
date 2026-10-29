@@ -6,6 +6,7 @@ sys.path.insert(0, str(ROOT / '.tools/python'))
 import os, json, http.server, functools, threading, hashlib, io, re
 from PIL import Image
 from playwright.sync_api import sync_playwright, expect
+from album_access import password_for
 
 OUT = ROOT / 'test-results'
 OUT.mkdir(exist_ok=True)
@@ -22,6 +23,16 @@ def contrast_ratio(first, second):
         return sum(v*w for v,w in zip(values, [.2126,.7152,.0722]))
     light,dark = sorted([luminance(first),luminance(second)], reverse=True)
     return (light+.05)/(dark+.05)
+
+def unlock_album(page):
+    payload = page.locator('#album-encrypted-data')
+    if not payload.count():
+        return
+    album_id = payload.evaluate('(el) => JSON.parse(el.textContent).id')
+    page.locator('#album-password').fill(password_for(album_id))
+    page.locator('#album-access-form [type=submit]').click()
+    expect(page.locator('.photo-grid')).to_be_visible()
+
 
 def check_masonry(page, viewport_width):
     grid = page.locator('.photo-grid')
@@ -121,6 +132,7 @@ def run():
                 assert not overflow, f'Horizontal overflow: {path} at {width}px'
                 expect(page.locator('h1')).to_have_count(1)
                 if path.startswith('albums/'):
+                    unlock_album(page)
                     check_masonry(page, width)
                 if path == 'instants-de-vie/index.html':
                     for photo in page.locator('.life-stories img, #presentation img').all():
@@ -355,7 +367,7 @@ def run():
         expect(page.locator('#presentation .personal-copy')).to_contain_text('Sinfonia Garonna')
         expect(page.locator('#presentation .personal-portrait img')).to_be_visible()
         assert '/portrait-' + portrait_digest + '-' in page.locator('#presentation img').get_attribute('src')
-        page.locator('.personal-actions .button').click()
+        page.locator('.concert-invitation .button').click()
         page.wait_for_url('**/concerts/contact.html')
         expect(page.locator('body')).to_have_class('concerts-page')
         expect(page.locator('#project')).to_have_value('concert')
@@ -429,6 +441,7 @@ def run():
 
         for album in albums:
             page.goto(base + '/albums/' + album['id'] + '.html')
+            unlock_album(page)
             expect(page.locator('.photo-link')).to_have_count(len(album['photos']))
             expect(page.locator('.gallery-description')).to_have_text(album['description'])
             links = page.locator('.photo-link').evaluate_all('(links)=>links.map(link=>decodeURI(new URL(link.href).pathname.slice(1)))')

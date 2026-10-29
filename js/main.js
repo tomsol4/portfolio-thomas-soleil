@@ -18,8 +18,10 @@
     const mobile = matchMedia('(max-width: 760px)');
     const year = document.getElementById('footer-year');
     if (year) year.textContent = new Date().getFullYear();
-    const backToTop = document.querySelector('.back-to-top');
-    if (backToTop) {
+    function setupBackToTop() {
+        const backToTop = document.querySelector('.back-to-top');
+        if (!backToTop || backToTop.dataset.initialized) return;
+        backToTop.dataset.initialized = 'true';
         const updateBackToTop = () => {
             // Keep a focused link available until the visitor moves focus away.
             backToTop.hidden = window.scrollY < 700 && document.activeElement !== backToTop;
@@ -33,8 +35,18 @@
         });
         updateBackToTop();
     }
+    setupBackToTop();
+    document.addEventListener('album:unlocked', setupBackToTop);
     if (!nav || !toggle || !links) return;
     document.documentElement.classList.add('js');
+    if (document.body.classList.contains('concerts-page')) {
+        const measureConcertNav = () => document.documentElement.style.setProperty(
+            '--concert-nav-height', `${nav.getBoundingClientRect().height}px`);
+        measureConcertNav();
+        if ('ResizeObserver' in window) new ResizeObserver(measureConcertNav).observe(nav);
+        window.addEventListener('resize', measureConcertNav, { passive: true });
+        window.addEventListener('pageshow', measureConcertNav);
+    }
     if (document.body.classList.contains('home') || document.querySelector('.life-home, [data-theatre]')) {
         const updateNav = () => nav.classList.toggle('scrolled', window.scrollY > 50);
         window.addEventListener('scroll', updateNav, { passive: true });

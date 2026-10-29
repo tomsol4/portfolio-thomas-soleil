@@ -15,7 +15,18 @@
     let sequence = 0;
     let pointerFrame = 0;
     let observer;
-    let entered = Boolean(location.hash || window.scrollY > 50);
+    const entranceKey = 'concerts.theatre.entered';
+    function entranceRemembered() {
+        try {
+            if (sessionStorage.getItem(entranceKey) === 'yes') return true;
+        } catch (_) { /* History still preserves the entrance when storage is unavailable. */ }
+        return Boolean(history.state?.concertTheatreEntered);
+    }
+    function rememberEntrance() {
+        try { sessionStorage.setItem(entranceKey, 'yes'); } catch (_) { /* Private storage can be unavailable. */ }
+        try { history.replaceState({ ...history.state, concertTheatreEntered: true }, ''); } catch (_) { /* Keep the entrance usable. */ }
+    }
+    let entered = Boolean(location.hash || window.scrollY > 50 || entranceRemembered());
 
     function settleCurtains() {
         sequence += 1;
@@ -32,6 +43,7 @@
     function openCurtains(replaying = false) {
         const moveFocus = !replaying && entry.contains(document.activeElement);
         entered = true;
+        rememberEntrance();
         settleCurtains();
         const finish = () => {
             settleCurtains();
@@ -81,7 +93,7 @@
                 ...sweep.map(frame => ({ ...frame, offset: .4 + frame.offset * .6 }))
             ] : sweep;
             return curtain.animate(frames, {
-                duration: replaying ? 3600 : 3200,
+                duration: replaying ? 3600 : 2400,
                 easing: 'linear'
             });
         });
@@ -146,6 +158,10 @@
         }
     });
     window.addEventListener('pagehide', settleCurtains);
+    window.addEventListener('pageshow', () => {
+        if (entranceRemembered()) entered = true;
+        settleCurtains();
+    });
     window.addEventListener('resize', () => {
         // Finish before breakpoint changes alter the curtain's resting position.
         if (curtainAnimations.length) settleCurtains();

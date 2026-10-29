@@ -330,6 +330,7 @@
   },
   {
     "id": "noel",
+    "password_protected": true,
     "title": "Concert de Noël — Chœur Unum",
     "cover": "images/concert/noelchorunum/chorunumnoel-2.webp",
     "date": "2025",
