@@ -229,6 +229,10 @@ def run():
 
         page.set_viewport_size({'width': 390, 'height': 844})
         page.goto(base + '/index.html')
+        expect(page.locator('.portal-shortcuts')).to_be_visible()
+        expect(page.locator('.portal-specialties')).to_be_hidden()
+        assert [link.get_attribute('href') for link in page.locator('.portal-shortcuts a').all()] == [
+            'instants-de-vie/index.html', 'rugby/index.html', 'concerts/index.html', 'regards/index.html']
         menu = page.locator('.menu-toggle')
         menu.focus();page.keyboard.press('Enter')
         expect(menu).to_have_attribute('aria-expanded', 'true')
@@ -237,27 +241,28 @@ def run():
         expect(menu).to_be_focused()
         assert page.locator('#navigation').evaluate('(el) => el.inert')
         page.set_viewport_size({'width': 1440, 'height': 900})
-        # The portal keeps its hamburger menu on desktop as well as mobile.
-        expect(menu).to_be_visible()
+        # Switching to desktop exposes working links without opening a menu.
+        expect(menu).to_be_hidden()
         expect(menu).to_have_attribute('aria-expanded', 'false')
-        assert page.locator('#navigation').evaluate('(el) => el.inert')
-        menu.click()
-        expect(menu).to_have_attribute('aria-expanded', 'true')
+        expect(page.locator('#navigation')).to_be_visible()
         assert not page.locator('#navigation').evaluate('(el) => el.inert')
-        page.keyboard.press('Escape')
-        expect(menu).to_be_focused()
+        page.locator('#navigation a').first.focus()
+        expect(page.locator('#navigation a').first).to_be_focused()
         page.goto(base + '/rugby/index.html')
         expect(page.locator('.menu-toggle')).to_be_hidden()
         expect(page.locator('#navigation')).to_be_visible()
         assert not page.locator('#navigation').evaluate('(el) => el.inert')
-        results.append('Menus: mobile keyboard/focus, desktop portal toggle and desktop universe navigation')
+        results.append('Menus: mobile keyboard/focus, desktop portal links and desktop universe navigation')
 
         page.goto(base + '/index.html')
         hero = page.locator('.portal-hero')
         assert abs(hero.bounding_box()['height'] - 900) < 1
         expect(hero.locator('h1')).to_have_text('Thomas Soleil')
-        expect(hero.locator('.portal-hero-copy p').first).to_have_text('Photographe')
-        expect(hero.locator('.portal-location')).to_have_text('Toulouse & Castres')
+        expect(hero.locator('.portal-specialties')).to_have_text('Mariage · Sport · Concerts')
+        expect(hero.locator('.portal-location')).to_have_text('Photographe en Occitanie')
+        expect(page.locator('#navigation .nav-contact')).to_have_attribute('href', 'contact.html')
+        assert [link.get_attribute('href') for link in page.locator('#navigation a').all()][:4] == [
+            'instants-de-vie/index.html', 'rugby/index.html', 'concerts/index.html', 'regards/index.html']
         assert 'hero-photo-accueil_2.webp' in hero.evaluate('(el) => getComputedStyle(el).backgroundImage')
         assert 'gradient' not in hero.evaluate('(el) => getComputedStyle(el).backgroundImage')
         assert hero.evaluate('(el) => getComputedStyle(el).filter') == 'none'
@@ -268,6 +273,7 @@ def run():
         expect(page.locator('.universe-door')).to_have_count(4)
         destinations = [door.get_attribute('href') for door in page.locator('.universe-door').all()]
         assert len(set(destinations)) == 4
+        assert destinations == ['instants-de-vie/index.html', 'rugby/index.html', 'concerts/index.html', 'regards/index.html']
         for door in page.locator('.universe-door').all():
             href = door.get_attribute('href')
             assert page.request.get(base + '/' + href.split('#')[0]).ok, href

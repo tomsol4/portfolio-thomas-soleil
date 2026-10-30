@@ -15,7 +15,7 @@
     const toggle = document.querySelector('.menu-toggle');
     const links = document.getElementById('navigation');
     const portal = document.body.classList.contains('portal-page');
-    const mobile = matchMedia('(max-width: 760px)');
+    const mobile = matchMedia(portal ? '(max-width: 1100px)' : '(max-width: 760px)');
     const year = document.getElementById('footer-year');
     if (year) year.textContent = new Date().getFullYear();
     function setupBackToTop() {
@@ -57,7 +57,7 @@
         toggle.setAttribute('aria-expanded', String(open));
         toggle.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
         nav.classList.toggle('menu-open', open);
-        links.inert = (portal || mobile.matches) && !open;
+        links.inert = mobile.matches && !open;
         if (restore) toggle.focus();
     }
     toggle.addEventListener('click', () => setMenu(toggle.getAttribute('aria-expanded') !== 'true'));

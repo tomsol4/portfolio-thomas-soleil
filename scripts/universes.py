@@ -30,13 +30,17 @@ def shell(body, title, description, path, universe, prefix='', cover='', scripts
                  ('concerts/tarifs.html', 'Tarifs'),
                  ('concerts/contact.html', 'Contact')]
     elif portal:
-        links = [('rugby/index.html', 'Sport'), ('instants-de-vie/index.html', 'Mariage &amp; événements'),
+        links = [('instants-de-vie/index.html', 'Mariage &amp; événements'), ('rugby/index.html', 'Sport'),
                  ('concerts/index.html', 'Concerts'), ('regards/index.html', 'Projets personnels'),
                  ('a-propos.html', 'À propos'), ('contact.html', 'Contact')]
     else:
         links = [('a-propos.html', 'À propos'), ('contact.html', 'Contact')]
     nav = '\n'.join(f'<a href="{prefix}{href}"' + (' class="nav-contact"' if label == 'Contact' else '') +
                     (' aria-current="page"' if href == path else '') + f'>{label}</a>' for href, label in links)
+    if portal:
+        portal_links = nav.split('\n')
+        nav = ('<div class="portal-nav-group">' + '\n'.join(portal_links[:3]) + '</div>\n'
+               '<div class="portal-nav-group">' + '\n'.join(portal_links[3:]) + '</div>')
     url = BASE + ('/' if path == 'index.html' else '/' + path)
     canonical = BASE + '/' + universe + '/index.html' if path.endswith('/a-propos.html') else url
     schema = structured_data(title, description, canonical, cover,
@@ -91,6 +95,7 @@ def shell(body, title, description, path, universe, prefix='', cover='', scripts
 <link rel="stylesheet" href="{prefix}fonts/cormorant-garamond.css">
 <link rel="stylesheet" href="{prefix}fonts/montserrat.css">
 <link rel="stylesheet" href="{prefix}css/universe-base.css">
+<link rel="stylesheet" href="{prefix}css/navigation-icons.css">
 {shared_gallery}
 <link rel="stylesheet" href="{prefix}css/{universe}.css">
 {presentation}
@@ -162,8 +167,8 @@ def build_universes(albums, picture, write, home_cover, asset):
                      f'max(25vw, {round(460 * ratio)}px)')
         image = picture(src, alt, loading='lazy', sizes=sizes, large=True)
         portal = portal.replace('{{' + token + '}}', image)
-    write('index.html', shell(portal, 'Thomas Soleil | Photographe à Toulouse et Castres',
-          'Sport, mariage et événements, concerts et projets personnels : les univers de Thomas Soleil, photographe à Toulouse et Castres.',
+    write('index.html', shell(portal, 'Thomas Soleil | Photographe en Occitanie — Toulouse et Castres',
+          'Mariages et événements, sport, concerts et projets personnels : découvrez les univers de Thomas Soleil, photographe en Occitanie, à Toulouse et Castres.',
           'index.html', 'portal', cover=home_cover))
     cards = []
     for album in rugby:
@@ -267,7 +272,7 @@ def build_life_universe(albums, picture, write):
     selected = [a for a in albums if a['category'] == 'Mariage']
     cover = 'images/optimized/og-mariage.jpg'
     body = (ROOT / 'templates/life-home.html').read_text(encoding='utf-8')
-    source = 'images/mariage/n (13).jpg'
+    source = 'images/mariage/mariage_argentique (35).jpg'
     alt = 'Les mariés près d’une voiture ancienne, dans un parc'
     # The cover must belong to the explicitly published reportage.
     if source not in wedding['photos']:
@@ -289,7 +294,7 @@ def build_life_universe(albums, picture, write):
         content = (ROOT / 'templates' / (template + '.html')).read_text(encoding='utf-8')
         if template == 'life-services':
             content = content.replace('{{WEDDING_SERVICES_PHOTO}}', picture(
-                'images/mariage/mariage21.jpg', 'Les mariés pendant la cérémonie, entourés de leurs proches', '../',
+                'images/mariage/mariage_argentique (9).jpg', 'Les mariés pendant la cérémonie, entourés de leurs proches', '../',
                 loading='eager', sizes='(max-width: 760px) calc(100vw - 40px), 46vw', large=True))
             for token, source, alt in [
                 ('BAPTISM_CEREMONY', 'images/bapteme/Aribastire-8289.jpg', 'Une main bénit un bébé en tenue blanche pendant son baptême, en noir et blanc'),
@@ -306,7 +311,7 @@ def build_life_universe(albums, picture, write):
     contact = contact.replace('class="container"', 'class="container life-contact-page"', 1)
     before_aside, _, aside_and_form = contact.partition('<aside class="contact-aside">')
     _, _, after_aside = aside_and_form.partition('</aside>')
-    contact_photo = picture('images/mariage/mariage15NB.jpg',
+    contact_photo = picture('images/mariage/mariage_argentique (5).jpg',
                             'Les mariés côte à côte pendant la cérémonie, en noir et blanc', '../',
                             loading='lazy', sizes='(max-width: 1000px) 300px, 344px', large=True)
     contact = before_aside + f'<div class="life-contact-photo">{contact_photo}</div>' + after_aside

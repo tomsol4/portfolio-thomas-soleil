@@ -13,6 +13,7 @@ from universes import build_universes, shell as universe_shell
 from site_metadata import structured_data, PHOTO_DESCRIPTIONS
 from gallery_markup import lightbox_markup
 from album_access import protect_page, expand_protected_page
+from navigation_icons import render_navigation_arrows
 
 BASE = 'https://www.tsoleil.fr'
 ALBUMS = json.loads((ROOT / 'data/albums.json').read_text(encoding='utf-8'))
@@ -27,10 +28,13 @@ def e(value):
 
 def write(path, content):
     target = ROOT / path
+    if target.suffix == '.html':
+        content = render_navigation_arrows(content)
     album = next((a for a in ALBUMS if path == f'albums/{a["id"]}.html' and a.get('password_protected')), None)
     if album:
         cover = picture(album['cover'], album['title'], '../', loading='eager', sizes='(max-width:760px) 90vw, 520px')
-        content = protect_page(content, album, cover, target.read_text(encoding='utf-8') if target.exists() else '')
+        content = render_navigation_arrows(protect_page(
+            content, album, cover, target.read_text(encoding='utf-8') if target.exists() else ''))
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(content, encoding='utf-8')
     if target.suffix == '.html':
@@ -164,6 +168,7 @@ def layout(body, title, description, path, active='', prefix='', scripts=(), cov
 <link rel="stylesheet" href="{prefix}fonts/cormorant-garamond.css">
 <link rel="stylesheet" href="{prefix}fonts/montserrat.css">
 <link rel="stylesheet" href="{prefix}css/style.css">
+<link rel="stylesheet" href="{prefix}css/navigation-icons.css">
 {extra_styles}
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
