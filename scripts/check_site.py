@@ -5,6 +5,7 @@ from urllib.parse import urlsplit, unquote
 import json
 import re
 import sys
+import xml.etree.ElementTree as ET
 from album_access import expand_protected_page
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -20,6 +21,7 @@ class Page(HTMLParser):
         self.fields = []
         self.images = []
         self.canonical = []
+        self.noindex = False
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
         if 'id' in a: self.ids.append(a['id'])
@@ -29,6 +31,7 @@ class Page(HTMLParser):
         if tag in ('input', 'select', 'textarea'): self.fields.append(a)
         if tag == 'img': self.images.append(a)
         if tag == 'link' and a.get('rel') == 'canonical': self.canonical.append(a.get('href'))
+        if tag == 'meta' and a.get('name') == 'robots': self.noindex = 'noindex' in a.get('content', '').lower()
         for attr in ('src', 'href'):
             if a.get(attr): self.refs.append(a[attr])
         for part in (a.get('srcset', '') + ',' + a.get('data-viewer-srcset', '')).split(','):
@@ -72,6 +75,10 @@ def check():
         content = expand_protected_page((ROOT / 'albums' / (a['id'] + '.html')).read_text(encoding='utf-8'))
         if content.count('class="photo-link"') != len(a['photos']): errors.append(f'{a["id"]}: wrong photo count')
     descriptions = json.loads((ROOT / 'data/photo-descriptions.json').read_text(encoding='utf-8'))
+    for album in albums:
+        for src in album['photos']:
+            if not (album.get('photo_alts', {}).get(src) or descriptions.get(src)):
+                errors.append(f'{album["id"]}: missing descriptive alternative for {src}')
     for src,alt in descriptions.items():
         if src not in actual_images or not alt.strip(): errors.append(f'Invalid photo description: {src}')
     for file in files:
@@ -85,6 +92,11 @@ def check():
     for css in (ROOT / 'css').glob('*.css'):
         for ref in re.findall(r'url\([\'\"]?([^\)\'\"]+)',css.read_text(encoding='utf-8')):
             if not urlsplit(ref).scheme and not (css.parent / ref).is_file(): errors.append(f'{css.name}: missing {ref}')
+    for location in ET.parse(ROOT / 'sitemap.xml').findall('.//{http://www.sitemaps.org/schemas/sitemap/0.9}loc'):
+        target = (ROOT / unquote(urlsplit(location.text).path.lstrip('/'))).resolve()
+        if target.is_dir(): target = target / 'index.html'
+        if target not in pages: errors.append(f'Sitemap: missing page {location.text}')
+        elif pages[target].noindex: errors.append(f'Sitemap: noindex page {location.text}')
     if errors:
         print('\n'.join(errors));raise SystemExit(1)
     print(f'PASS: {len(pages)} pages, {len(albums)} albums, {sum(len(a["photos"]) for a in albums)} photo links, {total_refs} local references; headings, labels and fragments valid.')

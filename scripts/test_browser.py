@@ -584,6 +584,34 @@ def run():
             expect(menu).to_be_hidden()
         results.append('Short mobile screens: every navigation link remains reachable')
 
+        for width in [320, 390]:
+            page.set_viewport_size({'width': width, 'height': 844})
+            for path in ['index.html', 'instants-de-vie/index.html']:
+                page.goto(base + '/' + path)
+                page.evaluate('document.documentElement.style.fontSize="200%"')
+                page.evaluate('document.fonts.ready')
+                assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1'), (path, width, '200% text overflows')
+                selector = '.portal-shortcuts a' if path == 'index.html' else '.life-hero-heading'
+                for element in page.locator(selector).all():
+                    assert element.evaluate('''el => {
+                        const bounds = el.getBoundingClientRect();
+                        const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+                        while (walker.nextNode()) {
+                            if (!walker.currentNode.textContent.trim()) continue;
+                            const range = document.createRange();
+                            range.selectNodeContents(walker.currentNode);
+                            for (const rect of range.getClientRects()) {
+                                if (rect.left < bounds.left - 1 || rect.right > bounds.right + 1) return false;
+                            }
+                        }
+                        return true;
+                    }'''), (path, width, 'Enlarged text must remain inside its container')
+                if path == 'index.html':
+                    positions = [el.bounding_box()['y'] for el in page.locator('.portal-shortcuts a').all()]
+                    assert len(set(positions)) == 4, 'Enlarged shortcuts must have four separate rows'
+                page.screenshot(path=str(OUT / f'text-200-{path.replace("/", "-")}-{width}.png'))
+        results.append('200% text: readable homepage shortcuts and complete wedding title at 320 and 390px')
+
         nojs=browser.new_context(java_script_enabled=False,viewport={'width':390,'height':844})
         nojs.route('https://**/*',lambda route:route.abort())
         fallback=nojs.new_page()
@@ -598,6 +626,10 @@ def run():
         expect(fallback.locator('.photo-link')).to_have_count(rugby_count)
         expect(fallback.locator('#navigation a').first).to_be_visible()
         fallback.goto(base+'/contact.html')
+        expect(fallback.locator('form')).to_have_attribute('method','POST')
+        fallback.goto(base+'/rugby/contact.html')
+        expect(fallback.locator('#wedding-offer-group')).to_have_count(0)
+        expect(fallback.locator('#project')).to_have_value('sport')
         expect(fallback.locator('form')).to_have_attribute('method','POST')
         results.append('Without JavaScript: album links, navigation and native form fallback')
         page.set_viewport_size({'width':390,'height':844})

@@ -191,6 +191,7 @@ def build_universes(albums, picture, write, home_cover, asset):
     contact = contact.replace('Racontez-moi votre projet.', 'Votre prochain coup d’envoi.')
     contact = contact.replace('Sport, mariage, événement ou concert : quelques mots suffisent pour commencer.', 'Un match, un tournoi ou un projet pour votre club : quelques mots suffisent pour commencer.')
     contact = contact.replace('<option value="sport">', '<option value="sport" selected>')
+    contact = re.sub(r'<div class="form-group" id="wedding-offer-group">.*?</select></div>\s*', '', contact, count=1, flags=re.S)
     contact = contact.replace('href="mentions.html#confidentialite"', 'href="../mentions.html#confidentialite"')
     contact = contact.replace('Votre idée, vos envies, le déroulé de l’événement…', 'Le match, le lieu, les accès au terrain et les images dont vous avez besoin…')
     write('rugby/contact.html', shell(contact, 'Votre projet rugby | Contacter Thomas Soleil',
@@ -256,7 +257,7 @@ def build_universes(albums, picture, write, home_cover, asset):
             for token, src, alt in [
                 ('MATCH_PHOTO', 'images/rugby/co_rct/26_06_CO-RCT-1078.jpg', 'Action de jeu entre le Castres Olympique et le RC Toulon'),
                 ('TOURNAMENT_PHOTO', 'images/rugby/TouchCO-5783.jpg', 'Vue du tournoi TouchCO sur les terrains du stade Pierre-Fabre'),
-                ('CLUB_PHOTO', 'images/rugby/12_06_26_PierreFabrepREAPATIF-8203.jpg', 'Entretien de la pelouse devant les tribunes du stade Pierre-Fabre')]:
+                ('CLUB_PHOTO', 'images/rugby/vie du club.jpg', 'Joueurs réunis autour d’un exercice de touche pendant un entraînement de rugby')]:
                 content = content.replace('{{' + token + '}}', picture(src, alt, '../',
                                           sizes='(max-width: 760px) calc(100vw - 40px), 33vw'))
         else:

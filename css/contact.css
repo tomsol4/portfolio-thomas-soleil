@@ -60,3 +60,4 @@ input:focus,textarea:focus,select:focus{border-color:var(--ink)}
  .life-contact-page input,.life-contact-page select,.life-contact-page textarea{font-size:1rem}
 }
 @media(max-width:380px){.form-row{grid-template-columns:1fr;gap:0}}
+@media(max-width:600px){.form-row{grid-template-columns:1fr;gap:0}.life-contact-page .form-row{gap:0}}

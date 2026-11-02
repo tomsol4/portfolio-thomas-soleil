@@ -53,10 +53,10 @@
 @media(max-width:760px){
  .portal-page .site-nav,.portal-page .site-nav.scrolled{padding-inline:20px}.portal-page .logo{height:auto}.portal-page .logo img{height:60px}.js .portal-page .nav-links{right:20px}
  .portal-hero{grid-template-rows:minmax(min-content,1fr) auto;padding:clamp(100px,15dvh,144px) 20px 44px;gap:32px;background-attachment:scroll}.portal-hero-copy{grid-row:1;align-self:start;max-width:420px;margin-top:clamp(12px,3.6dvh,36px);padding-block:0;color:#000}.portal-hero h1{font-size:clamp(1.75rem,8vw,2.125rem);letter-spacing:.08em;overflow-wrap:normal;margin-bottom:12px;text-shadow:none}
- .portal-hero-copy .portal-specialties{display:none}.portal-hero-copy .portal-location{font-size:.875rem;letter-spacing:.03em;margin-top:0;text-shadow:none}
- .portal-shortcuts{display:grid;grid-row:2;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:100%;max-width:420px;margin:0;text-align:left}
+ .portal-hero-copy .portal-specialties{display:none}.portal-hero-copy .portal-location{font-size:.875rem;letter-spacing:.03em;margin-top:0;text-shadow:0 1px 2px #fff,0 0 8px #fff,0 0 16px #fff}
+ .portal-shortcuts{display:grid;grid-row:2;grid-template-columns:repeat(auto-fit,minmax(min(100%,8.25rem),1fr));gap:10px;width:100%;max-width:420px;margin:0;text-align:left}
  .portal-hero-discover{display:none}
- .portal-shortcuts a{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:60px;padding:12px;border:1px solid #ffffff70;background:#00000035;color:#fff;font-size:.875rem;line-height:1.4;text-decoration:none;text-shadow:0 1px 6px #000}
+ .portal-shortcuts a{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;min-width:0;min-height:60px;padding:12px;border:1px solid #ffffff70;background:#00000035;color:#fff;font-size:.875rem;line-height:1.4;text-decoration:none;text-shadow:0 1px 6px #000;overflow-wrap:anywhere}
  .portal-shortcuts a:hover{background:#0009;border-color:#fff}.portal-shortcuts a>span{flex-shrink:0}
  .universe-grid{padding-block:36px;gap:16px}.universe-door{height:300px;padding:18px}.door-copy h2{font-size:1.65rem}
  html:not(.js) .portal-page .site-nav{position:relative}

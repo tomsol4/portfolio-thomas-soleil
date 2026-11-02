@@ -54,7 +54,7 @@ Les formulaires préremplissent le projet selon le lien utilisé. Les offres mar
 
 La visionneuse Concerts calcule la taille utile d’une photo d’après ses proportions et l’espace disponible. Sur ordinateur, elle prévoit au moins deux pixels d’image par pixel d’affichage ; les écrans plus denses peuvent choisir davantage. Sinfonia dispose d’exports WebP dédiés de qualité 95 jusqu’à 3 840 px, et les fichiers sources restent disponibles pour les affichages nécessitant la définition native. Seule une version limitée à 1 600 px de la photo suivante est préchargée, sans préchargement sur les connexions signalées comme très lentes ou économes en données. Les originaux, sélections, ordre et descriptions alternatives des albums sont conservés.
 
-À reprendre dans un deuxième temps à la demande de Thomas : proposer un raffinement du décor en gardant une immersion théâtre et concert ; travailler la page Tarifs ; éventuellement revoir la disposition mobile du formulaire. Les descriptions accessibles des photos ont seulement été expliquées et n’ont pas été réécrites.
+Évolutions facultatives à valider avec Thomas : affiner le décor en gardant une immersion théâtre et concert et travailler la présentation des prestations sur devis. Les formulaires sont disposés sur une colonne à 600 px et moins. Les 560 photographies sélectionnées disposent de descriptions visuelles : 543 descriptions ont été ajoutées après lecture des images. `check_site.py` vérifie leur présence.
 
 Si le visiteur modifie un formulaire pendant l’envoi, les nouvelles valeurs sont conservées et signalées comme non envoyées. Sans modification, le formulaire se réinitialise après confirmation. Les menus mobiles restent sur une seule colonne et défilent dans la hauteur disponible, y compris sur les écrans peu hauts. Une ouverture de rideau interrompue ou un changement de taille d’écran rétablit immédiatement une scène utilisable.
 
@@ -109,3 +109,9 @@ Publier les fichiers HTML générés, les dossiers des univers, `albums/`, `imag
 Les coordonnées, mentions, prestations et réglages du service de formulaire doivent correspondre aux informations réelles du propriétaire. La réception des messages et le domaine se vérifient sur le site publié.
 
 Montserrat et Cormorant Garamond sont fournies sous SIL Open Font License, conservée dans `fonts/Montserrat-LICENSE.txt` et `fonts/CormorantGaramond-LICENSE.txt`. Les titres utilisent Cormorant Garamond en romain et en italique, avec les jeux latin et latin étendu, pour afficher les accents français sans mélanger les polices. Les fichiers WOFF2 sont hébergés localement. Les anciennes polices Rosehot et Bodoni Moda ne sont plus chargées ; elles et les photographies préexistantes conservent leurs droits d’origine.
+
+## Corrections du 2 novembre 2026
+
+Les raccourcis de l’accueil passent sur une colonne quand le texte agrandi ne tient plus ; le titre Mariage peut revenir à la ligne. Les formulaires passent sur une colonne à 600 px et moins. Le formulaire Sport ne contient plus de formule mariage dans son HTML initial. Les albums protégés, qui portent `noindex`, sont exclus du sitemap. Ces cas sont contrôlés par `scripts/test_browser.py` et `scripts/check_site.py`. La photographie d’entraînement `images/rugby/vie du club.jpg` illustre désormais la prestation Vie du club.
+
+Le suivi des corrections et les démarches restant au propriétaire sont dans `audit-site/audit-portfolio-2026-11-02.md`, exclu de la publication. Les mots de passe locaux restent dans `.tools/album-passwords.json`.
