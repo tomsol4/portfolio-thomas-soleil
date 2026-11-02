@@ -2,6 +2,7 @@
 from pathlib import Path
 import functools
 import http.server
+import json
 import os
 import re
 import sys
@@ -148,7 +149,9 @@ def run():
             page = fallback.new_page()
             page.goto(url)
             expect(page.locator('.theatre-replay')).to_be_hidden()
-            expect(page.locator('.concert-reportages .collection-link')).to_have_count(2)
+            concert_count = sum(album['category'] == 'Concerts' for album in json.loads(
+                (ROOT / 'data/albums.json').read_text(encoding='utf-8')))
+            expect(page.locator('.concert-reportages .collection-link')).to_have_count(concert_count)
             expect(page.locator('.concert-reportages .collection-link').first).to_have_css('opacity', '1')
             page.locator('.concert-scroll').click()
             page.wait_for_url('**/concerts/index.html#reportages')

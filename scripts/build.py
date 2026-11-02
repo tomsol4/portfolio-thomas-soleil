@@ -21,7 +21,8 @@ ASSETS = ROOT / 'images/optimized'
 ASSETS.mkdir(parents=True, exist_ok=True)
 CACHE = {}
 GENERATED_PAGES = set()
-HIGH_RES_SOURCE_PREFIXES = ('images/rugby/', 'images/concert/concertsinfonia/')
+HIGH_RES_CONCERT_PREFIXES = ('images/concert/concertsinfonia/', 'images/concert/repetition_bougie_sinfonia/')
+HIGH_RES_SOURCE_PREFIXES = ('images/rugby/', *HIGH_RES_CONCERT_PREFIXES)
 
 def e(value):
     return escape(str(value), quote=True)
@@ -100,9 +101,10 @@ def picture(src, alt, prefix='', loading='lazy', sizes='(max-width: 760px) 45vw,
 
 def concert_viewer_asset(src):
     """Keep full source resolution available, with dedicated high-quality web exports."""
-    normal = asset(src, large=not src.startswith('images/concert/concertsinfonia/'))
-    if not src.startswith('images/concert/concertsinfonia/'):
-        # The other concert already uses compact WebP masters; keep them intact.
+    high_resolution = src.startswith(HIGH_RES_CONCERT_PREFIXES)
+    normal = asset(src, large=not high_resolution)
+    if not high_resolution:
+        # Concerts with compact WebP masters keep their original files intact.
         return {**normal, 'variants': [v for v in normal['variants'] if v[1] < normal['width']] + [(src, normal['width'])]}
     cache_key = (src, 'concert-viewer')
     if cache_key in CACHE:
