@@ -1,0 +1,22 @@
+<main id="contenu" class="prints-page">
+  <section class="frame prints-intro" aria-labelledby="prints-title">
+    <div class="prints-copy">
+      <h1 id="prints-title">Une photo chez vous.</h1>
+      <p>{{INTRODUCTION}}</p>
+      <p>Format, papier et prix : nous définissons votre tirage ensemble, sur devis.</p>
+      <a class="button" href="#demande">Parlons de votre tirage <span aria-hidden="true">↗</span></a>
+    </div>
+    <figure class="prints-example"><div class="prints-example-frame">{{EXAMPLE}}</div><figcaption>« Couvent » — un exemple de photographie à faire tirer.</figcaption></figure>
+  </section>
+  <section class="prints-request" id="demande" aria-labelledby="prints-request-title"><div class="frame prints-request-layout">
+    <div class="prints-request-copy"><h2 id="prints-request-title">Une envie de tirage ?</h2><p>Indiquez la photo qui vous plaît, ou envoyez-moi son lien. Je vous répondrai pour préparer votre devis.</p><a class="prints-social" href="https://www.instagram.com/tomsol_photo/" target="_blank" rel="noopener noreferrer">Me contacter sur Instagram<span class="sr-only"> (nouvel onglet)</span></a></div>
+    <form id="contact-form" action="https://formspree.io/f/xblwgnop" method="POST" aria-describedby="form-help privacy-note" data-success-message="Merci, votre demande de tirage a été envoyée.">
+      <p class="form-note" id="form-help">* Champs obligatoires.</p><input type="hidden" name="projet" value="tirage">
+      <div class="form-row"><div class="form-group"><label for="name">Nom *</label><input id="name" name="nom" type="text" autocomplete="name" maxlength="120" required></div><div class="form-group"><label for="email">Email *</label><input id="email" name="email" type="email" autocomplete="email" maxlength="254" required></div></div>
+      <div class="form-group"><label for="message">Votre message *</label><textarea id="message" name="message" rows="4" maxlength="10000" required placeholder="La photo qui vous plaît, le format souhaité si vous avez une idée…"></textarea></div>
+      <div class="honeypot" aria-hidden="true"><label for="website">Laisser ce champ vide</label><input id="website" name="_gotcha" type="text" tabindex="-1" autocomplete="off"></div>
+      <p id="privacy-note" class="form-note">Vos coordonnées servent à répondre à votre demande, via Formspree. <a href="../mentions.html#confidentialite">Confidentialité.</a></p>
+      <button type="submit" class="button">Envoyer ma demande</button><p id="form-status" class="form-status" role="status" aria-live="polite" tabindex="-1"></p>
+    </form>
+  </div></section>
+</main>

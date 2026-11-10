@@ -1,0 +1,136 @@
+(() => {
+    'use strict';
+    const gallery = document.querySelector('.photo-grid, .art-slides');
+    const dialog = document.getElementById('lightbox');
+    if (!gallery || !dialog || typeof dialog.showModal !== 'function') return;
+    const photos = [...gallery.querySelectorAll('.photo-link')];
+    if (!photos.length) return;
+    const image = dialog.querySelector('img');
+    const counter = document.getElementById('photo-counter');
+    const status = document.getElementById('photo-status');
+    const print = document.getElementById('photo-print');
+    const close = dialog.querySelector('.lightbox-close');
+    const concert = document.body.classList.contains('concerts-page');
+    const stage = dialog.querySelector('.lightbox-stage');
+    let position = 0, request = 0;
+    let opener = null, touch = null;
+    let previousOverflow = '';
+    let resizeFrame = 0;
+    function viewerSizes(link) {
+        if (!concert) return '(max-width: 760px) calc(100vw - 24px), calc(100vw - 160px)';
+        const thumbnail = link.querySelector('img');
+        const ratio = Number(thumbnail.getAttribute('width')) / Number(thumbnail.getAttribute('height'));
+        const style = getComputedStyle(stage);
+        const width = stage.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+        const fittedWidth = Math.min(width, stage.clientHeight * ratio);
+        // Desktop views get at least two physical pixels per CSS pixel, while
+        // denser displays can still select exports up to the native resolution.
+        const detail = matchMedia('(min-width: 761px)').matches ? Math.max(1, 2 / (devicePixelRatio || 1)) : 1;
+        return `${Math.max(1, Math.ceil(fittedWidth * detail))}px`;
+    }
+    function preloadNeighbours() {
+        const connection = navigator.connection;
+        if (concert && (connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType || ''))) return;
+        for (const offset of concert ? [1] : [-1, 1]) {
+            const next = new Image();
+            const neighbour = photos[(position + offset + photos.length) % photos.length];
+            next.sizes = viewerSizes(neighbour);
+            if (concert) {
+                // Warm only a modest preview; the chosen photo alone gets full detail.
+                const candidates = (neighbour.dataset.viewerSrcset || '').split(',').filter(candidate => {
+                    const width = parseInt(candidate.trim().split(/\s+/)[1], 10);
+                    return width <= 1600;
+                });
+                if (!candidates.length) continue;
+                next.srcset = candidates.join(',');
+                next.src = candidates[candidates.length - 1].trim().split(/\s+/)[0];
+            } else {
+                next.srcset = neighbour.dataset.viewerSrcset || '';
+                next.src = neighbour.dataset.viewerSrc || neighbour.href;
+            }
+        }
+    }
+    function show(index) {
+        position = (index + photos.length) % photos.length;
+        const link = photos[position];
+        const id = ++request;
+        counter.textContent = `${position + 1} / ${photos.length}`;
+        status.textContent = 'Chargement de la photo…';
+        image.hidden = true;
+        if (print) {
+            print.hidden = !link.dataset.printReference;
+            if (link.dataset.printReference) print.href = `../regards/tirages.html?photo=${encodeURIComponent(link.dataset.printReference)}#demande`;
+            else print.removeAttribute('href');
+        }
+        image.alt = link.querySelector('img').alt;
+        image.onload = () => {
+            if (id !== request) return;
+            image.hidden = false;
+            status.textContent = '';
+            preloadNeighbours();
+        };
+        image.onerror = () => {
+            if (id === request) status.textContent = 'Cette photo ne peut pas être chargée. Essayez la suivante.';
+        };
+        image.sizes = viewerSizes(link);
+        image.srcset = link.dataset.viewerSrcset || '';
+        image.src = link.dataset.viewerSrc || link.href;
+    }
+    gallery.addEventListener('click', e => {
+        const link = e.target.closest('.photo-link');
+        if (!link || e.button !== 0) return;
+        e.preventDefault();
+        opener = link;
+        previousOverflow = document.body.style.overflow;
+        dialog.showModal();
+        document.body.style.overflow = 'hidden';
+        show(photos.indexOf(link));
+        close.focus();
+    });
+    gallery.addEventListener('auxclick', e => {
+        if (e.target.closest('.photo-link')) e.preventDefault();
+    });
+    close.addEventListener('click', () => dialog.close());
+    dialog.querySelector('.lightbox-prev').addEventListener('click', () => show(position - 1));
+    dialog.querySelector('.lightbox-next').addEventListener('click', () => show(position + 1));
+    dialog.addEventListener('keydown', e => {
+        if (e.key === 'Tab') {
+            const controls = [...dialog.querySelectorAll('button, a[href]')];
+            const first = controls[0];
+            const last = controls[controls.length - 1];
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
+        }
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+            e.preventDefault();
+            show(position + (e.key === 'ArrowRight' ? 1 : -1));
+        }
+    });
+    dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close(); });
+    dialog.addEventListener('close', () => {
+        cancelAnimationFrame(resizeFrame);
+        document.body.style.overflow = previousOverflow;
+        if (opener) opener.focus({ preventScroll: true });
+    });
+    if (concert) window.addEventListener('resize', () => {
+        cancelAnimationFrame(resizeFrame);
+        resizeFrame = requestAnimationFrame(() => {
+            if (dialog.open) image.sizes = viewerSizes(photos[position]);
+        });
+    }, { passive: true });
+    image.addEventListener('touchstart', e => {
+        touch = e.touches.length === 1 ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null;
+    }, { passive: true });
+    image.addEventListener('touchend', e => {
+        if (!touch || !e.changedTouches.length) return;
+        const dx = e.changedTouches[0].clientX - touch.x;
+        const dy = e.changedTouches[0].clientY - touch.y;
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) show(position + (dx < 0 ? 1 : -1));
+        touch = null;
+    }, { passive: true });
+})();

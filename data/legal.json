@@ -1,0 +1,23 @@
+{
+  "_aide": "Coordonnées légales affichées sur mentions.html. Laisser une valeur vide pour ne pas l'afficher. Relancer scripts/build.py après modification.",
+  "nom": "Thomas Soleil",
+  "statut": "entrepreneur individuel (EI), micro-entrepreneur",
+  "activite": "photographe",
+  "adresse": "",
+  "email": "",
+  "telephone": "",
+  "siret": "",
+  "tva_non_applicable": false,
+  "numero_tva": "",
+  "mediateur": {
+    "nom": "",
+    "adresse": "",
+    "site": ""
+  },
+  "hebergeur": {
+    "nom": "GitHub, Inc. (GitHub Pages)",
+    "adresse": "88 Colin P Kelly Jr St, San Francisco, CA 94107, États-Unis",
+    "telephone": "",
+    "site": "https://pages.github.com/"
+  }
+}

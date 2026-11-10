@@ -1,0 +1,11 @@
+exclude:
+  - .tools
+  - .backups
+  - scripts
+  - templates
+  - data
+  - tests
+  - test-results
+  - Microsoft
+  - README.md
+  - requirements-dev.txt
