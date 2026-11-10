@@ -5,7 +5,6 @@
     const project = document.getElementById('project');
     const requested = new URLSearchParams(location.search).get('projet');
     if (project?.options && [...project.options].some(option => option.value === requested)) project.value = requested;
-    // Reset clears the message while retaining the project selected by the incoming link.
     if (project?.options) for (const option of project.options) option.defaultSelected = option.selected;
     const offer = document.getElementById('wedding-offer');
     const offerGroup = document.getElementById('wedding-offer-group');

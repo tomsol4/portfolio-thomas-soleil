@@ -25,7 +25,6 @@ def structured_data(title, description, url, cover, page_type='WebPage', extra=(
          'sameAs': ['https://www.instagram.com/tomsol_photo/'],
          'knowsAbout': ['Photographie sportive', 'Photographie de mariage',
                         'Photographie de concert', 'Photographie argentique']},
-        # Fiche d'activité locale : aide les recherches du type « photographe mariage Toulouse ».
         {'@type': 'ProfessionalService', '@id': business_id, 'name': 'Thomas Soleil — Photographe',
          'description': 'Photographe de mariage, de sport et de concert en Occitanie.',
          'url': BASE + '/', 'image': BASE + '/images/optimized/og-home-cover.jpg',

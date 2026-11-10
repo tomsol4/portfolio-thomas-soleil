@@ -91,7 +91,6 @@ def protect_page(page, album, cover, previous=''):
             if candidate['id'] == album['id'] and decrypt_markup(candidate, password) == markup:
                 payload = candidate
         except (ValueError, KeyError):
-            # Re-encrypt after password or album changes; never fall back to plaintext.
             payload = None
     if payload is None:
         salt, iv = os.urandom(16), os.urandom(12)

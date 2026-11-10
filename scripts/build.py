@@ -32,14 +32,11 @@ CACHE = {}
 GENERATED_PAGES = set()
 HIGH_RES_CONCERT_PREFIXES = ('images/concert/concertsinfonia/', 'images/concert/repetition_bougie_sinfonia/')
 HIGH_RES_SOURCE_PREFIXES = ('images/rugby/', *HIGH_RES_CONCERT_PREFIXES)
-# Largeur maximale publiée. Au-delà, un fichier devient exploitable pour un tirage.
 MAX_WIDTH = 2560
-# Albums non « haute résolution » dont la visionneuse monte quand même jusqu'à MAX_WIDTH.
 FULL_WIDTH_PREFIXES = ('images/mariage/',)
 MANIFEST_PATH = ROOT / 'data/image-manifest.json'
 MANIFEST = json.loads(MANIFEST_PATH.read_text(encoding='utf-8')) if MANIFEST_PATH.exists() else {}
 SITEMAP_DATES_PATH = ROOT / 'data/sitemap-dates.json'
-# Albums protégés laissés tels quels faute de mot de passe sur cette machine.
 FROZEN = set()
 
 def e(value):
@@ -70,14 +67,12 @@ def asset(src, large=False):
     rotated = False
     if available:
         with Image.open(path) as probe:
-            # Lire les dimensions coûte peu ; les pixels ne sont décodés que pour créer un export.
             width, height = probe.size
             rotated = probe.getexif().get(274) in (2, 3, 4, 5, 6, 7, 8)
             if probe.getexif().get(274) in (5, 6, 7, 8):
                 width, height = height, width
         entry.update(width=width, height=height)
         if src == 'images/portrait.jpg':
-            # Un portrait remplacé peut garder une date plus ancienne : son contenu sert d'identité.
             entry['digest'] = hashlib.sha256(path.read_bytes()).hexdigest()[:12]
     elif 'width' in entry:
         width, height = entry['width'], entry['height']
@@ -99,7 +94,6 @@ def asset(src, large=False):
                 raise ValueError(f'Export web manquant ({target.name}) et original absent : {src}')
             full_width = size == width
             if full_width and not high_resolution and not rotated and path.suffix.lower() == '.webp':
-                # Un original déjà exporté en WebP à taille web est repris tel quel, sans recompression.
                 shutil.copyfile(path, target)
             else:
                 if im is None:
@@ -155,11 +149,10 @@ def concert_viewer_asset(src):
     if cache_key in CACHE:
         return CACHE[cache_key]
     source = ROOT / src
-    base = Path(normal['variants'][0][0]).stem.removesuffix('-480')
-    variants = [v for v in normal['variants'] if v[1] <= 480]
+    base = variant_key(src)
+    variants = [v for v in normal['variants'] if v[1] <= 480 and v[1] < normal['width']]
     available = source.is_file()
     image = None
-    # Une photo plus étroite que MAX_WIDTH se termine par un export à sa pleine largeur.
     for width in sorted({min(size, normal['width']) for size in (960, 1600, MAX_WIDTH)}):
         target = ASSETS / f'{base}-viewer-hq-{width}.webp'
         fresh = target.exists() and target.stat().st_size > 0 and (
@@ -186,12 +179,11 @@ def social_image(src, name):
         if target.is_file():
             return target.relative_to(ROOT).as_posix()
         raise ValueError(f'Image de partage manquante ({target.name}) et original absent : {src}')
-    # A cover can change to an older file, so mtime alone cannot validate it.
     with Image.open(source) as im:
         ImageOps.fit(ImageOps.exif_transpose(im).convert('RGB'), (1200, 630)).save(target, quality=85, optimize=True)
     return target.relative_to(ROOT).as_posix()
 
-def layout(body, title, description, path, active='', prefix='', scripts=(), cover=None, noindex=False, schema=None):
+def layout(body, title, description, path, active='', prefix='', scripts=(), cover=None, noindex=False):
     url = public_url(path)
     cover = cover or 'images/optimized/og-home-cover.jpg'
     nav = ''
@@ -301,7 +293,6 @@ def prune_optimized_images():
     for source in sources:
         text = source.read_text(encoding='utf-8')
         references.update(re.findall(r'images/optimized/([A-Za-z0-9_.-]+)', text if source in frozen_pages else expand_protected_page(text)))
-    # Le contenu d'un album gelé est chiffré : tous ses exports sont conservés.
     frozen_prefixes = tuple(variant_key(src) + '-' for a in ALBUMS if a['id'] in FROZEN for src in [a['cover'], *a['photos']])
     missing = [name for name in references if not (ASSETS / name).is_file()]
     if missing:
@@ -328,7 +319,6 @@ def build():
         if a.get('password_protected') and not has_password(a['id']):
             if not (ROOT / f'albums/{a["id"]}.html').is_file():
                 raise ValueError(f'Album protégé sans mot de passe local ni page existante : {a["id"]}')
-            # Sans mot de passe, la page chiffrée existante et ses fichiers sont laissés intacts.
             FROZEN.add(a['id'])
             GENERATED_PAGES.add(ROOT / f'albums/{a["id"]}.html')
             print(f'ATTENTION : album protégé « {a["id"]} » non régénéré (mot de passe absent sur cette machine).')
@@ -367,7 +357,6 @@ def build():
             alt = a.get('photo_alts', {}).get(src, PHOTO_DESCRIPTIONS.get(src, f'{a["title"]} — photographie {i + 1}'))
             viewer = concert_viewer_asset(src) if a['category'] == 'Concerts' else asset(src, large=True)
             img = picture(src, alt, '../', loading='eager' if i < 3 else 'lazy')
-            # Le lien et la visionneuse s'arrêtent au plus grand export web : l'original n'est jamais publié.
             candidates = viewer['variants']
             largest = quote(candidates[-1][0], safe="/")
             viewer_srcset = ', '.join(f'../{quote(p, safe="/")} {w}w' for p, w in candidates)
@@ -381,7 +370,6 @@ def build():
         top_link = '<a class="back-to-top" href="#contenu" hidden>Retour en haut <span aria-hidden="true">↑</span></a>'
         body = f'''<main id="contenu"><div class="container"><header class="gallery-header"><a class="back-link" href="../index.html#univers">← Tous les univers</a><h1>{e(a['title'])}</h1><p>{e(description)}</p><p class="gallery-meta">{date_prefix}{len(a['photos'])} photographies</p></header><ul class="photo-grid" aria-label="Photographies du reportage">{''.join(items)}</ul><div class="gallery-end"><a class="text-link" href="../index.html#univers">← Choisir un univers</a><a class="button secondary" href="../contact.html?projet={a['project']}">Un projet similaire ?</a><a class="text-link" href="#contenu">Retour en haut ↑</a></div></div>{banner('../')}</main>{dialog}'''
         og = social_image(a['cover'], a['id'])
-        schema = {'@context': 'https://schema.org', '@type': 'CollectionPage', 'name': a['title'], 'description': description, 'url': BASE + '/' + path, 'image': BASE + '/' + og, 'author': {'@type': 'Person', 'name': 'Thomas Soleil'}}
         if a['category'] == 'Rugby':
             body = f'''<main id="contenu"><div class="frame"><header class="rugby-gallery-header"><a href="../rugby/index.html#reportages">← Les reportages rugby</a><h1>{e(a['title'].removeprefix('Rugby — '))}</h1><p class="gallery-description">{e(description)}</p></header><ul class="photo-grid" aria-label="Photographies du reportage">{''.join(items)}</ul><div class="gallery-end"><a href="../rugby/index.html#reportages">← Les reportages</a><a class="button outline" href="../rugby/contact.html">Demander un reportage sport ↗</a></div></div>{top_link}</main>{dialog}'''
             write(path, universe_shell(body, a['title'] + ' | Thomas Soleil Rugby', description, path, 'rugby', '../', og, ('masonry.js', 'gallery.js')))
@@ -396,16 +384,14 @@ def build():
             body = f'''<main id="contenu" class="frame"><header class="collection-gallery-header"><a href="{return_href}">← Les reportages</a><h1>{e(a['title'])}</h1>{context}</header><ul class="photo-grid" aria-label="Photographies du reportage">{''.join(items)}</ul><div class="gallery-end"><a href="{return_href}">← Les reportages</a><a href="{contact_href}">Contact ↗</a></div>{top_link}</main>{dialog}'''
             write(path, universe_shell(body, a['title'] + ' | Thomas Soleil', description, path, universe, '../', og, ('masonry.js', 'gallery.js')))
         else:
-            write(path, layout(body, a['title'] + ' | Thomas Soleil', description, path, '', '../', ('masonry.js', 'gallery.js'), cover=og, schema=schema))
+            write(path, layout(body, a['title'] + ' | Thomas Soleil', description, path, '', '../', ('masonry.js', 'gallery.js'), cover=og))
     missing = '<main id="contenu" class="container section"><p class="eyebrow">Erreur 404</p><h1>Cette page a changé de chemin.</h1><p>Retrouvez les reportages ou contactez-moi pour trouver ce que vous cherchez.</p><div class="actions"><a class="button" href="/index.html#univers">Découvrir les univers</a><a class="text-link" href="/contact.html">Me contacter</a></div></main>'
     write('404.html', layout(missing, 'Page introuvable | Thomas Soleil', 'Retrouvez les reportages de Thomas Soleil.', '404.html', prefix='/', noindex=True))
     urls = ['', 'rugby/index.html', 'rugby/contact.html', 'rugby/tarifs.html', 'instants-de-vie/index.html', 'instants-de-vie/prestations.html', 'instants-de-vie/contact.html', 'concerts/index.html', 'concerts/tarifs.html', 'concerts/contact.html', 'regards/index.html', 'regards/tirages.html'] + [name + '.html' for name, _, _ in pages] + [f'albums/{a["id"]}.html' for a in ALBUMS if not a.get('password_protected')]
-    # lastmod ne change que lorsque le contenu d'une page change réellement.
     dates = json.loads(SITEMAP_DATES_PATH.read_text(encoding='utf-8')) if SITEMAP_DATES_PATH.exists() else {}
     entries = []
     for url in urls:
         page = url or 'index.html'
-        # Fins de ligne normalisées : le même contenu donne la même empreinte sous Windows et ailleurs.
         digest = hashlib.sha256((ROOT / page).read_bytes().replace(b'\r\n', b'\n')).hexdigest()[:16]
         if dates.get(page, {}).get('hash') != digest:
             dates[page] = {'hash': digest, 'date': date.today().isoformat()}

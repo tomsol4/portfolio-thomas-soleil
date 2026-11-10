@@ -23,8 +23,6 @@
         const style = getComputedStyle(stage);
         const width = stage.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
         const fittedWidth = Math.min(width, stage.clientHeight * ratio);
-        // Desktop views get at least two physical pixels per CSS pixel, while
-        // denser displays can still select exports up to the native resolution.
         const detail = matchMedia('(min-width: 761px)').matches ? Math.max(1, 2 / (devicePixelRatio || 1)) : 1;
         return `${Math.max(1, Math.ceil(fittedWidth * detail))}px`;
     }
@@ -36,7 +34,6 @@
             const neighbour = photos[(position + offset + photos.length) % photos.length];
             next.sizes = viewerSizes(neighbour);
             if (concert) {
-                // Warm only a modest preview; the chosen photo alone gets full detail.
                 const candidates = (neighbour.dataset.viewerSrcset || '').split(',').filter(candidate => {
                     const width = parseInt(candidate.trim().split(/\s+/)[1], 10);
                     return width <= 1600;
@@ -133,4 +130,5 @@
         if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) show(position + (dx < 0 ? 1 : -1));
         touch = null;
     }, { passive: true });
+    image.addEventListener('touchcancel', () => { touch = null; }, { passive: true });
 })();

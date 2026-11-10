@@ -158,7 +158,6 @@ def build_universes(albums, picture, write, home_cover, asset):
         ('ART_IMAGE', by_id['autres']['photos'][1], 'Une personne assise dans une église, en noir et blanc')]:
         sizes = '(max-width: 760px) calc(100vw - 40px), (max-width: 1100px) 45vw, 25vw'
         if token in ('SPORT_IMAGE', 'LIFE_IMAGE', 'CONCERT_IMAGE', 'ART_IMAGE'):
-            # Cover crops fill the tile's height, so the required image width exceeds the tile width.
             source = asset(src, large=True)
             ratio = source['width'] / source['height']
             sizes = (f'(max-width: 480px) max(calc(100vw - 40px), {round(360 * ratio)}px), '
@@ -268,7 +267,6 @@ def build_universes(albums, picture, write, home_cover, asset):
     return print_references
 
 
-# Doit rester identique aux prix affichés dans templates/life-services.html.
 LIFE_OFFERS = [('Reportage de mariage — cérémonie', 600), ('Reportage de mariage — cérémonie et cocktail', 850),
                ('Reportage de mariage — journée complète', 1000), ('Reportage de baptême', 250),
                ('Reportage de fiançailles', 300), ('Séance photo de couple', 100), ('Séance photo de famille', 100)]
@@ -281,7 +279,6 @@ def build_life_universe(albums, picture, write):
     body = (ROOT / 'templates/life-home.html').read_text(encoding='utf-8')
     source = 'images/mariage/mariage_argentique (35).jpg'
     alt = 'Les mariés près d’une voiture ancienne, dans un parc'
-    # The cover must belong to the explicitly published reportage.
     if source not in wedding['photos']:
         source, alt = wedding['cover'], wedding['title']
     body = body.replace('{{WEDDING_HERO}}', picture(source, alt, '../', loading='eager',

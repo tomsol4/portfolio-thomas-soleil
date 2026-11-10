@@ -1,4 +1,3 @@
-/* Original cover and navigation, scoped to the main entrance. */
 .portal-page{--bg:#000;--ink:#f3f0e9;--muted:#bcb8b1;--line:#ffffff26;--accent:#e8dfcf;--nav-height:90px}
 .portal-page .site-nav{position:fixed;inset:0 0 auto;height:90px;min-height:90px;width:100%;padding:0 50px;background:transparent;border:0;transition:background .4s,padding .4s,box-shadow .4s}
 .portal-page .site-nav.scrolled{background:var(--bg);padding-inline:40px;box-shadow:0 2px 20px #0000000a}
@@ -35,7 +34,6 @@
  html:not(.js) .portal-page .site-nav{position:absolute;height:auto;flex-wrap:wrap;gap:8px}
  html:not(.js) .portal-page .nav-links{width:100%;flex-wrap:wrap;justify-content:center;gap:0 20px;padding-top:0}
 }
-/* The spire is at x=975 in the 1920px source. Align that axis, with 2% extra image to fill both edges. */
 .portal-hero{--hero-image-width:max(102vw,136dvh);position:relative;display:grid;grid-template-rows:1fr auto;justify-items:center;gap:40px;text-align:center;min-height:100vh;min-height:100dvh;padding:140px 20px 32px;background-color:#000;background-image:url('../images/hero-photo-accueil_2.webp');background-position:calc(50% - var(--hero-image-width)/128) center;background-size:var(--hero-image-width) auto;background-attachment:fixed;background-repeat:no-repeat;color:#fff}
 .portal-hero-copy{align-self:center;width:100%;max-width:1100px;padding-block:24px}
 .portal-hero h1{font:400 clamp(3rem,6vw,7rem)/1.2 "Cormorant Garamond",serif;text-transform:uppercase;letter-spacing:8px;margin-bottom:20px;text-shadow:0 4px 20px #0009}

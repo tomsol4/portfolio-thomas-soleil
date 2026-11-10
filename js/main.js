@@ -1,6 +1,5 @@
 (() => {
     'use strict';
-    // Deter ordinary image saving while keeping clicks, scrolling and zoom available.
     const photoSelector = 'main img, .lightbox img, .photo-link, .art-image-link';
     document.querySelectorAll(photoSelector).forEach(photo => {
         photo.setAttribute('draggable', 'false');
@@ -23,7 +22,6 @@
         if (!backToTop || backToTop.dataset.initialized) return;
         backToTop.dataset.initialized = 'true';
         const updateBackToTop = () => {
-            // Keep a focused link available until the visitor moves focus away.
             backToTop.hidden = window.scrollY < 700 && document.activeElement !== backToTop;
         };
         window.addEventListener('scroll', updateBackToTop, { passive: true });

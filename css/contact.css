@@ -1,4 +1,3 @@
-/* Shared form, with colour variables supplied by each universe. */
 .contact-layout{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:64px;padding-bottom:80px;align-items:start}
 .contact-aside h2{font-size:2rem;margin-bottom:24px}
 .contact-aside p{font-size:.95rem;line-height:1.85;color:var(--muted);margin-bottom:22px}
@@ -26,7 +25,6 @@ input:focus,textarea:focus,select:focus{border-color:var(--ink)}
 .concerts-page input,.concerts-page textarea,.concerts-page select{border-color:#89755e;background:#291b20;color-scheme:dark}
 .concerts-page input::placeholder,.concerts-page textarea::placeholder{color:var(--muted);opacity:1}
 .concerts-page .form-status[data-state=error]{color:#ffc8bc}.concerts-page .form-status[data-state=success]{color:var(--accent)}
-/* Wedding contact: a quiet portrait beside a compact, shared form. */
 .instants-de-vie-page .life-contact-page{max-width:1200px}
 .instants-de-vie-page .life-contact-page .page-header{padding:32px 0 28px;max-width:none}
 .instants-de-vie-page .life-contact-page .page-header h1{font-size:clamp(2.6rem,4.2vw,3.6rem);margin:12px 0 14px}

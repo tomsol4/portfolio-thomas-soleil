@@ -4,10 +4,10 @@
   "statut": "entrepreneur individuel (EI), micro-entrepreneur",
   "activite": "photographe",
   "adresse": "",
-  "email": "",
+  "email": "thomas.soleil04@gmail.com",
   "telephone": "",
-  "siret": "",
-  "tva_non_applicable": false,
+  "siret": "131 844 821 00010",
+  "tva_non_applicable": true,
   "numero_tva": "",
   "mediateur": {
     "nom": "",

@@ -7,6 +7,7 @@ import os, json, http.server, functools, threading, hashlib, io, re
 from PIL import Image
 from playwright.sync_api import sync_playwright, expect
 from album_access import password_for
+from build import variant_key
 
 OUT = ROOT / 'test-results'
 OUT.mkdir(exist_ok=True)
@@ -70,8 +71,6 @@ def check_masonry(page, viewport_width):
     assert abs(max(previous_bottom.values()) - geometry['height']) <= 1.5, 'Reserve the full gallery height before the footer'
 
 def check_french_heading_font(page):
-    # Check the font that actually draws each glyph, rather than only CSS's
-    # requested family: missing accents can silently fall back to Georgia.
     sample = 'Cérémonie Événements Baptême Fiançailles À bientôt Noël cœur Œuvre Ça ù ï ÿ Æ æ 1 000 €'
     cdp = page.context.new_cdp_session(page)
     cdp.send('DOM.enable')
@@ -109,13 +108,15 @@ def run():
     albums = json.loads((ROOT / 'data/albums.json').read_text(encoding='utf-8'))
     rugby_photos = next(a['photos'] for a in albums if a['id'] == 'co_mhr')
     rugby_count = len(rugby_photos)
-    portrait_digest = hashlib.sha256((ROOT / 'images/portrait.jpg').read_bytes()).hexdigest()[:12]
+    portrait = ROOT / 'images/portrait.jpg'
+    manifest = json.loads((ROOT / 'data/image-manifest.json').read_text(encoding='utf-8'))
+    portrait_digest = (hashlib.sha256(portrait.read_bytes()).hexdigest()[:12]
+                       if portrait.is_file() else manifest['images/portrait.jpg']['digest'])
     results, errors = [], []
     with sync_playwright() as p:
         chrome = os.environ.get('CHROME_PATH', r'C:\Program Files\Google\Chrome\Application\chrome.exe')
         browser = p.chromium.launch(executable_path=chrome, headless=True)
         context = browser.new_context(reduced_motion='reduce')
-        # External requests are blocked even if a regression introduces one.
         context.route('https://**/*', lambda route: route.abort())
         page = context.new_page()
         page.on('pageerror', lambda err: errors.append(str(err)))
@@ -176,8 +177,6 @@ def run():
                     expect(page.locator('.art-work')).to_have_count(8)
                     expect(page.locator('.art-slide:visible')).to_have_count(1)
                     assert page.evaluate('document.documentElement.scrollHeight <= innerHeight + 1')
-                    # Check every slide: individual photographs also use the
-                    # shared gallery styles, which must not override this frame.
                     for _ in range(page.locator('.art-slide').count()):
                         photo = page.locator('.art-slide:visible img')
                         page.wait_for_function('(image) => image.complete && image.naturalWidth > 0', arg=photo.element_handle())
@@ -205,7 +204,6 @@ def run():
                         first, second = cards.nth(0).bounding_box(), cards.nth(1).bounding_box()
                         assert second['y'] >= first['y'] + first['height'], 'Concert reportages must follow one another vertically'
                 if width in [390, 1440] and path in ['index.html', 'rugby/index.html', 'instants-de-vie/index.html', 'concerts/index.html']:
-                    # Load the below-the-fold selection before making the review artifact.
                     for photo in page.locator('.universe-door img, .life-hero-image img, .life-stories img, #presentation img, .concert-reportages img').all():
                         photo.scroll_into_view_if_needed()
                         page.wait_for_function('(image) => image.complete && image.naturalWidth > 0', arg=photo.element_handle())
@@ -241,7 +239,6 @@ def run():
         expect(menu).to_be_focused()
         assert page.locator('#navigation').evaluate('(el) => el.inert')
         page.set_viewport_size({'width': 1440, 'height': 900})
-        # Switching to desktop exposes working links without opening a menu.
         expect(menu).to_be_hidden()
         expect(menu).to_have_attribute('aria-expanded', 'false')
         expect(page.locator('#navigation')).to_be_visible()
@@ -452,14 +449,15 @@ def run():
             expect(page.locator('.photo-link')).to_have_count(len(album['photos']))
             expect(page.locator('.gallery-description')).to_have_text(album['description'])
             links = page.locator('.photo-link').evaluate_all('(links)=>links.map(link=>decodeURI(new URL(link.href).pathname.slice(1)))')
-            assert links == album['photos'], 'The original photo selection and order must be preserved'
+            for link, source in zip(links, album['photos'], strict=True):
+                assert link.startswith('images/optimized/'), 'Only web exports may be published'
+                assert Path(link).name.startswith(variant_key(source) + '-'), 'Photo selection and order must be preserved'
             schema = page.locator('script[type="application/ld+json"]').text_content()
             assert any(node['@type'] == 'CollectionPage' for node in json.loads(schema)['@graph'])
             check_masonry(page, page.viewport_size['width'])
         for width in [320, 1440, 768, 390]:
             page.set_viewport_size({'width':width, 'height':844})
             page.wait_for_function('(columns) => getComputedStyle(document.querySelector(".photo-grid")).getPropertyValue("--gallery-columns").trim() === String(columns)', arg=2 if width <= 760 else 3)
-            # Layout is scheduled in an animation frame after ResizeObserver.
             page.evaluate('() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))')
             check_masonry(page, width)
         results.append('Albums: selected photo order, descriptions, structured data and Masonry without gaps or overlaps across resizing')
@@ -490,7 +488,6 @@ def run():
         expect(page.locator('.photo-link').last).to_be_focused()
         results.append('Gallery: complete navigation, wrapping, keyboard, modal focus, responsive controls')
 
-        # Saving deterrents must not break the viewer or ordinary text/form menus.
         for path in ['index.html', 'a-propos.html', 'regards/index.html', 'albums/Argentique.html']:
             page.goto(base + '/' + path)
             photo = page.locator('main img').first
@@ -501,18 +498,18 @@ def run():
             assert page.locator('h1').evaluate('(el) => el.dispatchEvent(new MouseEvent("contextmenu", {bubbles:true, cancelable:true}))'), path
             expect(page.locator('#photo-original')).to_have_count(0)
         first = page.locator('.photo-link').first
+        photo_count = page.locator('.photo-link').count()
         first.click(modifiers=['Control'])
         expect(page.get_by_role('dialog')).to_be_visible()
         expect(page.locator('#lightbox img')).to_be_visible()
         assert page.locator('#lightbox img').evaluate('(el) => !el.dispatchEvent(new MouseEvent("contextmenu", {bubbles:true, cancelable:true}))')
         page.keyboard.press('ArrowRight')
-        expect(page.locator('#photo-counter')).to_have_text('2 / 10')
+        expect(page.locator('#photo-counter')).to_have_text(f'2 / {photo_count}')
         page.keyboard.press('Escape')
         expect(first).to_be_focused()
         assert first.evaluate('(el) => !el.dispatchEvent(new MouseEvent("auxclick", {bubbles:true, cancelable:true, button:1}))')
         results.append('Photo saving deterrents: image menus/dragging, no original button, modified clicks and working viewer')
 
-        # Load failure stays recoverable and does not close or trap the gallery.
         page.goto(base + '/albums/co_mhr.html')
         failed_paths = [part.strip().split()[0].removeprefix('../') for part in page.locator('.photo-link').first.get_attribute('data-viewer-srcset').split(',')]
         for path in failed_paths:
@@ -524,7 +521,6 @@ def run():
         expect(page.locator('#lightbox img')).to_be_visible()
         page.keyboard.press('Escape')
         for path in failed_paths: page.unroute('**/'+path)
-        # Remove only the deliberately simulated error.
         errors[:] = [err for err in errors if not any('/'+path in err for path in failed_paths)]
         results.append('Gallery photo-load failure remains recoverable')
 
@@ -681,6 +677,5 @@ if __name__=='__main__':
     try:
         run()
     except Exception as error:
-        # Do not leave an earlier successful report behind after a failed run.
         report.write_text(json.dumps({'status':'failed','error':str(error)},ensure_ascii=False,indent=2),encoding='utf-8')
         raise

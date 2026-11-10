@@ -8,7 +8,6 @@
 .instants-de-vie-page .nav-links{gap:22px}
 .instants-de-vie-page .button{background:var(--ink);color:var(--bg);border-color:var(--ink);font-size:.85rem}
 
-/* One photograph fills the opening viewport beneath the navigation. */
 .instants-de-vie-page:has(.life-home){--nav-height:90px}
 .js .instants-de-vie-page:has(.life-home) .site-nav{position:fixed;inset:0 0 auto;transition:background-color .25s,color .25s,border-color .25s,box-shadow .25s}
 .js .instants-de-vie-page:has(.life-home) .site-nav:not(.scrolled):not(.menu-open){--ink:#fff;--muted:#fff;--line:#fff7;--accent:#fff;background:transparent;border-color:transparent;color:#fff}
@@ -30,14 +29,12 @@
 .life-discover{display:flex;align-items:center;justify-content:center;gap:18px;min-height:44px;max-width:100%;font-size:.875rem;text-decoration:none}
 .life-discover:hover{text-decoration:underline}
 
-/* A short introduction between the photographic opening and the reportage. */
 .life-intro{max-width:1060px;padding-block:88px 80px;display:grid;grid-template-columns:1fr 1.1fr;align-items:center;gap:clamp(40px,7vw,110px)}
 .life-intro h2{font-size:clamp(2.7rem,4vw,4rem);line-height:1.05;letter-spacing:-.02em}
 .life-intro-copy p{max-width:43ch;font-size:1rem;line-height:1.8;color:var(--muted)}
 .life-intro-links{display:flex;align-items:center;gap:8px 28px;flex-wrap:wrap;margin-top:16px}
 .life-intro-copy a{display:inline-flex;align-items:center;gap:12px;min-height:44px;font-size:.875rem}
 
-/* A single framed cover opens the wedding reportage. */
 .life-stories{max-width:720px;padding-bottom:88px}
 .life-stories .collection-grid.single{max-width:none;padding-bottom:0}
 .life-stories .collection-link{display:grid;grid-template-columns:1fr;gap:20px;padding:24px;border:1px solid var(--line);text-decoration:none;transition:border-color .2s}
@@ -49,7 +46,6 @@
 .life-stories .collection-caption{display:block;margin:0;text-align:center}
 .life-story-open{display:inline-flex;align-items:center;gap:20px;min-height:44px;font-size:.88rem;text-decoration:underline;text-underline-offset:.45em}
 
-/* The photographer and contact follow the same paper background. */
 .instants-de-vie-page .life-home .personal-section{background:none;border:0}
 .instants-de-vie-page .life-home .personal-page{border-top:1px solid var(--line);padding-block:64px 72px}
 .instants-de-vie-page .life-home .personal-grid{grid-template-columns:minmax(0,.85fr) minmax(0,1fr);max-width:1120px}
@@ -62,7 +58,6 @@
 .life-actions>a{font-size:.875rem;display:inline-flex;align-items:center;gap:12px;min-height:44px}
 .life-invitation .button{min-height:52px;padding:14px 24px}
 
-/* Contact pages retain their existing layout. */
 .instants-de-vie-page .container{width:min(1360px,calc(100% - 96px));margin-inline:auto}
 .instants-de-vie-page .page-header{padding:64px 0 40px;max-width:950px}
 .instants-de-vie-page .page-header h1{font-size:clamp(2.7rem,5vw,5rem);margin:20px 0}

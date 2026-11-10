@@ -22,5 +22,4 @@ def build_prints(albums, picture, write, shell):
           'Envie d’un tirage de mes projets personnels ? Contactez-moi pour choisir ensemble la photographie, le format et le papier, sur devis.',
           'regards/tirages.html', 'regards', '../',
           f'images/optimized/og-{example_album["id"]}.jpg', ('contact.js',)))
-    # This page introduces the service; it does not offer a photo catalogue.
     return {}

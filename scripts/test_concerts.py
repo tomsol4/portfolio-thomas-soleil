@@ -69,7 +69,6 @@ def run():
             page.evaluate('''async () => {
                 await document.fonts.ready;
                 document.documentElement.style.fontSize = '200%';
-                // Let navigation measurement and scroll anchoring settle before checking the zoomed layout.
                 await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
                 scrollTo({top:0,behavior:'instant'});
             }''')
@@ -114,25 +113,30 @@ def run():
             page.on('pageerror', lambda error: errors.append(str(error)))
             page.goto(base + 'albums/concertsinfonia.html')
             link = page.locator('.photo-link').nth(3)
-            original = ROOT / unquote(urlsplit(link.get_attribute('href')).path.removeprefix('../'))
+            albums = json.loads((ROOT / 'data/albums.json').read_text(encoding='utf-8'))
+            source = next(album for album in albums if album['id'] == 'concertsinfonia')['photos'][3]
+            original = ROOT / source
+            manifest = json.loads((ROOT / 'data/image-manifest.json').read_text(encoding='utf-8'))
             link.click()
             photo = page.locator('#lightbox img')
             expect(photo).to_be_visible()
             current = photo.evaluate('(img) => img.currentSrc')
             export = ROOT / unquote(urlsplit(current).path.lstrip('/'))
-            with Image.open(original) as master, Image.open(export) as image:
-                largest = min(master.width, 2560)
+            with Image.open(export) as image:
+                source_width = manifest[source]['width']
+                largest = min(source_width, 2560)
                 needed = min(math.ceil(photo.bounding_box()['width'] * 3), largest)
                 assert image.width >= needed, (image.width, needed)
-                assert image.width <= master.width
+                assert image.width <= largest
                 native_candidate = link.get_attribute('data-viewer-srcset').split(',')[-1].strip()
                 assert native_candidate.endswith(f'{largest}w') and '/images/optimized/' in native_candidate, 'The largest candidate is a web export capped at 2560px, never the master'
-            assert export.stat().st_size < original.stat().st_size * .6, 'Avoid the oversized master when a detailed export covers the display'
+            if original.is_file():
+                assert export.stat().st_size < original.stat().st_size * .6, 'Use a lightweight export in the viewer'
             page.keyboard.press('ArrowRight')
             expect(page.locator('#photo-counter')).to_have_text('5 / 38')
             page.keyboard.press('Escape')
             expect(page.locator('#lightbox')).not_to_be_visible()
-            results.append(f'Retina view: {export.name}, {export.stat().st_size:,} bytes; sufficient physical pixels and native master still offered')
+            results.append(f'Retina view: {export.name}, {export.stat().st_size:,} bytes; sufficient physical pixels within the web export limit')
             retina.close()
             assert not errors, errors
             browser.close()

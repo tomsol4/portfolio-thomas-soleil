@@ -23,7 +23,6 @@ LINK = re.compile(r'(<a\b[^>]*>)(.*?)(</a>)', re.I | re.S)
 
 def render_navigation_arrows(markup):
     def replace_link(match):
-        # Only replace text in links; retain attributes, accessible labels and metadata.
         parts = re.split(r'(<[^>]+>)', match[2])
         for index in range(0, len(parts), 2):
             for character, icon in ICONS.items():

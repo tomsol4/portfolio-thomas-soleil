@@ -1,4 +1,3 @@
-// Native AES-GCM helper. Secrets travel only over stdin, never command arguments.
 const fs = require('node:fs');
 const crypto = require('node:crypto');
 try {

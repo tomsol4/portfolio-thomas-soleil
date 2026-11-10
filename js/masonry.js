@@ -16,8 +16,6 @@
             const itemWidth = (width - (columns - 1) * gap) / columns;
             const heights = Array(columns).fill(0);
             grid.style.setProperty('--gallery-item-width', `${itemWidth}px`);
-            // Known image dimensions let us place even lazy-loaded photos immediately.
-            // Keep the DOM order so keyboard and viewer navigation follow the publication.
             photos.forEach(({ item, ratio }) => {
                 const top = Math.min(...heights);
                 const column = heights.indexOf(top);

@@ -86,7 +86,6 @@ def run():
                 page.locator('.theatre-replay').click()
                 expect(stage).not_to_have_class(re.compile(r'\bis-open\b'))
                 expect(page.locator('.theatre-replay')).to_be_disabled()
-                # Both curtains must fully close before reopening, even on a fast device.
                 page.evaluate('''document.querySelectorAll('.theatre-curtain').forEach(curtain => {
                     curtain.getAnimations().forEach(animation => {
                         animation.pause();
@@ -131,6 +130,10 @@ def run():
                 page.wait_for_url('**/albums/concertsinfonia.html')
                 page.goto(url + '#reportages')
                 expect(stage).to_have_class(re.compile(r'\bis-open\b'))
+                page.evaluate('''async () => {
+                    scrollTo({top: 0, behavior: 'instant'});
+                    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+                }''')
                 page.locator('.theatre-replay').click()
                 page.evaluate('document.querySelector(".theatre-curtain").getAnimations()[0].cancel()')
                 expect(stage).to_have_class(re.compile(r'\bis-open\b'))

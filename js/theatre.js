@@ -21,19 +21,18 @@
     function entranceRemembered() {
         try {
             if (sessionStorage.getItem(entranceKey) === 'yes') return true;
-        } catch (_) { /* History still preserves the entrance when storage is unavailable. */ }
+        } catch (_) {}
         return Boolean(history.state?.concertTheatreEntered);
     }
 
     function rememberEntrance() {
-        try { sessionStorage.setItem(entranceKey, 'yes'); } catch (_) { /* Private storage can be unavailable. */ }
-        try { history.replaceState({ ...history.state, concertTheatreEntered: true }, ''); } catch (_) { /* Keep the entrance usable. */ }
+        try { sessionStorage.setItem(entranceKey, 'yes'); } catch (_) {}
+        try { history.replaceState({ ...history.state, concertTheatreEntered: true }, ''); } catch (_) {}
     }
 
     let entered = Boolean(location.hash || window.scrollY > 50 || entranceRemembered() || motion.matches);
 
     function settleCurtains() {
-        // Invalidate the sequence before cancellation rejects its finished promises.
         sequence += 1;
         const moveFocus = entered && entry.contains(document.activeElement);
         curtainAnimations.forEach(animation => animation.cancel());
@@ -80,7 +79,6 @@
             const fabricLag = [-28, -24, -18, -10, -4, 0, 2, 1, 0];
             const resting = getComputedStyle(curtain).clipPath;
             const pose = (gather, sway = 0) => `scaleX(${gather}) skewX(${side * sway}deg)`;
-            // One continuous curve: the upper fabric leads, then settles without a bounce.
             const sweep = Array.from({ length: 61 }, (_, index) => {
                 const time = index / 60;
                 const progress = time ** 3 * (time * (time * 6 - 15) + 10);
@@ -111,7 +109,6 @@
         Promise.all(curtainAnimations.map(animation => animation.finished)).then(() => {
             if (sequence === currentSequence) settleCurtains();
         }).catch(() => {
-            // Cancellation must always release the scene and its controls.
             if (sequence === currentSequence) settleCurtains();
         });
     }
@@ -181,7 +178,6 @@
         resetLight();
     });
     window.addEventListener('pageshow', event => {
-        // The first pageshow follows deferred scripts; only a restored page needs settling.
         if (event.persisted) {
             entered = true;
             settleCurtains();

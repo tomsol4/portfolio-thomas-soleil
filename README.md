@@ -18,6 +18,20 @@ python scripts/build.py
 python scripts/check_site.py
 ```
 
+Vérifications complémentaires (Pillow et Playwright sont listés dans `requirements-dev.txt`) :
+
+```
+python -m unittest discover -s scripts -p test_build.py
+python scripts/test_browser.py
+python scripts/test_album_access.py
+python scripts/test_concerts.py
+python scripts/test_theatre.py
+python scripts/test_prints.py
+```
+
+Les tests de formulaire simulent les réponses du service de contact, sans envoyer de message.
+Les tests navigateur utilisent Chrome, dont le chemin peut être défini avec `CHROME_PATH`.
+
 - `data/albums.json` : albums et sélection des photos. `data/photo-descriptions.json` : textes alternatifs.
 - `data/legal.json` : coordonnées affichées dans les mentions légales (une valeur vide n'est pas affichée).
 - `data/image-manifest.json` : dimensions des originaux, mises à jour par le build. Elles permettent de régénérer

@@ -67,6 +67,7 @@ def run():
                 page.locator('#album-password').fill(password)
                 page.keyboard.press('Enter')
                 expect(page.locator('.photo-link')).to_have_count(len(album['photos']))
+                public_image = page.locator('.photo-link').first.get_attribute('href')
                 expect(page.locator('#contenu')).to_have_attribute('data-album-ready', 'true')
                 check_masonry(page, width)
                 page.wait_for_function('document.querySelector("#lightbox .lightbox-close") !== null')
@@ -88,8 +89,7 @@ def run():
                 page.goto(base + 'albums/concertsinfonia.html')
                 expect(page.locator('.photo-link')).to_have_count(38)
                 expect(page.locator('#album-access-dialog')).to_have_count(0)
-                # The task deliberately retains direct access to the image files.
-                response = page.request.get(base + album['photos'][0])
+                response = page.request.get(base + 'albums/' + public_image)
                 assert response.ok
                 context.close()
                 print(f'PASS {width}px: lock badge, dialog, wrong/correct password, gallery, viewer, reload and public image URLs', flush=True)

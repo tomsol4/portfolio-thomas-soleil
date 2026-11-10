@@ -11,17 +11,17 @@
     const opener = document.getElementById('album-access-open');
     let opening = false;
     const decode = value => Uint8Array.from(atob(value), character => character.charCodeAt(0));
-    function openPrompt() {
+    function openDialog() {
         if (!dialog.open) dialog.showModal();
         field.focus();
     }
     dialog.removeAttribute('open');
-    opener.addEventListener('click', openPrompt);
+    opener.addEventListener('click', openDialog);
     form.querySelector('.album-access-cancel').addEventListener('click', () => dialog.close());
     dialog.addEventListener('close', () => opener.focus({ preventScroll: true }));
     if (!window.crypto?.subtle) {
         status.textContent = 'Ouvrez cette page en HTTPS avec un navigateur récent pour accéder à l’album.';
-        openPrompt();
+        openDialog();
         return;
     }
     submit.disabled = false;
@@ -77,7 +77,6 @@
             await loadScript('masonry');
             await loadScript('gallery');
         } catch (_) {
-            // Native image links still work if an enhancement cannot be loaded.
             const note = document.createElement('p');
             note.className = 'album-access-note';
             note.textContent = 'La visionneuse n’a pas pu être chargée. Les photographies restent accessibles en cliquant dessus.';
@@ -88,5 +87,5 @@
         }
     });
     field.addEventListener('input', () => field.removeAttribute('aria-invalid'));
-    openPrompt();
+    openDialog();
 })();

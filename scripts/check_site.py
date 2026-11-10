@@ -8,7 +8,6 @@ import sys
 import xml.etree.ElementTree as ET
 from album_access import expand_protected_page, has_password, PAYLOAD
 ROOT = Path(__file__).resolve().parents[1]
-# Seuls fichiers de images/ qu'une page a le droit de référencer : jamais un original.
 PUBLISHED_IMAGES = {'images/logo.png', 'images/favicon-32.png', 'images/apple-touch-icon.png', 'images/hero-photo-accueil_2.webp'}
 
 
@@ -54,12 +53,10 @@ def check():
     files = sorted(ROOT.glob('*.html'))
     for folder in ('albums', 'rugby', 'instants-de-vie', 'concerts', 'regards'):
         files += sorted((ROOT / folder).glob('*.html'))
-    locked = set()
     for f in files:
         text = f.read_text(encoding='utf-8')
         content = readable(text)
         if content is None:
-            locked.add(f.resolve())
             content = text
         p = Page(f);p.feed(content);pages[f.resolve()] = p
         if p.h1 != 1 or p.main != 1: errors.append(f'{f.name}: expected one h1 and one main')
@@ -79,7 +76,7 @@ def check():
             target = (ROOT / unquote(u.path.lstrip('/')) if u.path.startswith('/') else f.parent / unquote(u.path)).resolve() if u.path else f
             total_refs += 1
             if not target.is_file(): errors.append(f'{f.name}: missing {ref}')
-            elif f not in locked and (ROOT / 'images') in target.parents:
+            elif (ROOT / 'images') in target.parents:
                 published = target.relative_to(ROOT).as_posix()
                 if not published.startswith('images/optimized/') and published not in PUBLISHED_IMAGES:
                     errors.append(f'{f.name}: référence un original non publié : {ref}')
@@ -99,7 +96,6 @@ def check():
             print(f'Album protégé non vérifié (mot de passe absent sur cette machine) : {a["id"]}')
             continue
         for src in [a['cover'], *a['photos']]:
-            # Un original absent de cette machine reste valable s'il est connu du manifeste.
             if src not in actual_images and src not in manifest: errors.append(f'{a["id"]}: exact filename case does not match: {src}')
         if content.count('class="photo-link"') != len(a['photos']): errors.append(f'{a["id"]}: wrong photo count')
     descriptions = json.loads((ROOT / 'data/photo-descriptions.json').read_text(encoding='utf-8'))
@@ -108,7 +104,6 @@ def check():
             if not (album.get('photo_alts', {}).get(src) or descriptions.get(src)):
                 errors.append(f'{album["id"]}: missing descriptive alternative for {src}')
     for src,alt in descriptions.items():
-        # L'existence du fichier décrit n'est vérifiable que sur une machine qui possède les originaux.
         if not alt.strip() or (originals_here and src not in actual_images): errors.append(f'Invalid photo description: {src}')
     for file in files:
         content = file.read_text(encoding='utf-8')

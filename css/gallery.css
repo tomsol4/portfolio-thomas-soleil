@@ -1,4 +1,3 @@
-/* A readable grid remains available before JavaScript arranges the masonry. */
 .photo-grid{--gallery-columns:3;--gallery-gap:16px;position:relative;display:grid;grid-template-columns:repeat(var(--gallery-columns),minmax(0,1fr));gap:var(--gallery-gap);align-items:start;list-style:none;padding:0;margin:0 0 48px}
 .photo-grid li{min-width:0;background:var(--line)}
 .photo-grid.is-masonry{display:block;height:var(--gallery-height)}
