@@ -1,8 +1,4 @@
 {
- "a-propos.html": {
-  "hash": "6ac5bfec30ea18c6",
-  "date": "2026-11-13"
- },
  "albums/Argentique.html": {
   "hash": "7f85fe7561ae567f",
   "date": "2026-11-13"
@@ -28,7 +24,7 @@
   "date": "2026-11-13"
  },
  "albums/mariage.html": {
-  "hash": "4619df7188d3bbee",
+  "hash": "0441ff752098f293",
   "date": "2026-11-13"
  },
  "albums/montagne.html": {
@@ -55,28 +51,24 @@
   "hash": "4fd362dec2656b89",
   "date": "2026-11-13"
  },
- "contact.html": {
-  "hash": "f781b210b6ffbbaf",
-  "date": "2026-11-13"
- },
  "index.html": {
-  "hash": "b2b9debbe931f52f",
+  "hash": "563ea37c7982bbcc",
   "date": "2026-11-13"
  },
  "instants-de-vie/contact.html": {
-  "hash": "bed21a24f727cfcd",
+  "hash": "f3da82fe80c8b743",
   "date": "2026-11-13"
  },
  "instants-de-vie/index.html": {
-  "hash": "0637dced6cf7e3c4",
+  "hash": "af1daa9d5f138824",
   "date": "2026-11-13"
  },
  "instants-de-vie/prestations.html": {
-  "hash": "cc238e915cce0a91",
+  "hash": "a4a1ebfde16631f6",
   "date": "2026-11-13"
  },
  "mentions.html": {
-  "hash": "1c43d341d7192a32",
+  "hash": "4021d128b5b1094c",
   "date": "2026-11-13"
  },
  "regards/index.html": {

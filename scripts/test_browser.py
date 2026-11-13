@@ -121,7 +121,7 @@ def run():
         page = context.new_page()
         page.on('pageerror', lambda err: errors.append(str(err)))
         page.on('response', lambda response: errors.append(f'{response.status}: {response.url}') if response.status >= 400 and response.url.startswith(base) else None)
-        paths = ['index.html','rugby/index.html','rugby/contact.html','rugby/a-propos.html','rugby/tarifs.html','instants-de-vie/index.html','instants-de-vie/a-propos.html','instants-de-vie/prestations.html','instants-de-vie/contact.html','concerts/index.html','concerts/tarifs.html','concerts/contact.html','regards/index.html','regards/tirages.html','a-propos.html','contact.html','mentions.html','404.html'] + [f'albums/{a["id"]}.html' for a in albums]
+        paths = ['index.html','rugby/index.html','rugby/contact.html','rugby/a-propos.html','rugby/tarifs.html','instants-de-vie/index.html','instants-de-vie/a-propos.html','instants-de-vie/prestations.html','instants-de-vie/contact.html','concerts/index.html','concerts/tarifs.html','concerts/contact.html','regards/index.html','regards/tirages.html','mentions.html','404.html'] + [f'albums/{a["id"]}.html' for a in albums]
         check_paths = ['index.html', 'regards/index.html', 'instants-de-vie/index.html', 'instants-de-vie/a-propos.html', 'instants-de-vie/prestations.html'] if '--interactions-only' in sys.argv else paths
         for width in [320, 390, 768, 1440]:
             page.set_viewport_size({'width': width, 'height': 900})
@@ -257,8 +257,19 @@ def run():
         bar = page.locator('.site-nav')
         expect(bar.locator('h1')).to_have_text('Thomas Soleil')
         expect(bar.locator('.portal-title p')).to_have_text('Photographe en Occitanie')
-        expect(page.locator('#navigation .nav-contact')).to_have_attribute('href', 'contact.html')
-        assert [link.get_attribute('href') for link in page.locator('#navigation a').all()] == ['a-propos.html', 'contact.html']
+        assert [link.get_attribute('href') for link in page.locator('#navigation a').all()] == ['https://www.instagram.com/tomsol_photo/']
+        instagram = page.locator('#navigation .portal-instagram')
+        expect(instagram).to_have_accessible_name('Instagram de Thomas Soleil (nouvel onglet)')
+        expect(instagram).to_have_attribute('target', '_blank')
+        assert min(instagram.bounding_box()[side] for side in ('width', 'height')) >= 44, 'The Instagram icon is a comfortable target'
+        for anchor in ['a-propos', 'contact']:
+            assert page.locator('#' + anchor).bounding_box()['y'] >= 899, 'About and contact come after the first screen'
+        page.locator('#a-propos .button').click()
+        page.wait_for_function('Math.abs(document.getElementById("contact").getBoundingClientRect().top) <= 2')
+        page.evaluate('scrollTo({top: 0, behavior: "instant"})')
+        expect(page.locator('#a-propos img')).to_have_count(1)
+        expect(page.locator('#contact form')).to_have_attribute('method', 'POST')
+        assert not (ROOT / 'a-propos.html').exists() and not (ROOT / 'contact.html').exists(), 'About and contact are homepage sections, not pages'
         expect(page.locator('.site-nav img')).to_have_count(1)
         assert page.locator('body').evaluate('(el) => getComputedStyle(el).backgroundColor') == 'rgb(0, 0, 0)'
         expect(page.locator('#presentation')).to_have_count(0)
@@ -502,7 +513,7 @@ def run():
         expect(page.locator('.photo-link').last).to_be_focused()
         results.append('Gallery: complete navigation, wrapping, keyboard, modal focus, responsive controls')
 
-        for path in ['index.html', 'a-propos.html', 'regards/index.html', 'albums/Argentique.html']:
+        for path in ['index.html', 'regards/index.html', 'albums/Argentique.html']:
             page.goto(base + '/' + path)
             photo = page.locator('main img').first
             expect(photo).to_have_attribute('draggable', 'false')
@@ -538,7 +549,7 @@ def run():
         errors[:] = [err for err in errors if not any('/'+path in err for path in failed_paths)]
         results.append('Gallery photo-load failure remains recoverable')
 
-        page.goto(base + '/contact.html?projet=mariage')
+        page.goto(base + '/index.html?projet=mariage#contact')
         expect(page.locator('#project')).to_have_value('mariage')
         assert page.locator('#message').evaluate('(el) => el.dispatchEvent(new MouseEvent("contextmenu", {bubbles:true, cancelable:true}))')
         page.locator('#name').fill('Test local')
@@ -579,7 +590,7 @@ def run():
         results.append('Form: preserve edits and input focus while a submitted request completes')
 
         page.set_viewport_size({'width':390,'height':320})
-        for path in ['rugby/index.html','instants-de-vie/index.html','concerts/index.html','contact.html']:
+        for path in ['rugby/index.html','instants-de-vie/index.html','concerts/index.html','mentions.html']:
             page.goto(base + '/' + path)
             page.locator('.menu-toggle').click()
             menu = page.locator('#navigation')
@@ -635,7 +646,7 @@ def run():
         fallback.goto(base+'/albums/co_mhr.html')
         expect(fallback.locator('.photo-link')).to_have_count(rugby_count)
         expect(fallback.locator('#navigation a').first).to_be_visible()
-        fallback.goto(base+'/contact.html')
+        fallback.goto(base+'/index.html')
         expect(fallback.locator('form')).to_have_attribute('method','POST')
         fallback.goto(base+'/rugby/contact.html')
         expect(fallback.locator('#wedding-offer-group')).to_have_count(0)
@@ -649,7 +660,7 @@ def run():
         link_color = tuple(map(int,re.findall(r'\d+',link.evaluate('(el)=>getComputedStyle(el).color'))[:3]))
         pixels = Image.open(io.BytesIO(page.screenshot())).convert('RGB')
         background = pixels.getpixel((int(link_box['x'])-3,int(link_box['y'])+2))
-        assert contrast_ratio(link_color,background) >= 4.5, 'Homepage links lack contrast on the name bar'
+        assert contrast_ratio(link_color,background) >= 4.5, 'The homepage Instagram icon lacks contrast on the name bar'
         for path in ['index.html','instants-de-vie/index.html','concerts/index.html']:
             page.goto(base+'/'+path)
             for element in page.locator('.kicker, .life-specialties, .site-footer a, .nav-links a').all():

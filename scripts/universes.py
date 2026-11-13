@@ -31,9 +31,9 @@ def shell(body, title, description, path, universe, prefix='', cover='', scripts
                  ('concerts/tarifs.html', 'Tarifs'),
                  ('concerts/contact.html', 'Contact')]
     elif portal:
-        links = [('a-propos.html', 'À propos'), ('contact.html', 'Contact')]
+        links = [('#a-propos', 'À propos'), ('#contact', 'Contact')]
     else:
-        links = [('a-propos.html', 'À propos'), ('contact.html', 'Contact')]
+        links = [('index.html#a-propos', 'À propos'), ('index.html#contact', 'Contact')]
     nav = '\n'.join(f'<a href="{prefix}{href}"' + (' class="nav-contact"' if label == 'Contact' else '') +
                     (' aria-current="page"' if href == path else '') + f'>{label}</a>' for href, label in links)
     url = public_url(path)
@@ -67,17 +67,22 @@ def shell(body, title, description, path, universe, prefix='', cover='', scripts
         if path != 'regards/tirages.html':
             footer = ''
     if portal:
-        # L'accueil n'a que deux liens : pas de menu repliable, et le nom du photographe vit dans le bandeau.
+        # Bandeau de l'accueil : logo, nom du photographe et une seule icône vers Instagram.
+        # « À propos » et « Contact » se trouvent en défilant, sous les portes.
+        instagram = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" '
+                     'stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" '
+                     'aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5"/>'
+                     '<circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r=".6" fill="currentColor"/></svg>')
         navigation = f'''<header class="site-nav" id="haut">
 <a class="logo" href="{brand_link}" aria-label="Thomas Soleil — Accueil">{brand}</a>
 <div class="portal-title"><h1 id="home-title">Thomas Soleil</h1><p>Photographe en Occitanie</p></div>
-<nav class="nav-links" id="navigation" aria-label="Navigation principale">{nav}</nav></header>'''
+<div class="nav-links" id="navigation"><a class="portal-instagram" href="https://www.instagram.com/tomsol_photo/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de Thomas Soleil (nouvel onglet)">{instagram}</a></div></header>'''
     shared_gallery = f'<link rel="stylesheet" href="{prefix}css/collections.css">' if universe in ('instants-de-vie', 'concerts', 'regards') else ''
     has_presentation = path.endswith('/a-propos.html') or path in ('rugby/index.html', 'instants-de-vie/index.html', 'concerts/index.html')
     presentation = f'<link rel="stylesheet" href="{prefix}css/presentation.css">' if has_presentation else ''
     tariffs = f'<link rel="stylesheet" href="{prefix}css/tarifs.css">' if path.endswith(('/tarifs.html', '/prestations.html')) else ''
     gallery_css = f'<link rel="stylesheet" href="{prefix}css/gallery.css">' if path.startswith('albums/') or artistic else ''
-    contact_css = f'<link rel="stylesheet" href="{prefix}css/contact.css">' if path.endswith('contact.html') or path == 'regards/tirages.html' else ''
+    contact_css = f'<link rel="stylesheet" href="{prefix}css/contact.css">' if path.endswith('contact.html') or portal or path == 'regards/tirages.html' else ''
     prints_css = f'<link rel="stylesheet" href="{prefix}css/prints.css">' if path == 'regards/tirages.html' else ''
     services_css = f'<link rel="stylesheet" href="{prefix}css/life-services.css">' if path == 'instants-de-vie/prestations.html' else ''
     theme = {'portal': '#000000', 'rugby': '#0b1622', 'instants-de-vie': '#f6f1e9', 'concerts': '#1b1013', 'regards': '#f5f4f1'}[universe]
@@ -178,9 +183,20 @@ def build_universes(albums, picture, write, home_cover, asset):
          'Le chœur Sinfonia Garonna en concert'),
         ('ART_IMAGE', art, art, 'Une personne assise dans une église, en noir et blanc')]):
         portal = portal.replace('{{' + token + '}}', door_picture(asset, tall, wide, alt, first=index == 0))
+    # « À propos » et « Contact » ne sont plus des pages : ce sont deux sections sous les portes.
+    portal = portal.replace('{{PORTRAIT}}', picture('images/portrait.jpg', 'Thomas Soleil, photographe à Toulouse et Castres',
+                            loading='lazy', sizes='(max-width: 760px) calc(100vw - 40px), 40vw'))
+    contact = (ROOT / 'templates/contact.html').read_text(encoding='utf-8')
+    contact = contact.replace('<main id="contenu" class="container">',
+                              '<section class="portal-contact" id="contact" aria-labelledby="contact-title"><div class="frame">', 1)
+    contact = contact.replace('<p class="eyebrow">', '<p class="portal-eyebrow">', 1)
+    contact = contact.replace('<h1>', '<h2 id="contact-title">', 1).replace('</h1>', '</h2>', 1)
+    contact = contact.replace('<h2>Échangeons simplement.</h2>', '<h3>Échangeons simplement.</h3>', 1)
+    contact = contact.replace('</main>', '</div></section>', 1)
+    portal = portal.replace('{{CONTACT}}', contact)
     write('index.html', shell(portal, 'Thomas Soleil | Photographe en Occitanie — Toulouse et Castres',
           'Mariages et événements, sport, concerts et projets personnels : découvrez les univers de Thomas Soleil, photographe en Occitanie, à Toulouse et Castres.',
-          'index.html', 'portal', cover=home_cover))
+          'index.html', 'portal', cover=home_cover, scripts=('contact.js',)))
     cards = []
     for album in rugby:
         image = picture(album['cover'], album['title'], '../', sizes='(max-width: 760px) calc(100vw - 40px), 30vw', large=True)
@@ -286,8 +302,8 @@ LIFE_OFFERS = [('Reportage de mariage — cérémonie', 600), ('Reportage de mar
 
 # Sélection affichée sous la couverture d'un reportage, rangée par rangée (photos entières, jamais recadrées).
 LIFE_MOSAICS = {'mariage': [
-    ['images/mariage/mariage_argentique (22).jpg', 'images/mariage/mariage_argentique (21).jpg'],
-    ['images/mariage/mariage_argentique (2).jpg', 'images/mariage/mariage_argentique (10).jpg',
+    ['images/mariage/mariage_argentique (22).jpg', 'images/mariage/mariage_argentique (21).jpg',
+     'images/mariage/mariage_argentique (10).jpg',
      'images/mariage/mariage_argentique (5).jpg']]}
 
 
@@ -305,7 +321,7 @@ def build_life_universe(albums, picture, write, asset):
     reportages = []
     for album in selected:
         href = f"../albums/{album['id']}.html"
-        image = picture(album['cover'], album['title'], '../', sizes='(max-width: 760px) calc(100vw - 40px), min(1100px, calc(100vw - 96px))', large=True)
+        image = picture(album['cover'], album['title'], '../', sizes='(max-width: 760px) calc(100vw - 40px), min(860px, calc(100vw - 96px))', large=True)
         rows = []
         for row in LIFE_MOSAICS.get(album['id'], []):
             if not all(src in album['photos'] for src in row):
@@ -314,14 +330,17 @@ def build_life_universe(albums, picture, write, asset):
             for src in row:
                 dimensions = asset(src)
                 ratio = dimensions['width'] / dimensions['height']
-                photo = picture(src, album['title'], '../', sizes='(max-width: 700px) 50vw, 40vw')
+                photo = picture(src, album['title'], '../', sizes='(max-width: 700px) 50vw, 240px')
                 cells.append(f'<div class="life-mosaic-photo" style="--ratio:{ratio:.4f}">{photo}</div>')
             rows.append('<div class="life-mosaic-row">' + ''.join(cells) + '</div>')
         mosaic = f'<div class="life-mosaic">{"".join(rows)}</div>' if rows else ''
-        count = len(album['photos'])
-        meta = ' · '.join(filter(None, [escape(album.get('date', '')), f'{count} photographies']))
-        reportages.append(f'''<article class="life-story"><a class="collection-link" href="{href}"><p class="life-story-meta">{meta}</p><h3 class="life-story-title">{escape(album.get('reportage_title', album['title']))}</h3><div class="collection-image">{image}{lock_badge(album)}</div></a>{mosaic}<p class="life-story-action"><a class="button outline life-story-open" href="{href}">{'Ouvrir l’album' if album.get('password_protected') else 'Voir le reportage'} <span aria-hidden="true">↗</span></a></p></article>''')
+        reportages.append(f'''<article class="life-story"><a class="collection-link" href="{href}"><h3 class="life-story-title">{escape(album.get('reportage_title', album['title']))}</h3><div class="collection-image">{image}{lock_badge(album)}</div></a>{mosaic}<p class="life-story-action"><a class="button outline life-story-open" href="{href}">{'Ouvrir l’album' if album.get('password_protected') else 'Voir le reportage'} <span aria-hidden="true">↗</span></a></p></article>''')
     body = body.replace('{{LIFE_REPORTAGES}}', ''.join(reportages))
+    for token, src, alt in [
+            ('OFFER_WEDDING', 'images/mariage/mariage_argentique (20).jpg', 'Les mariés à la sortie de la cérémonie'),
+            ('OFFER_BAPTISM', 'images/bapteme/Aribastire-8443.jpg', 'Une médaille de baptême tenue entre les doigts'),
+            ('OFFER_FAMILY', 'images/mariage/mariage_argentique (2).jpg', 'Un couple entouré d’enfants, dans un parc')]:
+        body = body.replace('{{' + token + '}}', picture(src, alt, '../', sizes='(max-width: 860px) calc(100vw - 40px), 360px'))
     body = body.replace('{{PRESENTATION}}', inline_presentation('instants-de-vie', picture))
     write('instants-de-vie/index.html', shell(body, 'Mariage & événements | Thomas Soleil, Toulouse & Castres',
           'Photographies de mariage et d’événements à Toulouse et Castres. Découvrez les images et l’approche discrète de Thomas Soleil.',

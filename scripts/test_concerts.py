@@ -89,7 +89,7 @@ def run():
             expect(page.locator('#wedding-offer-group')).to_have_count(0)
             expect(page.locator('#project')).to_have_value('concert')
             expect(page.locator('form')).to_have_attribute('method', 'POST')
-            page.goto(base + 'contact.html')
+            page.goto(base + 'index.html')
             expect(page.locator('#wedding-offer-group')).to_have_count(1)
             fallback.close()
             results.append('Concert contact has no wedding offers without JavaScript; general contact retains them')

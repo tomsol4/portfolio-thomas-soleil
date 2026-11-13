@@ -221,15 +221,14 @@ def layout(body, title, description, path, active='', prefix='', scripts=(), cov
     url = public_url(path)
     cover = cover or 'images/optimized/og-home-cover.jpg'
     nav = ''
-    for file, label in [('index.html', 'Tous les univers'), ('a-propos.html', 'À propos'), ('contact.html', 'Contact')]:
-        current = ' aria-current="page"' if file == active else ''
-        css = ' class="nav-contact"' if file == 'contact.html' else ''
-        href = prefix + file + ('#univers' if file == 'index.html' else '')
-        nav += f'<a href="{href}"{current}{css}>{label}</a>\n'
-    page_type = 'ContactPage' if path == 'contact.html' else 'AboutPage' if path == 'a-propos.html' else 'CollectionPage' if path.startswith('albums/') else 'WebPage'
+    # « À propos » et « Contact » sont des sections de l'accueil, plus des pages.
+    for anchor, label in [('univers', 'Tous les univers'), ('a-propos', 'À propos'), ('contact', 'Contact')]:
+        css = ' class="nav-contact"' if anchor == 'contact' else ''
+        nav += f'<a href="{prefix}index.html#{anchor}"{css}>{label}</a>\n'
+    page_type = 'CollectionPage' if path.startswith('albums/') else 'WebPage'
     schema_tag = '' if noindex else structured_data(title, description, url, cover, page_type)
     extra_styles = ''.join(f'<link rel="stylesheet" href="{prefix}css/{name}.css">\n' for name in
-                           (['gallery'] if path.startswith('albums/') else ['contact'] if path == 'contact.html' else []))
+                           (['gallery'] if path.startswith('albums/') else []))
     script_tags = '\n'.join(f'<script src="{prefix}js/{s}" defer></script>' for s in ('main.js', *scripts))
     return f'''<!DOCTYPE html>
 <html lang="fr">
@@ -275,7 +274,7 @@ def layout(body, title, description, path, active='', prefix='', scripts=(), cov
 {body}
 <footer class="site-footer"><div class="container footer-inner">
 <p>© <span id="footer-year">2026</span> Thomas Soleil · Toulouse &amp; Castres</p>
-<div class="footer-links"><a href="{prefix}mentions.html">Mentions légales &amp; confidentialité</a><a href="{prefix}contact.html">Contact</a><a href="https://www.instagram.com/tomsol_photo/" target="_blank" rel="noopener noreferrer">Instagram<span class="sr-only"> (nouvel onglet)</span></a></div>
+<div class="footer-links"><a href="{prefix}mentions.html">Mentions légales &amp; confidentialité</a><a href="{prefix}index.html#contact">Contact</a><a href="https://www.instagram.com/tomsol_photo/" target="_blank" rel="noopener noreferrer">Instagram<span class="sr-only"> (nouvel onglet)</span></a></div>
 </div></footer>
 </body></html>'''
 
@@ -296,7 +295,7 @@ def legal_blocks():
         contact.append(f'<a href="mailto:{e(data["email"])}">{e(data["email"])}</a>')
     if data.get('telephone'):
         contact.append(f'<a href="tel:{e(re.sub(r"[^0-9+]", "", data["telephone"]))}">{e(data["telephone"])}</a>')
-    contact.append('<a href="contact.html">formulaire de contact</a>')
+    contact.append('<a href="index.html#contact">formulaire de contact</a>')
     publisher = ('<p>' + '<br>'.join(lines) + '</p><p>Directeur de la publication : ' + e(data['nom']) +
                  '.<br>Contact : ' + ' · '.join(contact) + '.</p>')
     host = data['hebergeur']
@@ -315,7 +314,7 @@ def legal_blocks():
 
 
 def banner(prefix=''):
-    return f'''<section class="contact-banner" aria-labelledby="contact-title"><p class="eyebrow">Et si on en parlait ?</p><h2 id="contact-title">Votre prochain moment à raconter.</h2><p>Mariage, match, concert ou portrait : racontez-moi votre projet, préparons ensemble votre reportage.</p><a class="button" href="{prefix}contact.html">Discuter de mon projet</a></section>'''
+    return f'''<section class="contact-banner" aria-labelledby="contact-title"><p class="eyebrow">Et si on en parlait ?</p><h2 id="contact-title">Votre prochain moment à raconter.</h2><p>Mariage, match, concert ou portrait : racontez-moi votre projet, préparons ensemble votre reportage.</p><a class="button" href="{prefix}index.html#contact">Discuter de mon projet</a></section>'''
 
 
 def prune_optimized_images():
@@ -374,17 +373,13 @@ def build():
     print_references = build_universes(ALBUMS, picture, write, home_og, asset)
 
     pages = [
-        ('a-propos', 'À propos | Thomas Soleil, photographe à Toulouse', 'Rugby, chant et photographie argentique : découvrez le parcours et le regard de Thomas Soleil, photographe entre Toulouse et Castres.'),
-        ('contact', 'Contact | Votre projet photo avec Thomas Soleil', 'Sport, mariage, événement ou concert : contactez Thomas Soleil, photographe à Toulouse et Castres. Échange personnalisé autour de votre projet.'),
         ('mentions', 'Mentions légales & confidentialité | Thomas Soleil', 'Informations sur l’éditeur, l’hébergement, les photographies et l’utilisation des données du formulaire de contact de Thomas Soleil.')]
     for name, title, desc in pages:
         body = (ROOT / 'templates' / f'{name}.html').read_text(encoding='utf-8')
-        body = body.replace('{{PORTRAIT}}', picture('images/portrait.jpg', 'Thomas Soleil', loading='eager', sizes='(max-width:760px) 90vw, 45vw', css='portrait'))
         body = body.replace('{{BANNER}}', banner())
-        if name == 'mentions':
-            for token, block in legal_blocks().items():
-                body = body.replace(token, block)
-        write(f'{name}.html', layout(body, title, desc, f'{name}.html', f'{name}.html', scripts=('contact.js',) if name == 'contact' else (), cover=social_image('images/portrait.jpg', 'about') if name == 'a-propos' else home_og))
+        for token, block in legal_blocks().items():
+            body = body.replace(token, block)
+        write(f'{name}.html', layout(body, title, desc, f'{name}.html', f'{name}.html', cover=home_og))
 
     dialog = lightbox_markup()
     for a in ALBUMS:
@@ -407,7 +402,7 @@ def build():
         date_prefix = e(a['date']) + ' · ' if a.get('date') else ''
         context = f'<p class="gallery-description">{e(description)}</p><p class="gallery-meta">{date_prefix}{len(a["photos"])} photographies</p>'
         top_link = '<a class="back-to-top" href="#contenu" hidden>Retour en haut <span aria-hidden="true">↑</span></a>'
-        body = f'''<main id="contenu"><div class="container"><header class="gallery-header"><a class="back-link" href="../index.html#univers">← Tous les univers</a><h1>{e(a['title'])}</h1><p>{e(description)}</p><p class="gallery-meta">{date_prefix}{len(a['photos'])} photographies</p></header><ul class="photo-grid" aria-label="Photographies du reportage">{''.join(items)}</ul><div class="gallery-end"><a class="text-link" href="../index.html#univers">← Choisir un univers</a><a class="button secondary" href="../contact.html?projet={a['project']}">Un projet similaire ?</a><a class="text-link" href="#contenu">Retour en haut ↑</a></div></div>{banner('../')}</main>{dialog}'''
+        body = f'''<main id="contenu"><div class="container"><header class="gallery-header"><a class="back-link" href="../index.html#univers">← Tous les univers</a><h1>{e(a['title'])}</h1><p>{e(description)}</p><p class="gallery-meta">{date_prefix}{len(a['photos'])} photographies</p></header><ul class="photo-grid" aria-label="Photographies du reportage">{''.join(items)}</ul><div class="gallery-end"><a class="text-link" href="../index.html#univers">← Choisir un univers</a><a class="button secondary" href="../index.html?projet={a['project']}#contact">Un projet similaire ?</a><a class="text-link" href="#contenu">Retour en haut ↑</a></div></div>{banner('../')}</main>{dialog}'''
         og = social_image(a['cover'], a['id'])
         if a['category'] == 'Rugby':
             body = f'''<main id="contenu"><div class="frame"><header class="rugby-gallery-header"><a href="../rugby/index.html#reportages">← Les reportages rugby</a><h1>{e(a['title'].removeprefix('Rugby — '))}</h1><p class="gallery-description">{e(description)}</p></header><ul class="photo-grid" aria-label="Photographies du reportage">{''.join(items)}</ul><div class="gallery-end"><a href="../rugby/index.html#reportages">← Les reportages</a><a class="button outline" href="../rugby/contact.html">Demander un reportage sport ↗</a></div></div>{top_link}</main>{dialog}'''
@@ -424,7 +419,7 @@ def build():
             write(path, universe_shell(body, a['title'] + ' | Thomas Soleil', description, path, universe, '../', og, ('masonry.js', 'gallery.js')))
         else:
             write(path, layout(body, a['title'] + ' | Thomas Soleil', description, path, '', '../', ('masonry.js', 'gallery.js'), cover=og))
-    missing = '<main id="contenu" class="container section"><p class="eyebrow">Erreur 404</p><h1>Cette page a changé de chemin.</h1><p>Retrouvez les reportages ou contactez-moi pour trouver ce que vous cherchez.</p><div class="actions"><a class="button" href="/index.html#univers">Découvrir les univers</a><a class="text-link" href="/contact.html">Me contacter</a></div></main>'
+    missing = '<main id="contenu" class="container section"><p class="eyebrow">Erreur 404</p><h1>Cette page a changé de chemin.</h1><p>Retrouvez les reportages ou contactez-moi pour trouver ce que vous cherchez.</p><div class="actions"><a class="button" href="/index.html#univers">Découvrir les univers</a><a class="text-link" href="/index.html#contact">Me contacter</a></div></main>'
     write('404.html', layout(missing, 'Page introuvable | Thomas Soleil', 'Retrouvez les reportages de Thomas Soleil.', '404.html', prefix='/', noindex=True))
     urls = ['', 'rugby/index.html', 'rugby/contact.html', 'rugby/tarifs.html', 'instants-de-vie/index.html', 'instants-de-vie/prestations.html', 'instants-de-vie/contact.html', 'concerts/index.html', 'concerts/tarifs.html', 'concerts/contact.html', 'regards/index.html', 'regards/tirages.html'] + [name + '.html' for name, _, _ in pages] + [f'albums/{a["id"]}.html' for a in ALBUMS if not a.get('password_protected')]
     dates = json.loads(SITEMAP_DATES_PATH.read_text(encoding='utf-8')) if SITEMAP_DATES_PATH.exists() else {}
