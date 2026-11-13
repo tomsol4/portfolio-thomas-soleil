@@ -2,6 +2,7 @@
 from html import escape
 from pathlib import Path
 import re
+from urllib.parse import quote
 from site_metadata import structured_data, public_url, offers
 from gallery_markup import lightbox_markup
 from prints import build_prints
@@ -30,17 +31,11 @@ def shell(body, title, description, path, universe, prefix='', cover='', scripts
                  ('concerts/tarifs.html', 'Tarifs'),
                  ('concerts/contact.html', 'Contact')]
     elif portal:
-        links = [('instants-de-vie/index.html', 'Mariage &amp; événements'), ('rugby/index.html', 'Sport'),
-                 ('concerts/index.html', 'Concerts'), ('regards/index.html', 'Projets personnels'),
-                 ('a-propos.html', 'À propos'), ('contact.html', 'Contact')]
+        links = [('a-propos.html', 'À propos'), ('contact.html', 'Contact')]
     else:
         links = [('a-propos.html', 'À propos'), ('contact.html', 'Contact')]
     nav = '\n'.join(f'<a href="{prefix}{href}"' + (' class="nav-contact"' if label == 'Contact' else '') +
                     (' aria-current="page"' if href == path else '') + f'>{label}</a>' for href, label in links)
-    if portal:
-        portal_links = nav.split('\n')
-        nav = ('<div class="portal-nav-group">' + '\n'.join(portal_links[:3]) + '</div>\n'
-               '<div class="portal-nav-group">' + '\n'.join(portal_links[3:]) + '</div>')
     url = public_url(path)
     canonical = public_url(universe + '/index.html') if path.endswith('/a-propos.html') else url
     schema = structured_data(title, description, canonical, cover,
@@ -72,7 +67,11 @@ def shell(body, title, description, path, universe, prefix='', cover='', scripts
         if path != 'regards/tirages.html':
             footer = ''
     if portal:
-        navigation = navigation.replace('<span aria-hidden="true"></span><span aria-hidden="true"></span></button>', '<span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></button>')
+        # L'accueil n'a que deux liens : pas de menu repliable, et le nom du photographe vit dans le bandeau.
+        navigation = f'''<header class="site-nav" id="haut">
+<a class="logo" href="{brand_link}" aria-label="Thomas Soleil — Accueil">{brand}</a>
+<div class="portal-title"><h1 id="home-title">Thomas Soleil</h1><p>Photographe en Occitanie</p></div>
+<nav class="nav-links" id="navigation" aria-label="Navigation principale">{nav}</nav></header>'''
     shared_gallery = f'<link rel="stylesheet" href="{prefix}css/collections.css">' if universe in ('instants-de-vie', 'concerts', 'regards') else ''
     has_presentation = path.endswith('/a-propos.html') or path in ('rugby/index.html', 'instants-de-vie/index.html', 'concerts/index.html')
     presentation = f'<link rel="stylesheet" href="{prefix}css/presentation.css">' if has_presentation else ''
@@ -147,25 +146,38 @@ def build_concert_contact(write):
           'concerts/contact.html', 'concerts', '../', 'images/optimized/og-concertsinfonia.jpg', ('contact.js',)))
 
 
+def door_picture(asset, tall, wide, alt, first=False):
+    """Photo d'une porte de l'accueil : cadrage horizontal sur téléphone, vertical au-delà."""
+    def candidates(source):
+        return ', '.join(f'{quote(path, safe="/")} {width}w' for path, width in source['variants'])
+    portrait, landscape = asset(tall, large=True), asset(wide, large=True)
+    # Les portes recadrent la photo (object-fit: cover) : la largeur utile dépend aussi de la hauteur d'écran.
+    tall_ratio = 100 * portrait['width'] / portrait['height']
+    wide_ratio = 25 * landscape['width'] / landscape['height']
+    return (f'<picture><source media="(max-width: 760px)" srcset="{candidates(landscape)}" '
+            f'sizes="max(100vw, {wide_ratio:.0f}vh)" width="{landscape["width"]}" height="{landscape["height"]}">'
+            f'<img src="{quote(portrait["variants"][0][0], safe="/")}" srcset="{candidates(portrait)}" '
+            f'sizes="(max-width: 1100px) max(50vw, {tall_ratio / 2:.0f}vh), max(42vw, {tall_ratio:.0f}vh)" '
+            f'width="{portrait["width"]}" height="{portrait["height"]}" alt="{escape(alt, quote=True)}" '
+            f'loading="eager" decoding="async"' + (' fetchpriority="high"' if first else '') + '></picture>')
+
+
 def build_universes(albums, picture, write, home_cover, asset):
     rugby = [a for a in albums if a['category'] == 'Rugby']
     by_id = {a['id']: a for a in albums}
     portal = (ROOT / 'templates/portal.html').read_text(encoding='utf-8')
-    for token, src, alt in [
-        ('SPORT_IMAGE', by_id['co_mhr']['cover'], 'Deux joueurs au contact, Castres face à Montpellier'),
-        ('LIFE_IMAGE', by_id['mariage']['cover'], 'Les mariés à la sortie de la cérémonie'),
-        ('CONCERT_IMAGE', by_id['concertsinfonia']['cover'], 'Le chœur Sinfonia Garonna en concert'),
-        ('ART_IMAGE', by_id['autres']['photos'][1], 'Une personne assise dans une église, en noir et blanc')]:
-        sizes = '(max-width: 760px) calc(100vw - 40px), (max-width: 1100px) 45vw, 25vw'
-        if token in ('SPORT_IMAGE', 'LIFE_IMAGE', 'CONCERT_IMAGE', 'ART_IMAGE'):
-            source = asset(src, large=True)
-            ratio = source['width'] / source['height']
-            sizes = (f'(max-width: 480px) max(calc(100vw - 40px), {round(360 * ratio)}px), '
-                     f'(max-width: 760px) max(50vw, {round(300 * ratio)}px), '
-                     f'(max-width: 1100px) max(50vw, {round(420 * ratio)}px), '
-                     f'max(25vw, {round(460 * ratio)}px)')
-        image = picture(src, alt, loading='lazy', sizes=sizes, large=True)
-        portal = portal.replace('{{' + token + '}}', image)
+    # Chaque porte a deux cadrages : une photo verticale pour les panneaux hauts (ordinateur, tablette)
+    # et une photo horizontale pour les bandeaux du téléphone. Toutes viennent d'albums publics.
+    art = by_id['autres']['photos'][1]
+    for index, (token, tall, wide, alt) in enumerate([
+        ('LIFE_IMAGE', 'images/mariage/mariage_argentique (28).jpg', by_id['mariage']['cover'],
+         'Les mariés, le jour de leur mariage'),
+        ('SPORT_IMAGE', 'images/rugby/co_rct/26_06_CO-RCT-0753.jpg', by_id['co_mhr']['cover'],
+         'Une action de match de rugby'),
+        ('CONCERT_IMAGE', 'images/concert/concertsinfonia/IMG_2300 (1).jpg', by_id['concertsinfonia']['cover'],
+         'Le chœur Sinfonia Garonna en concert'),
+        ('ART_IMAGE', art, art, 'Une personne assise dans une église, en noir et blanc')]):
+        portal = portal.replace('{{' + token + '}}', door_picture(asset, tall, wide, alt, first=index == 0))
     write('index.html', shell(portal, 'Thomas Soleil | Photographe en Occitanie — Toulouse et Castres',
           'Mariages et événements, sport, concerts et projets personnels : découvrez les univers de Thomas Soleil, photographe en Occitanie, à Toulouse et Castres.',
           'index.html', 'portal', cover=home_cover))

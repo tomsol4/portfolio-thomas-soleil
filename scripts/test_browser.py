@@ -227,11 +227,17 @@ def run():
 
         page.set_viewport_size({'width': 390, 'height': 844})
         page.goto(base + '/index.html')
-        expect(page.locator('.portal-shortcuts')).to_be_visible()
-        expect(page.locator('.portal-specialties')).to_be_hidden()
-        assert [link.get_attribute('href') for link in page.locator('.portal-shortcuts a').all()] == [
-            'instants-de-vie/index.html', 'rugby/index.html', 'concerts/index.html', 'regards/index.html']
+        expect(page.locator('.menu-toggle')).to_have_count(0)
+        for link in page.locator('#navigation a').all():
+            expect(link).to_be_visible()
+        assert not page.locator('#navigation').evaluate('(el) => el.inert')
+        doors = [door.bounding_box() for door in page.locator('.universe-door').all()]
+        assert len({round(box['y']) for box in doors}) == 4, 'Phone doors are stacked'
+        assert all(abs(box['width'] - 390) < 1 for box in doors), 'Phone doors span the screen'
+        assert doors[-1]['y'] + doors[-1]['height'] <= 845, 'The four doors fit on the first phone screen'
+        page.goto(base + '/rugby/index.html')
         menu = page.locator('.menu-toggle')
+        expect(menu).to_have_accessible_name('Ouvrir le menu')
         menu.focus();page.keyboard.press('Enter')
         expect(menu).to_have_attribute('aria-expanded', 'true')
         assert not page.locator('#navigation').evaluate('(el) => el.inert')
@@ -245,29 +251,30 @@ def run():
         assert not page.locator('#navigation').evaluate('(el) => el.inert')
         page.locator('#navigation a').first.focus()
         expect(page.locator('#navigation a').first).to_be_focused()
-        page.goto(base + '/rugby/index.html')
-        expect(page.locator('.menu-toggle')).to_be_hidden()
-        expect(page.locator('#navigation')).to_be_visible()
-        assert not page.locator('#navigation').evaluate('(el) => el.inert')
-        results.append('Menus: mobile keyboard/focus, desktop portal links and desktop universe navigation')
+        results.append('Menus: homepage links without a menu, mobile keyboard/focus and desktop universe navigation')
 
         page.goto(base + '/index.html')
-        hero = page.locator('.portal-hero')
-        assert abs(hero.bounding_box()['height'] - 900) < 1
-        expect(hero.locator('h1')).to_have_text('Thomas Soleil')
-        expect(hero.locator('.portal-specialties')).to_have_text('Mariage · Sport · Concerts')
-        expect(hero.locator('.portal-location')).to_have_text('Photographe en Occitanie')
+        bar = page.locator('.site-nav')
+        expect(bar.locator('h1')).to_have_text('Thomas Soleil')
+        expect(bar.locator('.portal-title p')).to_have_text('Photographe en Occitanie')
         expect(page.locator('#navigation .nav-contact')).to_have_attribute('href', 'contact.html')
-        assert [link.get_attribute('href') for link in page.locator('#navigation a').all()][:4] == [
-            'instants-de-vie/index.html', 'rugby/index.html', 'concerts/index.html', 'regards/index.html']
-        assert 'hero-photo-accueil_2.webp' in hero.evaluate('(el) => getComputedStyle(el).backgroundImage')
-        assert 'gradient' not in hero.evaluate('(el) => getComputedStyle(el).backgroundImage')
-        assert hero.evaluate('(el) => getComputedStyle(el).filter') == 'none'
+        assert [link.get_attribute('href') for link in page.locator('#navigation a').all()] == ['a-propos.html', 'contact.html']
         expect(page.locator('.site-nav img')).to_have_count(1)
         assert page.locator('body').evaluate('(el) => getComputedStyle(el).backgroundColor') == 'rgb(0, 0, 0)'
         expect(page.locator('#presentation')).to_have_count(0)
-        page.locator('.portal-hero-discover').click()
         expect(page.locator('.universe-door')).to_have_count(4)
+        doors = [door.bounding_box() for door in page.locator('.universe-door').all()]
+        bar_box = bar.bounding_box()
+        assert len({round(box['y']) for box in doors}) == 1, 'Desktop doors stand side by side'
+        assert all(box['y'] >= bar_box['y'] + bar_box['height'] - 1 for box in doors), 'Doors start below the name bar'
+        assert all(abs(box['y'] + box['height'] - 900) <= 1 for box in doors), 'The doors fill the first screen exactly'
+        for photo in page.locator('.universe-door img').all():
+            page.wait_for_function('(image) => image.complete && image.naturalWidth > 0', arg=photo.element_handle())
+            assert photo.evaluate('(image) => image.naturalHeight > image.naturalWidth'), 'Desktop doors use upright photographs'
+        page.locator('.door-sport').hover()
+        page.wait_for_timeout(900)
+        assert page.locator('.door-sport').bounding_box()['width'] > 1.5 * page.locator('.door-life').bounding_box()['width'], 'The hovered door opens wider'
+        page.mouse.move(700, 30)
         destinations = [door.get_attribute('href') for door in page.locator('.universe-door').all()]
         assert len(set(destinations)) == 4
         assert destinations == ['instants-de-vie/index.html', 'rugby/index.html', 'concerts/index.html', 'regards/index.html']
@@ -377,8 +384,9 @@ def run():
         expect(page.locator('#project')).to_have_value('concert')
         results.append('Concert presentation: current portrait, navigation anchor and contact preset')
         page.goto(base + '/index.html')
-        for selector in ['h1', '.universe-door h2', '.nav-links a']:
+        for selector in ['h1', '.universe-door:not(.door-sport) h2', '.nav-links a']:
             assert all(el.evaluate('(el) => getComputedStyle(el).fontWeight') == '400' for el in page.locator(selector).all()), selector
+        expect(page.locator('.door-sport h2')).to_have_css('font-weight', '900')
         page.goto(base + '/rugby/index.html')
         for selector in ['h1', 'h2', 'h3']:
             assert all(el.evaluate('(el) => getComputedStyle(el).fontWeight') == '900' for el in page.locator(selector).all()), selector
@@ -593,7 +601,7 @@ def run():
                 page.evaluate('document.documentElement.style.fontSize="200%"')
                 page.evaluate('document.fonts.ready')
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1'), (path, width, '200% text overflows')
-                selector = '.portal-shortcuts a' if path == 'index.html' else '.life-hero-heading'
+                selector = '.universe-door .door-copy' if path == 'index.html' else '.life-hero-heading'
                 for element in page.locator(selector).all():
                     assert element.evaluate('''el => {
                         const bounds = el.getBoundingClientRect();
@@ -609,10 +617,10 @@ def run():
                         return true;
                     }'''), (path, width, 'Enlarged text must remain inside its container')
                 if path == 'index.html':
-                    positions = [el.bounding_box()['y'] for el in page.locator('.portal-shortcuts a').all()]
-                    assert len(set(positions)) == 4, 'Enlarged shortcuts must have four separate rows'
+                    positions = [el.bounding_box()['y'] for el in page.locator('.universe-door').all()]
+                    assert len(set(positions)) == 4, 'Enlarged doors must have four separate rows'
                 page.screenshot(path=str(OUT / f'text-200-{path.replace("/", "-")}-{width}.png'))
-        results.append('200% text: readable homepage shortcuts and complete wedding title at 320 and 390px')
+        results.append('200% text: readable homepage doors and complete wedding title at 320 and 390px')
 
         nojs=browser.new_context(java_script_enabled=False,viewport={'width':390,'height':844})
         nojs.route('https://**/*',lambda route:route.abort())
@@ -636,13 +644,12 @@ def run():
         results.append('Without JavaScript: album links, navigation and native form fallback')
         page.set_viewport_size({'width':390,'height':844})
         page.goto(base+'/index.html',wait_until='networkidle')
-        bar = page.locator('.menu-toggle span').first
-        bar_box = bar.bounding_box()
-        bar_color = tuple(map(int,re.findall(r'\d+',bar.evaluate('(el)=>getComputedStyle(el).backgroundColor'))[:3]))
+        link = page.locator('#navigation a').first
+        link_box = link.bounding_box()
+        link_color = tuple(map(int,re.findall(r'\d+',link.evaluate('(el)=>getComputedStyle(el).color'))[:3]))
         pixels = Image.open(io.BytesIO(page.screenshot())).convert('RGB')
-        background = pixels.getpixel((int(bar_box['x'])-3,int(bar_box['y'])))
-        assert contrast_ratio(bar_color,background) >= 3, 'Homepage menu lacks contrast over the cover'
-        expect(page.locator('.menu-toggle')).to_have_accessible_name('Ouvrir le menu')
+        background = pixels.getpixel((int(link_box['x'])-3,int(link_box['y'])+2))
+        assert contrast_ratio(link_color,background) >= 4.5, 'Homepage links lack contrast on the name bar'
         for path in ['index.html','instants-de-vie/index.html','concerts/index.html']:
             page.goto(base+'/'+path)
             for element in page.locator('.kicker, .life-specialties, .site-footer a, .nav-links a').all():

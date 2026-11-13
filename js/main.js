@@ -6,15 +6,13 @@
     });
     for (const eventName of ['contextmenu', 'dragstart']) {
         document.addEventListener(eventName, event => {
-            if (event.target instanceof Element &&
-                (event.target.closest(photoSelector) || event.target.matches('.portal-hero'))) event.preventDefault();
+            if (event.target instanceof Element && event.target.closest(photoSelector)) event.preventDefault();
         });
     }
     const nav = document.querySelector('.site-nav');
     const toggle = document.querySelector('.menu-toggle');
     const links = document.getElementById('navigation');
-    const portal = document.body.classList.contains('portal-page');
-    const mobile = matchMedia(portal ? '(max-width: 1100px)' : '(max-width: 760px)');
+    const mobile = matchMedia('(max-width: 760px)');
     const year = document.getElementById('footer-year');
     if (year) year.textContent = new Date().getFullYear();
     function setupBackToTop() {
@@ -45,7 +43,7 @@
         window.addEventListener('resize', measureConcertNav, { passive: true });
         window.addEventListener('pageshow', measureConcertNav);
     }
-    if (document.body.classList.contains('home') || document.querySelector('.life-home, [data-theatre]')) {
+    if (document.querySelector('.life-home, [data-theatre]')) {
         const updateNav = () => nav.classList.toggle('scrolled', window.scrollY > 50);
         window.addEventListener('scroll', updateNav, { passive: true });
         window.addEventListener('pageshow', updateNav);

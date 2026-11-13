@@ -1,63 +1,69 @@
-.portal-page{--bg:#000;--ink:#f3f0e9;--muted:#bcb8b1;--line:#ffffff26;--accent:#e8dfcf;--nav-height:90px}
-.portal-page .site-nav{position:fixed;inset:0 0 auto;height:90px;min-height:90px;width:100%;padding:0 50px;background:transparent;border:0;transition:background .4s,padding .4s,box-shadow .4s}
-.portal-page .site-nav.scrolled{background:var(--bg);padding-inline:40px;box-shadow:0 2px 20px #0000000a}
-.portal-page .logo img{height:70px;width:auto}.portal-page .nav-links{gap:clamp(20px,2.4vw,36px)}.portal-page .nav-links a{font-size:.875rem;letter-spacing:.02em;font-weight:400}.portal-page .nav-links a:hover{text-decoration:underline}
-.portal-page .site-nav:not(.scrolled){color:#000}.portal-page .site-nav.scrolled .logo img{filter:invert(1)}
-.portal-page .nav-links .nav-contact{border:0}
-.portal-page .menu-toggle{border:0;color:inherit}.portal-page .menu-open .menu-toggle span:first-child{transform:translateY(7px) rotate(45deg)}.portal-page .menu-open .menu-toggle span:nth-child(2){opacity:0}.portal-page .menu-open .menu-toggle span:last-child{transform:translateY(-7px) rotate(-45deg)}
-.js .portal-page .menu-toggle{display:none}
-@media(min-width:1101px){
- .portal-page .site-nav,.portal-page .site-nav.scrolled{inset:20px 0 auto;width:min(1320px,calc(100% - 64px));height:86px;min-height:86px;margin-inline:auto;padding:0 32px;display:grid;grid-template-columns:minmax(0,1fr) 84px minmax(0,1fr);gap:24px;background:transparent;border:0;box-shadow:none}
- .portal-page .site-nav:not(.scrolled){color:#000;text-shadow:none}
- .portal-page .site-nav.scrolled{color:#fff;text-shadow:0 1px 3px #000,0 0 10px #000a}
- .portal-page .site-nav .logo{position:relative;z-index:1;grid-column:2;grid-row:1;justify-self:center;justify-content:center;width:84px;height:62px}
- .portal-page .site-nav .logo img{height:58px;filter:none}
- .portal-page .site-nav.scrolled .logo img{filter:invert(1) drop-shadow(0 1px 2px #000)}
- .portal-page .site-nav .nav-links{display:grid;position:absolute;inset:0;padding:0 32px;grid-template-columns:minmax(0,1fr) 84px minmax(0,1fr);gap:24px;pointer-events:none}
- .portal-nav-group{display:flex;align-items:center;gap:clamp(20px,2.2vw,32px);min-width:0;grid-row:1;pointer-events:auto}
- .portal-nav-group:first-child{grid-column:1;justify-content:flex-end}
- .portal-nav-group:last-child{grid-column:3}
- .portal-page .nav-links a{position:relative;white-space:nowrap;padding-block:10px;text-decoration:none}
- .portal-page .nav-links a:hover{text-decoration:none}
- .portal-page .nav-links a::after{content:'';position:absolute;inset:auto 0 6px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:center;transition:transform .2s}
- .portal-page .nav-links a:hover::after,.portal-page .nav-links a:focus-visible::after{transform:scaleX(1)}
- .portal-page .nav-links .nav-contact{padding:10px 0}
+/* Accueil : un bandeau fin et quatre portes qui remplissent l'écran. La page n'a qu'un rôle, orienter. */
+.portal-page{--bg:#000;--ink:#f3f0e9;--muted:#bcb8b1;--line:#ffffff26;--accent:#e8dfcf;--nav-height:76px}
+.portal-page .site-nav{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:8px 24px;min-height:var(--nav-height);padding:10px 32px;border:0}
+.portal-page .logo{justify-self:start}.portal-page .logo img{height:50px;width:auto;filter:invert(1)}
+.portal-title{text-align:center;min-width:0}
+.portal-title h1{font:400 clamp(1.3rem,2vw,1.75rem)/1.1 "Cormorant Garamond",Georgia,serif;letter-spacing:.28em;text-transform:uppercase;margin-right:-.28em}
+.portal-title p{margin-top:5px;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.3;color:var(--muted)}
+.portal-page .nav-links{justify-self:end;gap:28px;padding:0;width:auto}
+.portal-page .nav-links a{position:relative;font-size:.875rem;letter-spacing:.02em;font-weight:400;text-decoration:none}
+.portal-page .nav-links .nav-contact{border:0;padding:0}
+.portal-page .nav-links a::after{content:'';position:absolute;inset:auto 0 8px;height:1px;background:currentColor;transform:scaleX(0);transition:transform .2s}
+.portal-page .nav-links a:hover::after,.portal-page .nav-links a:focus-visible::after{transform:scaleX(1)}
+
+.portal-page main{display:flex;min-height:calc(100vh - var(--nav-height));min-height:calc(100dvh - var(--nav-height))}
+.universe-grid{flex:1;display:flex;gap:2px;min-width:0;scroll-margin-top:var(--nav-height)}
+.universe-door{--door-accent:#fff;position:relative;isolation:isolate;flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(18px,2.2vw,36px);overflow:hidden;text-decoration:none;background:#1a1a1a;color:#fff;transition:flex-grow .6s cubic-bezier(.2,.7,.2,1)}
+.universe-door img{position:absolute;inset:0;z-index:-2;width:100%;height:100%;max-width:none;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1),filter .5s}
+.universe-door::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(#0000 38%,#000000d9)}
+.universe-door::after{content:'';position:absolute;inset:auto 0 0;height:3px;background:var(--door-accent);transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.universe-door:focus-visible{outline:2px solid #fff;outline-offset:-4px}
+.door-copy h2{font-weight:400;line-height:1.05;text-shadow:0 2px 18px #000a;overflow-wrap:normal}
+.door-copy p{margin-top:10px;font-size:.8125rem;line-height:1.5;letter-spacing:.03em;color:#ffffffe0;text-shadow:0 1px 8px #000}
+.door-go{display:inline-flex;align-items:center;gap:10px;margin-top:18px;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--door-accent)}
+.door-go .nav-arrow{transition:transform .3s}
+
+/* Chaque porte annonce déjà la typographie et la couleur du sous-site qu'elle ouvre. */
+.door-life{--door-accent:#e9dfcf}
+.door-life h2{font:400 clamp(1.9rem,2.9vw,3.2rem)/1.05 "Cormorant Garamond",Georgia,serif}.door-life h2 em{font-style:italic}
+.door-sport{--door-accent:#55abe0}
+.door-sport h2{font:900 clamp(1.6rem,2.5vw,2.8rem)/1 Arial,Helvetica,sans-serif;text-transform:uppercase;letter-spacing:-.01em}.door-sport h2 span{color:var(--door-accent)}
+.door-concert{--door-accent:#d3bc92}
+.door-concert h2{font:italic 400 clamp(2.1rem,3.2vw,3.6rem)/1 "Cormorant Garamond",Georgia,serif}
+.door-art{--door-accent:#f5f4f1}
+.door-art h2{font:400 clamp(1.6rem,2.3vw,2.5rem)/1.15 "Cormorant Garamond",Georgia,serif;letter-spacing:.03em}
+.door-life img{object-position:42% center}.door-sport img{object-position:40% 30%}.door-concert img{object-position:55% center}.door-art img{object-position:30% center}
+
+@media(hover:hover) and (min-width:1101px){
+ .universe-grid:hover .universe-door:not(:hover) img,.universe-grid:focus-within .universe-door:not(:focus-visible) img{filter:brightness(.45) saturate(.6)}
+ .universe-door:hover,.universe-door:focus-visible{flex-grow:2.1}
+ .universe-door:hover img,.universe-door:focus-visible img{transform:scale(1.04)}
+ .universe-door:hover::after,.universe-door:focus-visible::after{transform:scaleX(1)}
+ .universe-door:hover .door-go .nav-arrow,.universe-door:focus-visible .door-go .nav-arrow{transform:translate(3px,-3px)}
 }
-@media(max-width:1100px){
- .portal-nav-group{display:contents}
- .js .portal-page .menu-toggle{display:block}
- .js .portal-page .nav-links{display:none;position:absolute;inset:78px 40px auto auto;width:min(300px,calc(100vw - 40px));height:auto;max-height:calc(100dvh - 100px);overflow-y:auto;overscroll-behavior:contain;background:var(--ink);color:#000;border:1px solid #0000001a;padding:10px;box-shadow:0 8px 24px #0002;flex-wrap:nowrap}
- .js .portal-page .menu-open .nav-links{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0}
- .js .portal-page .nav-links a{justify-content:flex-start;text-align:left;min-height:48px;padding:10px 14px;text-transform:none}
- .js .portal-page .nav-links a:hover{background:#00000008}
- .js .portal-page .portal-nav-group:last-child>a:last-child{border-top:1px solid #0000001a;margin-top:6px}
- html:not(.js) .portal-page .site-nav{position:absolute;height:auto;flex-wrap:wrap;gap:8px}
- html:not(.js) .portal-page .nav-links{width:100%;flex-wrap:wrap;justify-content:center;gap:0 20px;padding-top:0}
+/* Tablette : deux rangées de deux portes. */
+@media(min-width:761px) and (max-width:1100px){
+ .universe-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(220px,1fr)}
+ .universe-door{padding:28px}
+ .door-life h2,.door-concert h2{font-size:2.6rem}.door-sport h2{font-size:2.2rem}.door-art h2{font-size:2.1rem}
+ .door-life img{object-position:center 60%}.door-sport img{object-position:center 22%}.door-concert img{object-position:center 60%}.door-art img{object-position:center 40%}
 }
-.portal-hero{--hero-image-width:max(102vw,136dvh);position:relative;display:grid;grid-template-rows:1fr auto;justify-items:center;gap:40px;text-align:center;min-height:100vh;min-height:100dvh;padding:140px 20px 32px;background-color:#000;background-image:url('../images/hero-photo-accueil_2.webp');background-position:calc(50% - var(--hero-image-width)/128) center;background-size:var(--hero-image-width) auto;background-attachment:fixed;background-repeat:no-repeat;color:#fff}
-.portal-hero-copy{align-self:center;width:100%;max-width:1100px;padding-block:24px}
-.portal-hero h1{font:400 clamp(3rem,6vw,7rem)/1.2 "Cormorant Garamond",serif;text-transform:uppercase;letter-spacing:8px;margin-bottom:20px;text-shadow:0 4px 20px #0009}
-.portal-hero-copy p{font-size:1rem;letter-spacing:.05em;text-shadow:0 2px 10px #0009;margin-top:10px;margin-inline:auto;line-height:1.6}
-.portal-hero-copy .portal-specialties{font-size:1.125rem;letter-spacing:.1em}
-.portal-hero-copy .portal-location{font-size:.875rem;letter-spacing:.04em;margin-top:14px}
-.portal-shortcuts{display:none}
-.portal-hero-discover{display:inline-flex;align-items:center;justify-content:center;gap:16px;min-height:48px;max-width:100%;padding:10px 0;border:0;background:transparent;color:white;text-decoration:none;font-size:.875rem;letter-spacing:.04em;text-shadow:0 1px 8px #000}.portal-hero-discover:hover{text-decoration:underline}.portal-hero-discover:focus-visible{outline-color:#fff}.portal-hero-discover span[aria-hidden]{font-size:1.2rem}
-.universe-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;padding-block:64px;scroll-margin-top:90px}
-.universe-door{position:relative;isolation:isolate;display:flex;align-items:end;width:100%;min-width:0;height:460px;overflow:hidden;text-decoration:none;background:#242424;color:#fff;padding:24px}
-.universe-door img{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;transition:transform .6s}.universe-door::after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(transparent 45%,#0009)}
-.door-sport img{object-position:58% center}.door-life img{object-position:33% center}.door-concert img{object-position:53% center}
-.universe-door:hover img,.universe-door:focus-visible img{transform:scale(1.035)}.door-copy{display:flex;justify-content:space-between;align-items:end;gap:12px;width:100%}.door-copy h2{font:400 clamp(1.5rem,2.1vw,2.3rem)/1.15 "Cormorant Garamond",Georgia,serif}.door-copy>span{font-size:1.25rem}.door-art h2{font-style:italic}
-@media(max-width:1100px){.universe-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.universe-door{height:420px}}
+/* Téléphone : quatre bandeaux empilés qui tiennent sur l'écran. */
 @media(max-width:760px){
- .portal-page .site-nav,.portal-page .site-nav.scrolled{padding-inline:20px}.portal-page .logo{height:auto}.portal-page .logo img{height:60px}.js .portal-page .nav-links{right:20px}
- .portal-hero{grid-template-rows:minmax(min-content,1fr) auto;padding:clamp(100px,15dvh,144px) 20px 44px;gap:32px;background-attachment:scroll}.portal-hero-copy{grid-row:1;align-self:start;max-width:420px;margin-top:clamp(12px,3.6dvh,36px);padding-block:0;color:#000}.portal-hero h1{font-size:clamp(1.75rem,8vw,2.125rem);letter-spacing:.08em;overflow-wrap:normal;margin-bottom:12px;text-shadow:none}
- .portal-hero-copy .portal-specialties{display:none}.portal-hero-copy .portal-location{font-size:.875rem;letter-spacing:.03em;margin-top:0;text-shadow:0 1px 2px #fff,0 0 8px #fff,0 0 16px #fff}
- .portal-shortcuts{display:grid;grid-row:2;grid-template-columns:repeat(auto-fit,minmax(min(100%,8.4rem),1fr));gap:10px;width:100%;max-width:420px;margin:0;text-align:left}
- .portal-hero-discover{display:none}
- .portal-shortcuts a{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;min-width:0;min-height:60px;padding:12px;border:1px solid #ffffff70;background:#00000035;color:#fff;font-size:.875rem;line-height:1.4;text-decoration:none;text-shadow:0 1px 6px #000;overflow-wrap:anywhere}
- .portal-shortcuts a:hover{background:#0009;border-color:#fff}.portal-shortcuts a>span{flex-shrink:0}
- .universe-grid{padding-block:36px;gap:16px}.universe-door{height:300px;padding:18px}.door-copy h2{font-size:1.65rem}
- html:not(.js) .portal-page .site-nav{position:relative}
+ .portal-page{--nav-height:64px}
+ .portal-page .site-nav{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:6px 12px;padding:8px 16px}
+ .portal-page .logo{height:auto}.portal-page .logo img{height:40px}
+ .portal-title{text-align:left;flex:1 1 0}
+ .portal-title h1{font-size:1.0625rem;letter-spacing:.12em;margin-right:0;overflow-wrap:normal}
+ .portal-title p{font-size:.6875rem;letter-spacing:.04em;margin-top:2px;text-transform:none}
+ .portal-page .nav-links{gap:4px 14px;flex-wrap:wrap;justify-content:flex-end;margin-left:auto}
+ .portal-page .nav-links a{font-size:.75rem}
+ .universe-grid{flex-direction:column}
+ .universe-door{flex:1 0 auto;min-height:132px;justify-content:center;padding:16px 52px 16px 16px}
+ .universe-door::before{background:linear-gradient(90deg,#000000d9,#0006 70%,#0003)}
+ .door-life h2,.door-concert h2{font-size:clamp(1.5rem,8.4vw,2rem)}.door-sport h2,.door-art h2{font-size:clamp(1.3rem,7vw,1.6rem)}
+ .door-copy p{margin-top:6px;font-size:.75rem}
+ .door-go{position:absolute;right:16px;top:50%;margin:0;transform:translateY(-50%);font-size:1rem}.door-go-label{display:none}
+ .door-life img{object-position:center 30%}.door-sport img{object-position:center 40%}.door-concert img{object-position:center 55%}.door-art img{object-position:center 50%}
 }
-@media(max-width:760px) and (max-height:500px){.portal-hero{--hero-image-width:max(102vw,816px);min-height:600px;padding-top:104px}}
-@media(max-width:480px){.universe-grid{grid-template-columns:1fr}.universe-door{height:360px}.door-copy h2{font-size:2rem}}
+@media(prefers-reduced-motion:reduce){.universe-door,.universe-door img{transition:none}}
