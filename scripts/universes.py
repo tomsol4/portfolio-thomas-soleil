@@ -219,7 +219,7 @@ def build_universes(albums, picture, write, home_cover, asset):
           'Concerts, chœurs et orchestres en images : les reportages de Thomas Soleil, photographe de concert à Toulouse et Castres.',
           'concerts/index.html', 'concerts', '../', 'images/optimized/og-concertsinfonia.jpg', ('theatre.js',)))
     build_concert_contact(write)
-    build_life_universe(albums, picture, write)
+    build_life_universe(albums, picture, write, asset)
     print_references = build_prints(albums, picture, write, shell)
     artistic_albums = [a for a in albums if a['category'] in ('Argentique', 'Autres regards')]
     series = [a for a in artistic_albums if a.get('presentation') != 'individual']
@@ -272,7 +272,14 @@ LIFE_OFFERS = [('Reportage de mariage — cérémonie', 600), ('Reportage de mar
                ('Reportage de fiançailles', 300), ('Séance photo de couple', 100), ('Séance photo de famille', 100)]
 
 
-def build_life_universe(albums, picture, write):
+# Sélection affichée sous la couverture d'un reportage, rangée par rangée (photos entières, jamais recadrées).
+LIFE_MOSAICS = {'mariage': [
+    ['images/mariage/mariage_argentique (22).jpg', 'images/mariage/mariage_argentique (21).jpg'],
+    ['images/mariage/mariage_argentique (2).jpg', 'images/mariage/mariage_argentique (10).jpg',
+     'images/mariage/mariage_argentique (5).jpg']]}
+
+
+def build_life_universe(albums, picture, write, asset):
     wedding = next(a for a in albums if a['id'] == 'mariage')
     selected = [a for a in albums if a['category'] == 'Mariage']
     cover = 'images/optimized/og-mariage.jpg'
@@ -285,8 +292,23 @@ def build_life_universe(albums, picture, write):
                         sizes='max(100vw, 170svh)', hero=True, large=True))
     reportages = []
     for album in selected:
-        image = picture(album['cover'], album['title'], '../', sizes='(max-width: 760px) calc(100vw - 74px), 670px', large=True)
-        reportages.append(f'''<a class="collection-link" href="../albums/{album['id']}.html"><h3 class="life-story-title">{escape(album.get('reportage_title', album['title']))}</h3><div class="collection-image">{image}</div><div class="collection-caption"><span class="life-story-open">Voir le reportage <span aria-hidden="true">↗</span></span></div></a>''')
+        href = f"../albums/{album['id']}.html"
+        image = picture(album['cover'], album['title'], '../', sizes='(max-width: 760px) calc(100vw - 40px), min(1100px, calc(100vw - 96px))', large=True)
+        rows = []
+        for row in LIFE_MOSAICS.get(album['id'], []):
+            if not all(src in album['photos'] for src in row):
+                continue
+            cells = []
+            for src in row:
+                dimensions = asset(src)
+                ratio = dimensions['width'] / dimensions['height']
+                photo = picture(src, album['title'], '../', sizes='(max-width: 700px) 50vw, 40vw')
+                cells.append(f'<div class="life-mosaic-photo" style="--ratio:{ratio:.4f}">{photo}</div>')
+            rows.append('<div class="life-mosaic-row">' + ''.join(cells) + '</div>')
+        mosaic = f'<div class="life-mosaic">{"".join(rows)}</div>' if rows else ''
+        count = len(album['photos'])
+        meta = ' · '.join(filter(None, [escape(album.get('date', '')), f'{count} photographies']))
+        reportages.append(f'''<article class="life-story"><a class="collection-link" href="{href}"><p class="life-story-meta">{meta}</p><h3 class="life-story-title">{escape(album.get('reportage_title', album['title']))}</h3><div class="collection-image">{image}{lock_badge(album)}</div></a>{mosaic}<p class="life-story-action"><a class="button outline life-story-open" href="{href}">{'Ouvrir l’album' if album.get('password_protected') else 'Voir le reportage'} <span aria-hidden="true">↗</span></a></p></article>''')
     body = body.replace('{{LIFE_REPORTAGES}}', ''.join(reportages))
     body = body.replace('{{PRESENTATION}}', inline_presentation('instants-de-vie', picture))
     write('instants-de-vie/index.html', shell(body, 'Mariage & événements | Thomas Soleil, Toulouse & Castres',

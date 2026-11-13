@@ -21,7 +21,7 @@ from PIL import Image, ImageOps
 from universes import build_universes, shell as universe_shell
 from site_metadata import structured_data, public_url, PHOTO_DESCRIPTIONS
 from gallery_markup import lightbox_markup
-from album_access import protect_page, expand_protected_page, has_password
+from album_access import protect_page, expand_protected_page, has_password, PRIVATE_EXPORTS
 from navigation_icons import render_navigation_arrows
 
 BASE = 'https://www.tsoleil.fr'
@@ -38,9 +38,41 @@ MANIFEST_PATH = ROOT / 'data/image-manifest.json'
 MANIFEST = json.loads(MANIFEST_PATH.read_text(encoding='utf-8')) if MANIFEST_PATH.exists() else {}
 SITEMAP_DATES_PATH = ROOT / 'data/sitemap-dates.json'
 FROZEN = set()
+# Photos réservées aux albums protégés : leurs exports lisibles vont dans PRIVATE_EXPORTS, jamais dans ASSETS.
+PRIVATE_SOURCES = set()
+
+
+def export_path(src, name):
+    """Emplacement d'un export web : hors du site pour les photos d'un album protégé."""
+    if src not in PRIVATE_SOURCES:
+        return ASSETS / name
+    PRIVATE_EXPORTS.mkdir(parents=True, exist_ok=True)
+    target, published = PRIVATE_EXPORTS / name, ASSETS / name
+    if published.is_file():
+        if target.is_file():
+            published.unlink()
+        else:
+            shutil.move(published, target)
+    return target
 
 def e(value):
     return escape(str(value), quote=True)
+
+VERSIONS = {}
+
+
+def versioned(match):
+    """Ajoute l'empreinte du fichier à l'adresse d'un script ou d'un style.
+
+    Un navigateur qui a gardé une ancienne version en cache recharge ainsi le fichier dès qu'il change :
+    une page récente n'est jamais servie avec un script périmé.
+    """
+    file = f'{match[2]}/{match[3]}'
+    if file not in VERSIONS:
+        source = ROOT / file
+        VERSIONS[file] = hashlib.sha256(source.read_bytes()).hexdigest()[:10] if source.is_file() else ''
+    return match[0] if not VERSIONS[file] else f'"{match[1]}{file}?v={VERSIONS[file]}"'
+
 
 def write(path, content):
     target = ROOT / path
@@ -50,7 +82,9 @@ def write(path, content):
     if album:
         cover = picture(album['cover'], album['title'], '../', loading='eager', sizes='(max-width:760px) 90vw, 520px')
         content = render_navigation_arrows(protect_page(
-            content, album, cover, target.read_text(encoding='utf-8') if target.exists() else ''))
+            content, album, cover, target.read_text(encoding='utf-8') if target.exists() else '', ASSETS))
+    if target.suffix == '.html':
+        content = re.sub(r'"((?:\.\./|/)?)(css|js|fonts)/([A-Za-z0-9_.-]+\.(?:css|js))"', versioned, content)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(content, encoding='utf-8')
     if target.suffix == '.html':
@@ -86,7 +120,7 @@ def asset(src, large=False):
     variants = []
     im = None
     for size in sorted(set(min(n, width) for n in sizes)):
-        target = ASSETS / f'{key}-{size}.webp'
+        target = export_path(src, f'{key}-{size}.webp')
         fresh = target.exists() and target.stat().st_size > 0 and (
             not available or target.stat().st_mtime >= path.stat().st_mtime)
         if not fresh:
@@ -106,7 +140,7 @@ def asset(src, large=False):
                 else:
                     quality = 90 if large and full_width else 80
                 resized.save(target, 'WEBP', quality=quality, method=4)
-        variants.append((target.relative_to(ROOT).as_posix(), size))
+        variants.append((f'images/optimized/{target.name}', size))
     result = {'width': width, 'height': height, 'variants': variants}
     CACHE[cache_key] = result
     return result
@@ -154,7 +188,7 @@ def concert_viewer_asset(src):
     available = source.is_file()
     image = None
     for width in sorted({min(size, normal['width']) for size in (960, 1600, MAX_WIDTH)}):
-        target = ASSETS / f'{base}-viewer-hq-{width}.webp'
+        target = export_path(src, f'{base}-viewer-hq-{width}.webp')
         fresh = target.exists() and target.stat().st_size > 0 and (
             not available or target.stat().st_mtime >= source.stat().st_mtime)
         if not fresh:
@@ -166,7 +200,7 @@ def concert_viewer_asset(src):
             export = image.resize(
                 (width, max(1, round(normal['height'] * width / normal['width']))), Image.Resampling.LANCZOS)
             export.save(target, 'WEBP', quality=95, method=4)
-        variants.append((target.relative_to(ROOT).as_posix(), width))
+        variants.append((f'images/optimized/{target.name}', width))
     result = {**normal, 'variants': variants}
     CACHE[cache_key] = result
     return result
@@ -299,8 +333,10 @@ def prune_optimized_images():
         raise ValueError(f'Missing optimized images: {missing}')
     removed, size = 0, 0
     for path in ASSETS.iterdir():
-        if path.is_symlink() or not path.is_file() or path.suffix not in ('.jpg', '.webp'):
+        if path.is_symlink() or not path.is_file() or path.suffix not in ('.jpg', '.webp', '.bin'):
             continue
+        if path.suffix == '.bin' and FROZEN:
+            continue  # images chiffrées d'un album non régénéré : sa page ne peut pas être lue ici
         if path.resolve().parent != ASSETS.resolve():
             raise ValueError(f'Image outside the generated directory: {path}')
         if path.name not in references and not (frozen_prefixes and path.name.startswith(frozen_prefixes)):
@@ -325,6 +361,9 @@ def build():
         for src in [a['cover']] if a['id'] in FROZEN else [a['cover'], *a['photos']]:
             if not known(src):
                 raise ValueError(f'Missing image: {src}')
+    public = {a['cover'] for a in ALBUMS} | {src for a in ALBUMS if not a.get('password_protected') for src in a['photos']}
+    PRIVATE_SOURCES.update(src for a in ALBUMS if a.get('password_protected') and a['id'] not in FROZEN
+                           for src in a['photos'] if src not in public)
     favicon_source = ROOT / 'images/favicon1.png'
     if favicon_source.is_file():
         with Image.open(favicon_source) as icon:

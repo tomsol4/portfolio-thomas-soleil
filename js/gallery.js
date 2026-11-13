@@ -26,8 +26,21 @@
         const detail = matchMedia('(min-width: 761px)').matches ? Math.max(1, 2 / (devicePixelRatio || 1)) : 1;
         return `${Math.max(1, Math.ceil(fittedWidth * detail))}px`;
     }
+    // Album protégé : les images sont déchiffrées par album-access.js avant d'être affichées.
+    const secure = window.albumSecureImages;
+    function secureWidth() {
+        return Math.ceil(stage.clientWidth * Math.min(devicePixelRatio || 1, 2));
+    }
     function preloadNeighbours() {
         const connection = navigator.connection;
+        if (secure) {
+            if (connection?.saveData) return;
+            for (const offset of [-1, 1]) {
+                const neighbour = photos[(position + offset + photos.length) % photos.length];
+                secure.resolve(neighbour.dataset.viewerSrcset, neighbour.dataset.viewerSrc || neighbour.href, secureWidth()).catch(() => {});
+            }
+            return;
+        }
         if (concert && (connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType || ''))) return;
         for (const offset of concert ? [1] : [-1, 1]) {
             const next = new Image();
@@ -69,6 +82,15 @@
         image.onerror = () => {
             if (id === request) status.textContent = 'Cette photo ne peut pas être chargée. Essayez la suivante.';
         };
+        if (secure) {
+            image.removeAttribute('srcset');
+            secure.resolve(link.dataset.viewerSrcset, link.dataset.viewerSrc || link.href, secureWidth()).then(url => {
+                if (id === request) image.src = url;
+            }, () => {
+                if (id === request) image.onerror();
+            });
+            return;
+        }
         image.sizes = viewerSizes(link);
         image.srcset = link.dataset.viewerSrcset || '';
         image.src = link.dataset.viewerSrc || link.href;

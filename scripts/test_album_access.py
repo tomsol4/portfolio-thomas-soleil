@@ -1,4 +1,4 @@
-"""Exercise password-gated albums without treating public image URLs as private."""
+"""Exercise password-gated albums: encrypted page, encrypted image files, in-browser decryption."""
 from pathlib import Path
 import functools
 import http.server
@@ -10,8 +10,10 @@ import threading
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / '.tools/python'))
 from playwright.sync_api import sync_playwright, expect
-from album_access import password_for
+import re
+from album_access import password_for, has_password
 from test_browser import QuietHandler, check_masonry
+from build import variant_key
 
 
 def run():
@@ -22,6 +24,16 @@ def run():
     assert password not in source
     assert 'class="photo-link"' not in source, 'Gallery markup must be unavailable before unlocking'
     assert 'album-encrypted-data' in source
+    covers = {a['cover'] for a in albums}
+    shared = covers | {src for a in albums if not a.get('password_protected') for src in a['photos']}
+    for protected in (a for a in albums if a.get('password_protected') and has_password(a['id'])):
+        page_source = (ROOT / f'albums/{protected["id"]}.html').read_text(encoding='utf-8')
+        assert password_for(protected['id']) not in page_source
+        for src in protected['photos']:
+            if src in shared:
+                continue
+            readable = list((ROOT / 'images/optimized').glob(variant_key(src) + '-*.webp'))
+            assert not readable, f'Readable export published for a protected photograph: {readable[0].name}'
     server = http.server.ThreadingHTTPServer(('127.0.0.1', 0),
         functools.partial(QuietHandler, directory=str(ROOT)))
     threading.Thread(target=server.serve_forever, daemon=True).start()
@@ -67,12 +79,19 @@ def run():
                 page.locator('#album-password').fill(password)
                 page.keyboard.press('Enter')
                 expect(page.locator('.photo-link')).to_have_count(len(album['photos']))
-                public_image = page.locator('.photo-link').first.get_attribute('href')
+                encrypted_image = page.locator('.photo-link').nth(1).get_attribute('href')
+                assert encrypted_image.endswith('.bin'), 'Album photographs must be published encrypted'
                 expect(page.locator('#contenu')).to_have_attribute('data-album-ready', 'true')
+                expect(page.locator('#contenu')).not_to_have_attribute('data-image-key', re.compile('.'))
                 check_masonry(page, width)
+                page.wait_for_function('''() => { const image = document.querySelectorAll(".photo-link img")[1];
+                    return image.src.startsWith("blob:") && image.complete && image.naturalWidth > 1; }''')
                 page.wait_for_function('document.querySelector("#lightbox .lightbox-close") !== null')
-                page.locator('.photo-link').first.click()
+                page.locator('.photo-link').nth(1).click()
                 expect(page.locator('#lightbox')).to_be_visible()
+                page.wait_for_function('''() => { const image = document.querySelector("#lightbox img");
+                    return !image.hidden && image.src.startsWith("blob:") && image.naturalWidth > 1; }''')
+                page.keyboard.press('ArrowLeft')
                 page.keyboard.press('ArrowRight')
                 expect(page.locator('#photo-counter')).to_have_text(f'2 / {len(album["photos"])}')
                 page.keyboard.press('Escape')
@@ -89,10 +108,11 @@ def run():
                 page.goto(base + 'albums/concertsinfonia.html')
                 expect(page.locator('.photo-link')).to_have_count(38)
                 expect(page.locator('#album-access-dialog')).to_have_count(0)
-                response = page.request.get(base + 'albums/' + public_image)
+                response = page.request.get(base + 'albums/' + encrypted_image)
                 assert response.ok
+                assert response.body()[:4] != b'RIFF' and b'WEBP' not in response.body()[:16], 'Published album images must not be readable'
                 context.close()
-                print(f'PASS {width}px: lock badge, dialog, wrong/correct password, gallery, viewer, reload and public image URLs', flush=True)
+                print(f'PASS {width}px: lock badge, dialog, wrong/correct password, gallery, decrypted thumbnails and viewer, reload, unreadable image files', flush=True)
             fallback = browser.new_context(java_script_enabled=False)
             page = fallback.new_page()
             page.goto(base + 'albums/noel.html')

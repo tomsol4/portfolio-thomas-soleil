@@ -43,5 +43,8 @@ Les tests navigateur utilisent Chrome, dont le chemin peut être défini avec `C
 
 `python scripts/album_access.py ID_ALBUM` enregistre le mot de passe dans `.tools/` (jamais envoyé sur GitHub).
 Sans ce mot de passe, le build laisse la page chiffrée existante intacte et l'indique.
-Seul le contenu de la page est chiffré : les fichiers d'images restent accessibles à qui connaît leur adresse,
-et leurs noms sont visibles tant que le dépôt GitHub est public.
+La page et les images de l'album sont chiffrées (AES-256-GCM, clé dérivée du mot de passe) : les fichiers
+publiés sont des `images/optimized/p-….bin` illisibles, déchiffrés dans le navigateur après saisie du mot de passe.
+Les exports lisibles de ces photos restent dans `.tools/private-exports/` (jamais envoyé sur GitHub).
+Seule la couverture de l'album reste publique. La protection vaut ce que vaut le mot de passe : préférez une
+phrase longue. Changer le mot de passe puis régénérer le site rechiffre tout l'album.

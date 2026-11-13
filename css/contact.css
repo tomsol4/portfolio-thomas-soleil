@@ -39,6 +39,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--ink)}
 .life-contact-page label span{font-size:.8125rem}
 .life-contact-page input,.life-contact-page select,.life-contact-page textarea{padding:11px 12px;background:#fbfaf7;border-color:#8b8175;font-size:1rem}
 .life-contact-page input:focus,.life-contact-page select:focus,.life-contact-page textarea:focus{border-color:var(--ink)}
+.life-contact-page input,.life-contact-page select{height:50px}
 .life-contact-page textarea{height:132px;min-height:132px}
 .life-contact-page .form-note{font-size:.875rem;line-height:1.75;margin-bottom:16px}
 .life-contact-page .button{min-height:48px;padding:12px 22px}

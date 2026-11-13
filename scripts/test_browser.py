@@ -449,8 +449,14 @@ def run():
             expect(page.locator('.photo-link')).to_have_count(len(album['photos']))
             expect(page.locator('.gallery-description')).to_have_text(album['description'])
             links = page.locator('.photo-link').evaluate_all('(links)=>links.map(link=>decodeURI(new URL(link.href).pathname.slice(1)))')
-            for link, source in zip(links, album['photos'], strict=True):
+            alts = page.locator('.photo-link img').evaluate_all('(images)=>images.map(image=>image.alt)')
+            descriptions = json.loads((ROOT / 'data/photo-descriptions.json').read_text(encoding='utf-8'))
+            for link, alt, source in zip(links, alts, album['photos'], strict=True):
                 assert link.startswith('images/optimized/'), 'Only web exports may be published'
+                if re.fullmatch(r'p-[0-9a-f]{32}\.bin', Path(link).name):
+                    assert album.get('password_protected'), 'Only protected albums publish encrypted images'
+                    assert alt == album.get('photo_alts', {}).get(source, descriptions.get(source)), 'Photo selection and order must be preserved'
+                    continue
                 assert Path(link).name.startswith(variant_key(source) + '-'), 'Photo selection and order must be preserved'
             schema = page.locator('script[type="application/ld+json"]').text_content()
             assert any(node['@type'] == 'CollectionPage' for node in json.loads(schema)['@graph'])
