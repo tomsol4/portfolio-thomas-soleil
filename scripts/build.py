@@ -314,7 +314,7 @@ def legal_blocks():
 
 
 def banner(prefix=''):
-    return f'''<section class="contact-banner" aria-labelledby="contact-title"><p class="eyebrow">Et si on en parlait ?</p><h2 id="contact-title">Votre prochain moment à raconter.</h2><p>Mariage, match, concert ou portrait : racontez-moi votre projet, préparons ensemble votre reportage.</p><a class="button" href="{prefix}index.html#contact">Discuter de mon projet</a></section>'''
+    return f'''<section class="contact-banner" aria-labelledby="contact-title"><h2 id="contact-title">Un projet ?</h2><p>Mariage, match ou concert : indiquez la date et le lieu.</p><a class="button" href="{prefix}index.html#contact">Me contacter</a></section>'''
 
 
 def prune_optimized_images():

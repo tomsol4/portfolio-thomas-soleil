@@ -1,4 +1,4 @@
-exclude:
+﻿exclude:
   - .tools
   - .backups
   - scripts
@@ -7,6 +7,5 @@ exclude:
   - tests
   - test-results
   - Microsoft
-  - README.md
   - apercu.bat
   - requirements-dev.txt

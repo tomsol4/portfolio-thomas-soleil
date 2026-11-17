@@ -40,7 +40,7 @@ def run():
             page.locator('#message').fill('Je souhaite un tirage du Couvent.')
             endpoint = 'https://formspree.io/f/xblwgnop'
             page.route(endpoint, lambda route: route.fulfill(status=422, content_type='application/json', body='{}'))
-            page.get_by_role('button', name='Envoyer ma demande').click()
+            page.get_by_role('button', name='Envoyer').click()
             expect(page.locator('#form-status')).to_contain_text('n’a pas pu être confirmé')
             expect(page.locator('#message')).to_have_value('Je souhaite un tirage du Couvent.')
             page.unroute(endpoint)
@@ -49,7 +49,7 @@ def run():
                 payload.append(route.request.post_data)
                 route.fulfill(status=200, content_type='application/json', body='{}')
             page.route(endpoint, accepted)
-            page.get_by_role('button', name='Envoyer ma demande').click()
+            page.get_by_role('button', name='Envoyer').click()
             expect(page.locator('#form-status')).to_contain_text('demande de tirage a été envoyée')
             assert len(payload) == 1 and 'tirage' in payload[0] and 'Couvent' in payload[0]
             expect(page.locator('#message')).to_have_value('')

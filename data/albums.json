@@ -52,7 +52,7 @@
       "images/rugby/co_mhr/2026_05_16_CO-MHR-04016.jpg"
     ],
     "category": "Rugby",
-    "description": "Découvrez une partie du reportage de la rencontre entre le Castres Olympique et Montpellier.",
+    "description": "Une sélection du match entre le Castres Olympique et Montpellier.",
     "project": "sport"
   },
   {
@@ -120,7 +120,7 @@
       "images/rugby/co_rct/26_06_CO-RCT-1810.jpg"
     ],
     "category": "Rugby",
-    "description": "Découvrez une partie du reportage de la rencontre entre le Castres Olympique et Toulon.",
+    "description": "Une sélection du match entre le Castres Olympique et Toulon.",
     "project": "sport"
   },
   {
@@ -226,7 +226,7 @@
       "images/rugby/co_bayonne_espoirs/2026_05_09_CO-BayonneEspoirs-8401.jpg"
     ],
     "category": "Rugby",
-    "description": "Découvrez une partie du reportage de la rencontre entre les Espoirs de Castres et de Bayonne.",
+    "description": "Une sélection du match entre les Espoirs de Castres et ceux de Bayonne.",
     "project": "sport"
   },
   {
@@ -351,6 +351,7 @@
     "title": "Concert Sinfonia Garonna",
     "cover": "images/concert/concertsinfonia/IMG_8628.jpg",
     "date": "2026",
+    "place": "Toulouse",
     "photos": [
       "images/concert/concertsinfonia/IMG_2070.jpg",
       "images/concert/concertsinfonia/IMG_2080 (1).jpg",
@@ -392,7 +393,7 @@
       "images/concert/concertsinfonia/IMG_8656 (1) (1).jpg"
     ],
     "category": "Concerts",
-    "description": "Un regard sur le concert de Sinfonia Garonna : musiciens, interprétation et atmosphère de la scène.",
+    "description": "Le concert de Sinfonia Garonna : le chœur, les musiciens et le chef.",
     "project": "concert"
   },
   {
@@ -401,6 +402,7 @@
     "title": "Concert de Noël — Chœur Unum",
     "cover": "images/concert/noelchorunum/chorunumnoel-2.webp",
     "date": "2025",
+    "place": "Castres",
     "photos": [
       "images/concert/noelchorunum/chorunumnoel-2.webp",
       "images/concert/noelchorunum/chorunumnoel-3.webp",
@@ -610,14 +612,15 @@
       "images/concert/noelchorunum/chorunumnoel-260.webp"
     ],
     "category": "Concerts",
-    "description": "Le concert de Noël du Chœur Unum photographié par Thomas Soleil, entre musique et instants partagés.",
+    "description": "Le concert de Noël du Chœur Unum.",
     "project": "concert"
   },
   {
     "id": "repetition_bougie_sinfonia",
     "title": "Répétition aux bougies — Sinfonia Garonna",
-    "cover": "images/concert/repetition_bougie_sinfonia/2026_09_RepetBougie-36.jpg",
+    "cover": "images/concert/repetition_bougie_sinfonia/2026_09_RepetBougie-19.jpg",
     "date": "2026",
+    "place": "Toulouse",
     "photos": [
       "images/concert/repetition_bougie_sinfonia/2026_09_RepetBougie-36.jpg",
       "images/concert/repetition_bougie_sinfonia/2026_09_RepetBougie-52.jpg",
@@ -650,7 +653,7 @@
       "images/concert/repetition_bougie_sinfonia/2026_09_RepetBougie-85.jpg"
     ],
     "category": "Concerts",
-    "description": "Une répétition de Sinfonia Garonna dans une église, à la lueur des bougies : portraits des choristes, gestes du chef et vues d’ensemble.",
+    "description": "Une répétition de Sinfonia Garonna dans une église, à la lueur des bougies.",
     "project": "concert",
     "password_protected": false
   },
@@ -672,7 +675,7 @@
       "images/argentique/argentique_couvent/argentiqueNB-17.jpg"
     ],
     "category": "Argentique",
-    "description": "Photographies argentiques au couvent, par Thomas Soleil.",
+    "description": "Photographies argentiques en noir et blanc, dans un couvent.",
     "project": "autre"
   },
   {
@@ -681,7 +684,7 @@
     "date": "",
     "category": "Argentique",
     "project": "autre",
-    "description": "Toulouse en photographie argentique, par Thomas Soleil.",
+    "description": "Toulouse, en argentique noir et blanc.",
     "cover": "images/argentique/argentique_toulouse/argentiqueNB-9.jpg",
     "photos": [
       "images/argentique/argentique_toulouse/argentiqueNB-9.jpg",
@@ -759,7 +762,7 @@
       "images/montagne/Montagne-69.webp"
     ],
     "category": "Autres regards",
-    "description": "Paysages et instants de randonnée en montagne, photographiés par Thomas Soleil.",
+    "description": "Paysages et moments de randonnée en montagne.",
     "project": "autre"
   },
   {
@@ -778,7 +781,7 @@
       "images/vrac/vrac-18.jpg"
     ],
     "category": "Autres regards",
-    "description": "Des photographies indépendantes réalisées au fil des jours, par Thomas Soleil.",
+    "description": "Des photos isolées, prises au fil des jours.",
     "project": "autre",
     "presentation": "individual"
   }

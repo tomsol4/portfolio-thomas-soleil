@@ -56,12 +56,20 @@ def run():
                 page.evaluate('document.fonts.ready')
                 page.evaluate('scrollTo(0,0)')
                 assert not page.evaluate('document.documentElement.scrollWidth > innerWidth + 1'), (width, height)
+                stage = page.locator('[data-theatre]').bounding_box()
                 image = page.locator('.concert-cover img')
                 box = image.bounding_box()
-                ratio = int(image.get_attribute('width')) / int(image.get_attribute('height'))
-                assert abs(box['width'] / box['height'] - ratio) < .01, 'Hero must keep its proportions without a wide empty frame'
+                assert abs(box['width'] - stage['width']) < 1 and abs(box['y'] + box['height'] - stage['y'] - stage['height']) < 1, 'The hero photograph spans the scene down to its floor'
+                assert image.evaluate('(img) => getComputedStyle(img).objectFit') == 'cover', 'The hero is cropped to the scene, never distorted'
                 if width > height:
+                    assert abs(box['y'] - stage['y']) < 1, 'On a wide screen the hero fills the whole scene'
                     assert box['height'] >= 250, 'Landscape photos must remain large enough to appreciate'
+                else:
+                    # Sur un écran en hauteur, le titre est en haut, le bouton en bas, et le chœur reste visible entre les deux.
+                    title = page.locator('.concert-title-row').bounding_box()
+                    actions = page.locator('.concert-opening-actions').bounding_box()
+                    assert title['y'] + title['height'] <= box['y'] + box['height'] * .33 + 1, 'The title stays above the faces in the photograph'
+                    assert actions['y'] >= box['y'] + box['height'] * .5 - 1, 'The button stays below the faces in the photograph'
                 page.locator('.concert-ticket').first.click()
                 page.wait_for_url('**/albums/concertsinfonia.html')
             page.set_viewport_size({'width': 390, 'height': 844})
@@ -79,7 +87,7 @@ def run():
             }''')
             assert not page.evaluate('document.documentElement.scrollWidth > innerWidth + 1')
             page.evaluate('document.documentElement.style.removeProperty("font-size")')
-            results.append('Six viewport formats: large proportional photos, working tickets, text at 200% below navigation')
+            results.append('Six viewport formats: hero fills the scene, working tickets, text at 200% below navigation')
             context.close()
 
             fallback = browser.new_context(java_script_enabled=False)

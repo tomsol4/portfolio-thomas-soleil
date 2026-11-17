@@ -99,17 +99,26 @@ def run():
                 })''')
                 expect(stage).to_have_class(re.compile(r'\bis-open\b'))
                 expect(page.locator('.theatre-replay')).to_be_enabled()
-                assert stage.bounding_box()['height'] <= 901, 'The entire opening fits the viewport'
+                stage_box = stage.bounding_box()
+                assert stage_box['height'] <= 901, 'The entire opening fits the viewport'
+                cover_box = page.locator('.concert-cover').bounding_box()
+                assert abs(cover_box['x'] - stage_box['x']) < 1 and abs(cover_box['width'] - stage_box['width']) < 1, 'The photograph spans the whole scene'
+                assert abs(cover_box['y'] + cover_box['height'] - stage_box['y'] - stage_box['height']) < 1, 'The photograph reaches the stage floor'
+                if stage_box['width'] > stage_box['height']:
+                    assert abs(cover_box['y'] - stage_box['y']) < 1, 'On a wide screen the photograph fills the scene behind the curtain'
+                else:
+                    assert cover_box['height'] >= stage_box['height'] * .6, 'On a tall screen the photograph keeps most of the scene below the title'
+                expect(page.locator('.concert-cover img')).to_have_css('object-fit', 'cover')
+                left_curtain = curtains[0].bounding_box()
+                right_curtain = curtains[1].bounding_box()
                 previous_bottom = drape.bounding_box()['y'] + drape.bounding_box()['height']
-                for selector in ['.concert-title-row', '.concert-cover', '.concert-opening-actions']:
+                for selector in ['.concert-title-row', '.concert-opening-actions']:
                     box = page.locator(selector).bounding_box()
                     assert box['y'] >= previous_bottom - 1, f'{selector} must not overlap the upper curtain or other scene controls'
                     assert box['y'] + box['height'] <= 901, selector
+                    assert box['x'] >= left_curtain['x'] + left_curtain['width'] - 1, f'{selector} must stay clear of the left curtain'
+                    assert box['x'] + box['width'] <= right_curtain['x'] + 1, f'{selector} must stay clear of the right curtain'
                     previous_bottom = box['y'] + box['height']
-                if width == 1440:
-                    page.mouse.move(700, 400)
-                    page.wait_for_function('''document.querySelector('.theatre-glow')
-                        .style.getPropertyValue('--glow-x') !== '' ''')
                 page.evaluate('scrollTo(0, 150)')
                 expect(nav).to_have_css('background-color', 'rgb(17, 11, 14)')
                 expect(drape).to_have_css('opacity', '0')

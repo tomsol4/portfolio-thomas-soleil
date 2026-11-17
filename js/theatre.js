@@ -3,18 +3,16 @@
     const stage = document.querySelector('[data-theatre]');
     if (!stage) return;
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
-    const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
     const replay = stage.querySelector('.theatre-replay');
     const entry = stage.querySelector('.theatre-entry');
     const enter = stage.querySelector('.theatre-enter');
     const content = stage.querySelector('.concert-stage-content');
     const curtains = [...stage.querySelectorAll('.theatre-curtain')];
-    const glow = stage.querySelector('.theatre-glow');
-    const reveals = [...document.querySelectorAll('.concert-reportages .collection-link, .concert-invitation')];
+    const reveals = [...document.querySelectorAll(
+        '.concert-reportages .collection-link, .concert-mosaic-photo, #presentation .personal-copy')];
     let curtainAnimations = [];
     let introAnimation;
     let sequence = 0;
-    let pointerFrame = 0;
     let observer;
     const entranceKey = 'concerts.theatre.entered';
 
@@ -113,17 +111,9 @@
         });
     }
 
-    function resetLight() {
-        cancelAnimationFrame(pointerFrame);
-        pointerFrame = 0;
-        glow.style.removeProperty('--glow-x');
-        glow.style.removeProperty('--glow-y');
-    }
-
     function configureMotion() {
         if (motion.matches) entered = true;
         settleCurtains();
-        resetLight();
         observer?.disconnect();
         stage.classList.toggle('theatre-ready', !motion.matches);
         replay.hidden = motion.matches;
@@ -146,37 +136,20 @@
 
     enter.addEventListener('click', settleCurtains);
     replay.addEventListener('click', () => openCurtains(true));
-    stage.addEventListener('pointermove', event => {
-        if (motion.matches || !finePointer.matches) return;
-        cancelAnimationFrame(pointerFrame);
-        pointerFrame = requestAnimationFrame(() => {
-            const bounds = stage.getBoundingClientRect();
-            glow.style.setProperty('--glow-x', `${(event.clientX - bounds.left - bounds.width * .5) * .35}px`);
-            glow.style.setProperty('--glow-y', `${(event.clientY - bounds.top - bounds.height * .24) * .35}px`);
-        });
-    }, { passive: true });
-    stage.addEventListener('pointerleave', resetLight);
     document.addEventListener('focusin', event => {
         event.target.closest('.theatre-reveal')?.classList.add('is-visible');
     });
     document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-            settleCurtains();
-            resetLight();
-        }
+        if (document.hidden) settleCurtains();
     });
     motion.addEventListener('change', configureMotion);
-    finePointer.addEventListener('change', resetLight);
     window.addEventListener('hashchange', () => {
         if (location.hash) {
             entered = true;
             settleCurtains();
         }
     });
-    window.addEventListener('pagehide', () => {
-        settleCurtains();
-        resetLight();
-    });
+    window.addEventListener('pagehide', settleCurtains);
     window.addEventListener('pageshow', event => {
         if (event.persisted) {
             entered = true;
@@ -185,7 +158,6 @@
     });
     window.addEventListener('resize', () => {
         if (curtainAnimations.length) settleCurtains();
-        resetLight();
     }, { passive: true });
     window.addEventListener('scroll', () => {
         if (curtainAnimations.length && stage.getBoundingClientRect().bottom < innerHeight * .5) {

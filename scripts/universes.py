@@ -75,7 +75,7 @@ def shell(body, title, description, path, universe, prefix='', cover='', scripts
                      '<circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r=".6" fill="currentColor"/></svg>')
         navigation = f'''<header class="site-nav" id="haut">
 <a class="logo" href="{brand_link}" aria-label="Thomas Soleil — Accueil">{brand}</a>
-<div class="portal-title"><h1 id="home-title">Thomas Soleil</h1><p>Photographe en Occitanie</p></div>
+<div class="portal-title"><h1 id="home-title">Thomas Soleil</h1><p>Photographe à Toulouse et Castres</p></div>
 <div class="nav-links" id="navigation"><a class="portal-instagram" href="https://www.instagram.com/tomsol_photo/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de Thomas Soleil (nouvel onglet)">{instagram}</a></div></header>'''
     shared_gallery = f'<link rel="stylesheet" href="{prefix}css/collections.css">' if universe in ('instants-de-vie', 'concerts', 'regards') else ''
     has_presentation = path.endswith('/a-propos.html') or path in ('rugby/index.html', 'instants-de-vie/index.html', 'concerts/index.html')
@@ -128,26 +128,127 @@ def inline_presentation(universe, picture):
     prefix = '../'
     content = (ROOT / 'templates' / template).read_text(encoding='utf-8')
     content = content.replace('{{PORTRAIT}}', picture('images/portrait.jpg', 'Thomas Soleil, photographe à Toulouse et Castres',
-                              prefix, loading='lazy', sizes='(max-width: 760px) 200px, 360px' if universe == 'concerts' else '(max-width: 760px) 90vw, 45vw'))
+                              prefix, loading='lazy', sizes='(max-width: 760px) min(70vw, 300px), 400px' if universe == 'concerts' else '(max-width: 760px) 90vw, 45vw'))
     content = content.replace('<main id="contenu" class="frame personal-page">',
                               '<section class="personal-section" id="presentation" aria-labelledby="presentation-title"><div class="frame personal-page">', 1)
     content = content.replace('</main>', '</div></section>', 1)
     return content.replace('<h1>', '<h2 id="presentation-title">', 1).replace('</h1>', '</h2>', 1)
 
 
+# Tarif horaire des concerts, en euros : repris sur la page Tarifs et dans sa description.
+CONCERT_RATE = 60
+
+# Photo d'ouverture de la page Concerts : elle remplit toute la scène derrière le rideau (recadrée à l'écran).
+# Elle doit venir d'un album de concert public ; sa légende reprend le titre et l'année de cet album.
+CONCERT_HERO = 'images/concert/repetition_bougie_sinfonia/2026_09_RepetBougie-85.jpg'
+
+# Photos montrées sous les billets, rangée par rangée (photos entières, jamais recadrées).
+# Seules les photos d'un album public sont affichées ; chacune ouvre son reportage.
+CONCERT_MOSAIC = [
+    ['images/concert/repetition_bougie_sinfonia/2026_09_RepetBougie-36.jpg',
+     'images/concert/concertsinfonia/IMG_8656 (1) (1).jpg',
+     'images/concert/concertsinfonia/IMG_2096.jpg'],
+    ['images/concert/concertsinfonia/IMG_8581.jpg',
+     'images/concert/repetition_bougie_sinfonia/2026_09_RepetBougie-96.jpg',
+     'images/concert/repetition_bougie_sinfonia/2026_09_RepetBougie-28.jpg',
+     'images/concert/concertsinfonia/IMG_2109.jpg']]
+
+
+def concert_kind(album):
+    """Nature du reportage inscrite sur le billet : le champ « kind » de l'album, sinon déduite du titre."""
+    return album.get('kind') or ('Répétition' if album['title'].startswith('Répétition') else 'Concert')
+
+
+def concert_ticket(index, album, picture):
+    """Billet d'un reportage : la photo, le titre, quelques repères et le talon numéroté."""
+    image = picture(album['cover'], album['title'], '../', loading='lazy',
+                    sizes='(max-width: 760px) calc(100vw - 108px), (max-width: 1000px) 46vw, min(40vw, 470px)', large=True)
+    protected = album.get('password_protected')
+    facts = [('Lieu', album.get('place', '')), ('Accès', 'Mot de passe' if protected else '')]
+    details = ''.join(f'<div><dt>{label}</dt><dd>{escape(value)}</dd></div>' for label, value in facts if value)
+    action = 'Ouvrir l’album' if protected else 'Voir le reportage'
+    return (f'<a class="collection-link concert-ticket" href="../albums/{album["id"]}.html">'
+            '<div class="concert-entry-meta"><span class="concert-ticket-stub-label" aria-hidden="true">Reportage</span>'
+            f'<span class="concert-entry-number"><span class="sr-only">Reportage </span>{index:02d}</span>'
+            f'<span class="concert-entry-year">{escape(album.get("date", ""))}</span>'
+            '<span class="concert-ticket-stub-brand" aria-hidden="true">Thomas Soleil</span></div>'
+            f'<div class="concert-entry-content"><div class="collection-image">{image}{lock_badge(album)}</div>'
+            f'<div class="collection-caption"><div><p class="concert-entry-kind">{escape(concert_kind(album))}</p>'
+            f'<h3>{escape(album["title"])}</h3><dl class="concert-entry-facts">{details}</dl>'
+            f'<span class="concert-entry-open">{action} <span aria-hidden="true">↗</span></span></div></div></div></a>')
+
+
+def concert_mosaic(concerts, picture, asset):
+    """Sélection de photos des reportages publics, en rangées justifiées."""
+    source = {src: album for album in concerts if not album.get('password_protected') for src in album['photos']}
+    rows = []
+    for row in CONCERT_MOSAIC:
+        cells = []
+        for src in row:
+            if src not in source:
+                continue
+            album = source[src]
+            dimensions = asset(src)
+            ratio = dimensions['width'] / dimensions['height']
+            photo = picture(src, album['title'], '../', sizes=f'(max-width: 760px) 50vw, {round(ratio * 340)}px')
+            cells.append(f'<a class="concert-mosaic-photo" style="--ratio:{ratio:.4f}" href="../albums/{album["id"]}.html">'
+                         f'{photo}<span class="concert-mosaic-caption"><span class="sr-only">Voir le reportage : </span>'
+                         f'{escape(album["title"])}</span></a>')
+        if cells:
+            rows.append('<div class="concert-mosaic-row">' + ''.join(cells) + '</div>')
+    if not rows:
+        return ''
+    return ('<section class="concert-extracts frame" aria-labelledby="extracts-title">'
+            '<div class="concert-section-heading"><h2 id="extracts-title">Quelques photos</h2></div>'
+            f'<div class="concert-mosaic">{"".join(rows)}</div></section>')
+
+
+def build_concerts(albums, picture, write, asset):
+    concerts = [a for a in albums if a['category'] == 'Concerts']
+    years = sorted({a['date'] for a in concerts if a.get('date')})
+    summary = f'{len(concerts)} reportage' + ('s' if len(concerts) > 1 else '')
+    if years:
+        summary += ' · ' + (years[0] if len(years) == 1 else f'{years[0]} – {years[-1]}')
+    hero_album = next((a for a in concerts if CONCERT_HERO in a['photos'] and not a.get('password_protected')), None)
+    if hero_album is None:
+        raise ValueError(f'Photo d’ouverture des concerts absente des albums publics : {CONCERT_HERO}')
+    hero_dimensions = asset(CONCERT_HERO, large=True)
+    hero_width_in_vh = 100 * hero_dimensions['width'] / hero_dimensions['height']
+    body = (ROOT / 'templates/concerts.html').read_text(encoding='utf-8')
+    # La photo couvre toute la scène (object-fit: cover) : sa largeur utile dépend aussi de la hauteur d'écran.
+    body = body.replace('{{CONCERT_HERO}}', picture(CONCERT_HERO, hero_album['title'], '../', loading='eager',
+                        sizes=f'max(100vw, {hero_width_in_vh:.2f}dvh)', hero=True, large=True))
+    body = body.replace('{{CONCERT_HERO_CAPTION}}', escape(
+        hero_album['title'] + (', ' + hero_album['date'] if hero_album.get('date') else '')))
+    body = body.replace('{{CONCERT_SUMMARY}}', summary)
+    body = body.replace('{{CONCERT_REPORTAGES}}', ''.join(
+        concert_ticket(index, album, picture) for index, album in enumerate(concerts, 1)))
+    body = body.replace('{{CONCERT_EXTRACTS}}', concert_mosaic(concerts, picture, asset))
+    body = body.replace('{{PRESENTATION}}', inline_presentation('concerts', picture))
+    write('concerts/index.html', shell(body, 'Photographe de concert à Toulouse & Castres | Thomas Soleil',
+          'Chœurs et orchestres en concert et en répétition : les reportages de Thomas Soleil, photographe à Toulouse et Castres.',
+          'concerts/index.html', 'concerts', '../', 'images/optimized/og-concertsinfonia.jpg', ('theatre.js',)))
+
+
 def build_concert_contact(write):
+    """Contact des concerts : le formulaire est un billet, les informations pratiques sont sur son talon."""
     contact = (ROOT / 'templates/contact.html').read_text(encoding='utf-8')
-    contact = contact.replace('class="container"', 'class="frame contact-page"')
-    contact = contact.replace('Racontez-moi votre projet.', 'Votre prochain concert.')
-    contact = contact.replace('Sport, mariage, événement ou concert : quelques mots suffisent pour commencer.',
-                              'Un concert, un chœur ou un événement musical : quelques mots suffisent pour commencer.')
+    contact = contact.replace('class="container"', 'class="frame contact-page concert-subpage"')
+    contact = contact.replace('<header class="page-header"><p class="eyebrow">Contact</p>',
+                              '<header class="concert-page-header"><p class="kicker">Contact</p>', 1)
+    contact = contact.replace('<div class="contact-layout">', '<div class="contact-layout concert-booking">', 1)
+    contact = contact.replace('<aside class="contact-aside">', '<aside class="contact-aside concert-booking-stub">', 1)
+    contact = contact.replace('répondre.<a href=', 'répondre. <a href=', 1)
+    contact = contact.replace('Me contacter.', 'Un concert à photographier ?')
+    contact = contact.replace('Indiquez la date et le lieu, c’est ce qu’il me faut pour vous répondre.',
+                              'Indiquez le concert ou la répétition, la date et le lieu.')
     contact = contact.replace('<option value="concert">', '<option value="concert" selected>')
     contact = re.sub(r'<div class="form-group" id="wedding-offer-group">.*?</select></div>\s*', '', contact, count=1, flags=re.S)
     contact = contact.replace('href="mentions.html#confidentialite"', 'href="../mentions.html#confidentialite"')
-    contact = contact.replace('Votre idée, vos envies, le déroulé de l’événement…',
-                              'Le concert, le lieu, la date et les images dont vous avez besoin…')
+    contact = contact.replace('Votre projet, vos questions…',
+                              'Le programme, la durée, les répétitions éventuelles…')
     write('concerts/contact.html', shell(contact, 'Votre projet concert | Contacter Thomas Soleil',
-          'Un concert, un chœur ou un événement musical ? Contactez Thomas Soleil, photographe entre Toulouse et Castres.',
+          'Un concert ou une répétition à photographier ? Écrivez à Thomas Soleil, photographe à Toulouse et Castres.',
           'concerts/contact.html', 'concerts', '../', 'images/optimized/og-concertsinfonia.jpg', ('contact.js',)))
 
 
@@ -191,11 +292,11 @@ def build_universes(albums, picture, write, home_cover, asset):
                               '<section class="portal-contact" id="contact" aria-labelledby="contact-title"><div class="frame">', 1)
     contact = contact.replace('<p class="eyebrow">', '<p class="portal-eyebrow">', 1)
     contact = contact.replace('<h1>', '<h2 id="contact-title">', 1).replace('</h1>', '</h2>', 1)
-    contact = contact.replace('<h2>Échangeons simplement.</h2>', '<h3>Échangeons simplement.</h3>', 1)
+    contact = contact.replace('<h2>Pour commencer</h2>', '<h3>Pour commencer</h3>', 1)
     contact = contact.replace('</main>', '</div></section>', 1)
     portal = portal.replace('{{CONTACT}}', contact)
-    write('index.html', shell(portal, 'Thomas Soleil | Photographe en Occitanie — Toulouse et Castres',
-          'Mariages et événements, sport, concerts et projets personnels : découvrez les univers de Thomas Soleil, photographe en Occitanie, à Toulouse et Castres.',
+    write('index.html', shell(portal, 'Thomas Soleil | Photographe à Toulouse et Castres',
+          'Thomas Soleil, photographe à Toulouse et Castres : mariages et événements, rugby, concerts et projets personnels.',
           'index.html', 'portal', cover=home_cover, scripts=('contact.js',)))
     cards = []
     for album in rugby:
@@ -212,40 +313,25 @@ def build_universes(albums, picture, write, home_cover, asset):
     body = body.replace('{{RUGBY_CARDS}}', ''.join(cards))
     body = body.replace('{{PRESENTATION}}', inline_presentation('rugby', picture))
     write('rugby/index.html', shell(body, 'Rugby & sport | Thomas Soleil, photographe à Toulouse et Castres',
-          'Reportages rugby au cœur du jeu. Découvrez les rencontres du Castres Olympique photographiées par Thomas Soleil et préparons votre projet sportif.',
+          'Photos de rugby par Thomas Soleil, photographe né à Castres : matchs du Castres Olympique, photos pour les clubs, tournois et écoles de rugby.',
           'rugby/index.html', 'rugby', '../', 'images/optimized/og-co_rct.jpg'))
     contact = (ROOT / 'templates/contact.html').read_text(encoding='utf-8')
-    contact = contact.replace('Racontez-moi votre projet.', 'Votre prochain coup d’envoi.')
-    contact = contact.replace('Sport, mariage, événement ou concert : quelques mots suffisent pour commencer.', 'Un match, un tournoi ou un projet pour votre club : quelques mots suffisent pour commencer.')
+    contact = contact.replace('Me contacter.', 'Un match à couvrir ?')
+    contact = contact.replace('Indiquez la date et le lieu, c’est ce qu’il me faut pour vous répondre.', 'Indiquez le match, le tournoi ou la saison, avec la date et le lieu.')
     contact = contact.replace('<option value="sport">', '<option value="sport" selected>')
     contact = re.sub(r'<div class="form-group" id="wedding-offer-group">.*?</select></div>\s*', '', contact, count=1, flags=re.S)
     contact = contact.replace('href="mentions.html#confidentialite"', 'href="../mentions.html#confidentialite"')
-    contact = contact.replace('Votre idée, vos envies, le déroulé de l’événement…', 'Le match, le lieu, les accès au terrain et les images dont vous avez besoin…')
+    contact = contact.replace('Votre projet, vos questions…', 'Le club, le niveau, les matchs concernés…')
     write('rugby/contact.html', shell(contact, 'Votre projet rugby | Contacter Thomas Soleil',
-          'Un reportage de match ou des images pour votre club ? Contactez Thomas Soleil, photographe de rugby entre Toulouse et Castres.',
+          'Un match, un tournoi ou des photos pour votre club ? Écrivez à Thomas Soleil, photographe de rugby à Toulouse et Castres.',
           'rugby/contact.html', 'rugby', '../', 'images/optimized/og-co_rct.jpg', ('contact.js',)))
     about = (ROOT / 'templates/rugby-about.html').read_text(encoding='utf-8')
-    about = about.replace('{{PORTRAIT}}', picture('images/portrait.jpg', 'Thomas Soleil, joueur de rugby et photographe', '../',
+    about = about.replace('{{PORTRAIT}}', picture('images/portrait.jpg', 'Thomas Soleil, photographe de rugby', '../',
                          loading='eager', sizes='(max-width: 760px) 90vw, 45vw'))
     write('rugby/a-propos.html', shell(about, 'À propos | Thomas Soleil, photographe de rugby',
-          'Joueur et photographe de rugby entre Toulouse et Castres : découvrez Thomas Soleil et son regard sur le terrain.',
+          'Thomas Soleil, photographe de rugby à Toulouse et Castres.',
           'rugby/a-propos.html', 'rugby', '../', 'images/optimized/og-co_mhr.jpg'))
-    concerts = [a for a in albums if a['category'] == 'Concerts']
-    entries = []
-    for index, album in enumerate(concerts, 1):
-        image = picture(album['cover'], album['title'], '../', loading='lazy',
-                        sizes='(max-width: 760px) calc(100vw - 40px), (max-width: 1000px) 60vw, 40vw', large=True)
-        year = escape(album.get('date', ''))
-        entries.append(f'''<a class="collection-link concert-ticket" href="../albums/{album['id']}.html"><div class="concert-entry-meta"><span class="concert-ticket-stub-label" aria-hidden="true">Reportage</span><span class="concert-entry-number"><span class="sr-only">Reportage </span>{index:02d}</span><span>{year}</span><span class="concert-ticket-stub-brand" aria-hidden="true">Thomas Soleil</span></div><div class="concert-entry-content"><div class="collection-image">{image}{lock_badge(album)}</div><div class="collection-caption"><div><p class="concert-entry-kind">Concert &amp; chœur</p><h2>{escape(album['title'])}</h2><span class="concert-entry-open">Voir le reportage <span aria-hidden="true">↗</span></span></div></div></div></a>''')
-    body = (ROOT / 'templates/concerts.html').read_text(encoding='utf-8')
-    body = body.replace('{{CONCERT_HERO}}', picture(by_id['concertsinfonia']['cover'],
-                        'Le chœur Sinfonia Garonna et les musiciens réunis autour de leur chef', '../',
-                        loading='eager', sizes='(max-width: 760px) calc(100vw - 40px), (max-height: 650px) min(680px, 86vw), min(1100px, max(480px, calc((100svh - 347px)*1.5)), 86vw)', hero=True, large=True))
-    body = body.replace('{{CONCERT_REPORTAGES}}', ''.join(entries))
-    body = body.replace('{{PRESENTATION}}', inline_presentation('concerts', picture))
-    write('concerts/index.html', shell(body, 'Photographe de concert à Toulouse & Castres | Thomas Soleil',
-          'Concerts, chœurs et orchestres en images : les reportages de Thomas Soleil, photographe de concert à Toulouse et Castres.',
-          'concerts/index.html', 'concerts', '../', 'images/optimized/og-concertsinfonia.jpg', ('theatre.js',)))
+    build_concerts(albums, picture, write, asset)
     build_concert_contact(write)
     build_life_universe(albums, picture, write, asset)
     print_references = build_prints(albums, picture, write, shell)
@@ -273,11 +359,11 @@ def build_universes(albums, picture, write, home_cover, asset):
     if individual_photos:
         body += lightbox_markup()
     write('regards/index.html', shell(body, 'Projets personnels | Thomas Soleil',
-          'Séries et photographies individuelles de Thomas Soleil : argentique, paysages et projets personnels.',
+          'Les projets personnels de Thomas Soleil : séries argentiques, montagne et photos isolées.',
           'regards/index.html', 'regards', '../', 'images/optimized/og-Argentique.jpg', ('regards.js', 'gallery.js')))
     for universe, album_id, title, description in [
-        ('rugby', 'co_mhr', 'Tarifs sport & rugby | Thomas Soleil', 'Reportage de match, tournoi et vie de club : prestations sportives sur devis à Toulouse et Castres.'),
-        ('concerts', 'concertsinfonia', 'Tarifs concerts | Thomas Soleil', 'Reportages de concerts, chœurs et événements musicaux : une couverture sur devis adaptée à votre scène.')]:
+        ('rugby', 'co_mhr', 'Tarifs sport & rugby | Thomas Soleil', 'Photos de match, saison et tournois pour les clubs de rugby, sur devis. Galerie complète le lendemain du match. Toulouse et Castres.'),
+        ('concerts', 'concertsinfonia', 'Tarifs concerts | Thomas Soleil', f'Photos de concert et de répétition : {CONCERT_RATE} € de l’heure, retouche comprise, sans minimum. Toulouse et Castres.')]:
         album = by_id[album_id]
         content = (ROOT / 'templates' / (universe + '-tarifs.html')).read_text(encoding='utf-8')
         if universe == 'rugby':
@@ -289,13 +375,14 @@ def build_universes(albums, picture, write, home_cover, asset):
                                           sizes='(max-width: 760px) calc(100vw - 40px), 33vw'))
         else:
             content = content.replace('{{PHOTO}}', picture(album['cover'], album['title'], '../', loading='eager',
-                                      sizes='(max-width: 760px) 90vw, 45vw', large=True))
+                                      sizes='(max-width: 760px) calc(100vw - 108px), (max-width: 1000px) 60vw, 420px', large=True))
+            content = content.replace('{{RATE}}', str(CONCERT_RATE))
         path = universe + '/tarifs.html'
         write(path, shell(content, title, description, path, universe, '../', 'images/optimized/og-' + album_id + '.jpg'))
     return print_references
 
 
-LIFE_OFFERS = [('Reportage de mariage — cérémonie', 600), ('Reportage de mariage — cérémonie et cocktail', 850),
+LIFE_OFFERS = [('Reportage de mariage — cérémonie', 500), ('Reportage de mariage — demi-journée', 750),
                ('Reportage de mariage — journée complète', 1000), ('Reportage de baptême', 250),
                ('Reportage de fiançailles', 300), ('Séance photo de couple', 100), ('Séance photo de famille', 100)]
 
@@ -343,11 +430,11 @@ def build_life_universe(albums, picture, write, asset):
         body = body.replace('{{' + token + '}}', picture(src, alt, '../', sizes='(max-width: 860px) calc(100vw - 40px), 360px'))
     body = body.replace('{{PRESENTATION}}', inline_presentation('instants-de-vie', picture))
     write('instants-de-vie/index.html', shell(body, 'Mariage & événements | Thomas Soleil, Toulouse & Castres',
-          'Photographies de mariage et d’événements à Toulouse et Castres. Découvrez les images et l’approche discrète de Thomas Soleil.',
+          'Photographe de mariage et de baptême à Toulouse et Castres. Mariage à partir de 500 €, photos livrées dans une galerie privée.',
           'instants-de-vie/index.html', 'instants-de-vie', '../', cover))
     for name, template, title, description in [
-        ('a-propos', 'life-about', 'À propos | Thomas Soleil, mariage et événements', 'Le regard et le parcours de Thomas Soleil, photographe de mariage à Toulouse et Castres.'),
-        ('prestations', 'life-services', 'Tarifs mariage, baptême & événements | Thomas Soleil', 'Mariage : 600 €, 850 € ou 1 000 €. Baptême : 250 €. Fiançailles : 300 €. Couple et famille : 100 € en tarif de lancement. Numérique inclus, argentique en option.')]:
+        ('a-propos', 'life-about', 'À propos | Thomas Soleil, mariage et événements', 'Thomas Soleil, photographe de mariage et d’événements à Toulouse et Castres.'),
+        ('prestations', 'life-services', 'Tarifs mariage, baptême & événements | Thomas Soleil', 'Mariage : 500 €, 750 € ou 1 000 €. Baptême : 250 €. Fiançailles : 300 €. Couple et famille : 100 €. Photos retouchées, livrées dans une galerie privée.')]:
         content = (ROOT / 'templates' / (template + '.html')).read_text(encoding='utf-8')
         if template == 'life-services':
             content = content.replace('{{WEDDING_SERVICES_PHOTO}}', picture(
@@ -365,7 +452,7 @@ def build_life_universe(albums, picture, write, asset):
         extra = offers(LIFE_OFFERS) if template == 'life-services' else ()
         write(path, shell(content, title, description, path, 'instants-de-vie', '../', cover, schema_extra=extra))
     contact = (ROOT / 'templates/contact.html').read_text(encoding='utf-8')
-    contact = contact.replace('Racontez-moi votre projet.', 'Parlons de votre histoire.')
+    contact = contact.replace('Me contacter.', 'Parlons de votre journée.')
     contact = contact.replace('class="container"', 'class="container life-contact-page"', 1)
     before_aside, _, aside_and_form = contact.partition('<aside class="contact-aside">')
     _, _, after_aside = aside_and_form.partition('</aside>')
@@ -381,7 +468,7 @@ def build_life_universe(albums, picture, write, asset):
     contact = contact.replace('<option value="portrait">Portrait</option><option value="sport">Sport</option><option value="concert">Concert</option>',
                               '<option value="bapteme">Baptême</option><option value="fiancailles">Fiançailles</option><option value="couple">Couple</option><option value="famille">Famille</option>')
     contact = contact.replace('href="mentions.html#confidentialite"', 'href="../mentions.html#confidentialite"')
-    contact = contact.replace('Votre idée, vos envies, le déroulé de l’événement…', 'Votre histoire, le lieu, la date et les images qui vous tiennent à cœur…')
+    contact = contact.replace('Votre projet, vos questions…', 'Le lieu de la cérémonie, celui de la réception, vos questions…')
     write('instants-de-vie/contact.html', shell(contact, 'Votre histoire | Contacter Thomas Soleil',
-          'Un mariage, un baptême ou une séance à deux ? Contactez Thomas Soleil, photographe à Toulouse et Castres.',
+          'Un mariage, un baptême ou une séance en famille ? Écrivez à Thomas Soleil, photographe à Toulouse et Castres.',
           'instants-de-vie/contact.html', 'instants-de-vie', '../', cover, ('contact.js',)))
