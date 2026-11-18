@@ -204,7 +204,7 @@ def run():
                         first, second = cards.nth(0).bounding_box(), cards.nth(1).bounding_box()
                         assert second['y'] >= first['y'] + first['height'], 'Concert reportages must follow one another vertically'
                 if width in [390, 1440] and path in ['index.html', 'rugby/index.html', 'instants-de-vie/index.html', 'concerts/index.html']:
-                    for photo in page.locator('.universe-door img, .life-hero-image img, .life-stories img, #presentation img, .concert-reportages img').all():
+                    for photo in page.locator('.home-slide.is-active img, .life-hero-image img, .life-stories img, #presentation img, .concert-reportages img').all():
                         photo.scroll_into_view_if_needed()
                         page.wait_for_function('(image) => image.complete && image.naturalWidth > 0', arg=photo.element_handle())
                     if path in ['rugby/index.html', 'instants-de-vie/index.html', 'concerts/index.html']:
@@ -228,13 +228,45 @@ def run():
         page.set_viewport_size({'width': 390, 'height': 844})
         page.goto(base + '/index.html')
         expect(page.locator('.menu-toggle')).to_have_count(0)
-        for link in page.locator('#navigation a').all():
-            expect(link).to_be_visible()
+        expect(page.locator('#navigation .portal-instagram')).to_be_visible()
+        # Sur téléphone, « À propos » et « Contact » ne sont pas dans le bandeau : on les trouve en défilant.
+        expect(page.locator('#navigation .portal-link')).to_have_count(2)
+        for link in page.locator('#navigation .portal-link').all():
+            expect(link).to_be_hidden()
         assert not page.locator('#navigation').evaluate('(el) => el.inert')
-        doors = [door.bounding_box() for door in page.locator('.universe-door').all()]
-        assert len({round(box['y']) for box in doors}) == 4, 'Phone doors are stacked'
-        assert all(abs(box['width'] - 390) < 1 for box in doors), 'Phone doors span the screen'
-        assert doors[-1]['y'] + doors[-1]['height'] <= 845, 'The four doors fit on the first phone screen'
+        stage_box = page.locator('.home-stage').bounding_box()
+        assert abs(stage_box['y']) <= 1 and abs(stage_box['height'] - 844) <= 1, 'The slideshow fills the first phone screen'
+        chapters = [chapter.bounding_box() for chapter in page.locator('.home-chapter').all()]
+        assert len(chapters) == 4 and len({round(box['y']) for box in chapters}) == 1, 'The four universes share one row on a phone'
+        assert chapters[-1]['y'] + chapters[-1]['height'] <= 845, 'The four universes are reachable on the first phone screen'
+        phone_photo = page.locator('.home-slide.is-active img')
+        page.wait_for_function('(image) => image.complete && image.naturalWidth > 0', arg=phone_photo.element_handle())
+        assert phone_photo.evaluate('(image) => image.naturalHeight > image.naturalWidth'), 'Phones show upright photographs'
+        # Glisser le doigt : vers la gauche l'univers suivant, vers la droite le précédent ; un geste vertical fait défiler la page.
+        touch = browser.new_context(viewport={'width': 390, 'height': 844}, has_touch=True, is_mobile=True)
+        touch.route('https://**/*', lambda route: route.abort())
+        phone = touch.new_page()
+        phone.goto(base + '/index.html')
+        cdp = touch.new_cdp_session(phone)
+        def swipe(x0, y0, x1, y1):
+            cdp.send('Input.dispatchTouchEvent', {'type': 'touchStart', 'touchPoints': [{'x': x0, 'y': y0}]})
+            for step in range(1, 7):
+                cdp.send('Input.dispatchTouchEvent', {'type': 'touchMove', 'touchPoints': [{'x': x0 + (x1 - x0) * step / 6, 'y': y0 + (y1 - y0) * step / 6}]})
+            cdp.send('Input.dispatchTouchEvent', {'type': 'touchEnd', 'touchPoints': []})
+        shown = phone.locator('.home-chapter.is-active')
+        for gesture, universe in [((320, 420, 80, 430), 'sport'), ((80, 420, 320, 425), 'life'), ((80, 420, 320, 425), 'art')]:
+            swipe(*gesture)
+            expect(shown).to_have_class(re.compile(r'\bhome-chapter-' + universe + r'\b'))
+            expect(phone.locator('.home-slide.is-active')).to_have_class(re.compile(r'\bhome-slide-' + universe + r'\b'))
+        expect(phone.locator('.home-stage')).not_to_have_class(re.compile(r'\bis-playing\b'))
+        swipe(200, 600, 210, 250)
+        phone.wait_for_timeout(300)
+        expect(shown).to_have_class(re.compile(r'\bhome-chapter-art\b'))
+        phone.evaluate('scrollTo(0, 0)')
+        swipe(300, 780, 60, 780)
+        expect(shown).to_have_class(re.compile(r'\bhome-chapter-life\b'))
+        assert phone.url.endswith('/index.html'), 'A swipe across the universes changes the photo without opening a universe'
+        touch.close()
         page.goto(base + '/rugby/index.html')
         menu = page.locator('.menu-toggle')
         expect(menu).to_have_accessible_name('Ouvrir le menu')
@@ -251,18 +283,22 @@ def run():
         assert not page.locator('#navigation').evaluate('(el) => el.inert')
         page.locator('#navigation a').first.focus()
         expect(page.locator('#navigation a').first).to_be_focused()
-        results.append('Menus: homepage links without a menu, mobile keyboard/focus and desktop universe navigation')
+        results.append('Menus: homepage without a menu, phone swipes between universes, mobile keyboard/focus and desktop universe navigation')
 
         page.goto(base + '/index.html')
         bar = page.locator('.site-nav')
         expect(bar.locator('h1')).to_have_text('Thomas Soleil')
-        assert [link.get_attribute('href') for link in page.locator('#navigation a').all()] == ['https://www.instagram.com/tomsol_photo/']
+        assert [link.get_attribute('href') for link in page.locator('#navigation a').all()] == ['#a-propos', '#contact', 'https://www.instagram.com/tomsol_photo/']
+        for link in page.locator('#navigation a').all():
+            expect(link).to_be_visible()
         instagram = page.locator('#navigation .portal-instagram')
         expect(instagram).to_have_accessible_name('Instagram de Thomas Soleil (nouvel onglet)')
         expect(instagram).to_have_attribute('target', '_blank')
         assert min(instagram.bounding_box()[side] for side in ('width', 'height')) >= 44, 'The Instagram icon is a comfortable target'
         for anchor in ['a-propos', 'contact']:
             assert page.locator('#' + anchor).bounding_box()['y'] >= 899, 'About and contact come after the first screen'
+        page.locator('#navigation a[href="#a-propos"]').click()
+        page.wait_for_function('Math.abs(document.getElementById("a-propos").getBoundingClientRect().top) <= 2')
         page.locator('#a-propos .button').click()
         page.wait_for_function('Math.abs(document.getElementById("contact").getBoundingClientRect().top) <= 2')
         page.evaluate('scrollTo({top: 0, behavior: "instant"})')
@@ -272,26 +308,58 @@ def run():
         expect(page.locator('.site-nav img')).to_have_count(1)
         assert page.locator('body').evaluate('(el) => getComputedStyle(el).backgroundColor') == 'rgb(0, 0, 0)'
         expect(page.locator('#presentation')).to_have_count(0)
-        expect(page.locator('.universe-door')).to_have_count(4)
-        doors = [door.bounding_box() for door in page.locator('.universe-door').all()]
+        expect(page.locator('.home-chapter')).to_have_count(4)
+        expect(page.locator('.home-slide')).to_have_count(4)
+        expect(page.locator('.home-slide.is-active')).to_have_count(1)
+        assert all(copy.evaluate('(el) => el.firstElementChild.tagName') == 'H2' for copy in page.locator('.home-copy').all()), 'Each universe opens on its title, without a number line'
+        stage_box = page.locator('.home-stage').bounding_box()
         bar_box = bar.bounding_box()
-        assert len({round(box['y']) for box in doors}) == 1, 'Desktop doors stand side by side'
-        assert all(box['y'] >= bar_box['y'] + bar_box['height'] - 1 for box in doors), 'Doors start below the name bar'
-        assert all(abs(box['y'] + box['height'] - 900) <= 1 for box in doors), 'The doors fill the first screen exactly'
-        for photo in page.locator('.universe-door img').all():
+        assert abs(stage_box['y']) <= 1 and abs(stage_box['height'] - 900) <= 1, 'The slideshow fills the first screen exactly'
+        assert bar_box['y'] <= 1 and bar_box['y'] + bar_box['height'] <= 120, 'The name bar lies over the photograph'
+        chapters = [chapter.bounding_box() for chapter in page.locator('.home-chapter').all()]
+        assert len({round(box['y']) for box in chapters}) == 1, 'Desktop universes stand side by side'
+        assert all(box['y'] + box['height'] <= 900 for box in chapters), 'The four universes are on the first screen'
+        assert page.locator('.home-slide-art img').get_attribute('src') is None, 'Later photos wait until they are shown'
+        page.locator('.home-chapter-sport').hover()
+        expect(page.locator('.home-slide.is-active')).to_have_class(re.compile(r'\bhome-slide-sport\b'))
+        expect(page.locator('.home-copy.is-active h2')).to_have_text(re.compile('Rugby', re.I))
+        page.mouse.move(700, 300)
+        # Flèches du clavier : univers suivant, précédent, et retour au dernier après le premier.
+        for key, universe in [('ArrowRight', 'concert'), ('ArrowLeft', 'sport'), ('ArrowLeft', 'life'), ('ArrowLeft', 'art'), ('ArrowRight', 'life')]:
+            page.keyboard.press(key)
+            expect(page.locator('.home-slide.is-active')).to_have_class(re.compile(r'\bhome-slide-' + universe + r'\b'))
+            expect(page.locator('.home-chapter.is-active')).to_have_class(re.compile(r'\bhome-chapter-' + universe + r'\b'))
+        for photo in page.locator('.home-slide img').all():
             page.wait_for_function('(image) => image.complete && image.naturalWidth > 0', arg=photo.element_handle())
-            assert photo.evaluate('(image) => image.naturalHeight > image.naturalWidth'), 'Desktop doors use upright photographs'
-        page.locator('.door-sport').hover()
-        page.wait_for_timeout(900)
-        assert page.locator('.door-sport').bounding_box()['width'] > 1.5 * page.locator('.door-life').bounding_box()['width'], 'The hovered door opens wider'
-        page.mouse.move(700, 30)
-        destinations = [door.get_attribute('href') for door in page.locator('.universe-door').all()]
-        assert len(set(destinations)) == 4
+            assert photo.evaluate('(image) => image.naturalWidth > image.naturalHeight'), 'Desktop slides use landscape photographs'
+        assert 'argentiqueNB-10' in page.locator('.home-slide-art img').evaluate('(image) => image.currentSrc'), 'Personal projects show the Garonne wakeboarder on a computer'
+        page.locator('#contact input').first.focus()
+        page.keyboard.press('ArrowRight')
+        page.wait_for_timeout(300)
+        expect(page.locator('.home-slide.is-active')).to_have_class(re.compile(r'\bhome-slide-life\b'))
+        page.evaluate('document.activeElement.blur(); scrollTo({top: 0, behavior: "instant"})')
+        destinations = [chapter.get_attribute('href') for chapter in page.locator('.home-chapter').all()]
         assert destinations == ['instants-de-vie/index.html', 'rugby/index.html', 'concerts/index.html', 'regards/index.html']
-        for door in page.locator('.universe-door').all():
-            href = door.get_attribute('href')
-            assert page.request.get(base + '/' + href.split('#')[0]).ok, href
-        page.locator('.door-sport').click()
+        assert [link.get_attribute('href') for link in page.locator('.home-go').all()] == destinations
+        for href in destinations:
+            assert page.request.get(base + '/' + href).ok, href
+        # Sans préférence de mouvement réduit, les univers défilent seuls ; le survol met en pause, une flèche arrête.
+        motion = browser.new_context(viewport={'width': 1440, 'height': 900})
+        motion.route('https://**/*', lambda route: route.abort())
+        auto = motion.new_page()
+        auto.goto(base + '/index.html')
+        expect(auto.locator('.home-stage')).to_have_class(re.compile(r'\bis-playing\b'))
+        auto.evaluate("document.querySelector('.home-stage').style.setProperty('--home-delay', '.4s')")
+        for universe in ['sport', 'concert']:
+            expect(auto.locator('.home-slide.is-active')).to_have_class(re.compile(r'\bhome-slide-' + universe + r'\b'))
+        auto.locator('.home-chapter-life').hover()
+        expect(auto.locator('.home-stage')).to_have_class(re.compile(r'\bis-paused\b'))
+        auto.wait_for_timeout(1200)
+        expect(auto.locator('.home-slide.is-active')).to_have_class(re.compile(r'\bhome-slide-life\b'))
+        auto.keyboard.press('ArrowRight')
+        expect(auto.locator('.home-stage')).not_to_have_class(re.compile(r'\bis-playing\b'))
+        motion.close()
+        page.locator('.home-chapter-sport').click()
         page.wait_for_url('**/rugby/index.html')
         expect(page.locator('body')).to_have_class('rugby-page')
         hero_photo = page.locator('.rugby-hero>img')
@@ -310,9 +378,9 @@ def run():
         page.locator('#navigation a').filter(has_text='Tous les univers').click()
         page.wait_for_url('**/index.html#haut')
         assert page.evaluate('scrollY') <= 1, 'Sport return must show the top of the cover'
-        results.append('Four universe links; Rugby landing, album, preset contact and return to portal')
+        results.append('Slideshow home: four universes, keyboard arrows and autoplay; Rugby landing, album, preset contact and return to portal')
 
-        for door, destination, category in [('door-life', 'instants-de-vie', 'Mariage'), ('door-concert', 'concerts', 'Concerts')]:
+        for door, destination, category in [('home-chapter-life', 'instants-de-vie', 'Mariage'), ('home-chapter-concert', 'concerts', 'Concerts')]:
             page.goto(base + '/index.html')
             page.locator('.' + door).click()
             page.wait_for_url('**/' + destination + '/index.html')
@@ -393,9 +461,9 @@ def run():
         expect(page.locator('#project')).to_have_value('concert')
         results.append('Concert presentation: current portrait, navigation anchor and contact preset')
         page.goto(base + '/index.html')
-        for selector in ['h1', '.universe-door:not(.door-sport) h2', '.nav-links a']:
+        for selector in ['h1', '.home-copy:not(.home-copy-sport) h2', '.nav-links a']:
             assert all(el.evaluate('(el) => getComputedStyle(el).fontWeight') == '400' for el in page.locator(selector).all()), selector
-        expect(page.locator('.door-sport h2')).to_have_css('font-weight', '900')
+        expect(page.locator('.home-copy-sport h2')).to_have_css('font-weight', '900')
         page.goto(base + '/rugby/index.html')
         for selector in ['h1', 'h2', 'h3']:
             assert all(el.evaluate('(el) => getComputedStyle(el).fontWeight') == '900' for el in page.locator(selector).all()), selector
@@ -599,13 +667,13 @@ def run():
                 page.evaluate('document.documentElement.style.fontSize="200%"')
                 page.evaluate('document.fonts.ready')
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1'), (path, width, '200% text overflows')
-                selector = '.universe-door .door-copy' if path == 'index.html' else '.life-hero-heading'
+                selector = '.home-copy.is-active, .home-chapter' if path == 'index.html' else '.life-hero-heading'
                 for element in page.locator(selector).all():
                     assert element.evaluate('''el => {
                         const bounds = el.getBoundingClientRect();
                         const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
                         while (walker.nextNode()) {
-                            if (!walker.currentNode.textContent.trim()) continue;
+                            if (!walker.currentNode.textContent.trim() || walker.currentNode.parentElement.closest('.sr-only')) continue;
                             const range = document.createRange();
                             range.selectNodeContents(walker.currentNode);
                             for (const rect of range.getClientRects()) {
@@ -615,10 +683,12 @@ def run():
                         return true;
                     }'''), (path, width, 'Enlarged text must remain inside its container')
                 if path == 'index.html':
-                    positions = [el.bounding_box()['y'] for el in page.locator('.universe-door').all()]
-                    assert len(set(positions)) == 4, 'Enlarged doors must have four separate rows'
+                    boxes = [el.bounding_box() for el in page.locator('.home-chapter').all()]
+                    assert all(a['x'] + a['width'] <= b['x'] + 1 or b['x'] + b['width'] <= a['x'] + 1 or
+                               a['y'] + a['height'] <= b['y'] + 1 or b['y'] + b['height'] <= a['y'] + 1
+                               for k, a in enumerate(boxes) for b in boxes[k + 1:]), 'Enlarged universe names must not overlap'
                 page.screenshot(path=str(OUT / f'text-200-{path.replace("/", "-")}-{width}.png'))
-        results.append('200% text: readable homepage doors and complete wedding title at 320 and 390px')
+        results.append('200% text: readable homepage slideshow and complete wedding title at 320 and 390px')
 
         nojs=browser.new_context(java_script_enabled=False,viewport={'width':390,'height':844})
         nojs.route('https://**/*',lambda route:route.abort())
@@ -642,7 +712,7 @@ def run():
         results.append('Without JavaScript: album links, navigation and native form fallback')
         page.set_viewport_size({'width':390,'height':844})
         page.goto(base+'/index.html',wait_until='networkidle')
-        link = page.locator('#navigation a').first
+        link = page.locator('#navigation .portal-instagram')
         link_box = link.bounding_box()
         link_color = tuple(map(int,re.findall(r'\d+',link.evaluate('(el)=>getComputedStyle(el).color'))[:3]))
         pixels = Image.open(io.BytesIO(page.screenshot())).convert('RGB')

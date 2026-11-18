@@ -43,9 +43,10 @@ class Page(HTMLParser):
         if tag == 'meta' and a.get('name') == 'robots': self.noindex = 'noindex' in a.get('content', '').lower()
         for attr in ('src', 'href'):
             if a.get(attr): self.refs.append(a[attr])
-        for part in (a.get('srcset', '') + ',' + a.get('data-viewer-srcset', '')).split(','):
+        for part in (a.get('srcset', '') + ',' + a.get('data-srcset', '') + ',' + a.get('data-viewer-srcset', '')).split(','):
             if part.strip(): self.refs.append(part.strip().split()[0])
-        if a.get('data-viewer-src'): self.refs.append(a['data-viewer-src'])
+        for attr in ('data-src', 'data-viewer-src'):
+            if a.get(attr): self.refs.append(a[attr])
 
 def check():
     pages = {}

@@ -67,8 +67,8 @@ def shell(body, title, description, path, universe, prefix='', cover='', scripts
         if path != 'regards/tirages.html':
             footer = ''
     if portal:
-        # Bandeau de l'accueil : logo, nom du photographe et une seule icône vers Instagram.
-        # « À propos » et « Contact » se trouvent en défilant, sous les portes.
+        # Bandeau de l'accueil, posé sur le diaporama : logo, nom du photographe, « À propos », « Contact »
+        # et Instagram. Sur tablette et téléphone, seule l'icône Instagram reste ; les deux sections se trouvent en défilant.
         instagram = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" '
                      'stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" '
                      'aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5"/>'
@@ -76,7 +76,7 @@ def shell(body, title, description, path, universe, prefix='', cover='', scripts
         navigation = f'''<header class="site-nav" id="haut">
 <a class="logo" href="{brand_link}" aria-label="Thomas Soleil — Accueil">{brand}</a>
 <div class="portal-title"><h1 id="home-title">Thomas Soleil</h1><p>Photographe à Toulouse et Castres</p></div>
-<div class="nav-links" id="navigation"><a class="portal-instagram" href="https://www.instagram.com/tomsol_photo/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de Thomas Soleil (nouvel onglet)">{instagram}</a></div></header>'''
+<div class="nav-links" id="navigation"><a class="portal-link" href="#a-propos">À propos</a><a class="portal-link" href="#contact">Contact</a><a class="portal-instagram" href="https://www.instagram.com/tomsol_photo/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de Thomas Soleil (nouvel onglet)">{instagram}</a></div></header>'''
     shared_gallery = f'<link rel="stylesheet" href="{prefix}css/collections.css">' if universe in ('instants-de-vie', 'concerts', 'regards') else ''
     has_presentation = path.endswith('/a-propos.html') or path in ('rugby/index.html', 'instants-de-vie/index.html', 'concerts/index.html')
     presentation = f'<link rel="stylesheet" href="{prefix}css/presentation.css">' if has_presentation else ''
@@ -252,38 +252,41 @@ def build_concert_contact(write):
           'concerts/contact.html', 'concerts', '../', 'images/optimized/og-concertsinfonia.jpg', ('contact.js',)))
 
 
-def door_picture(asset, tall, wide, alt, first=False):
-    """Photo d'une porte de l'accueil : cadrage horizontal sur téléphone, vertical au-delà."""
+def home_picture(asset, wide, tall, alt, first=False):
+    """Photo plein écran d'un univers de l'accueil : horizontale sur un écran large, verticale sur un écran en hauteur."""
     def candidates(source):
         return ', '.join(f'{quote(path, safe="/")} {width}w' for path, width in source['variants'])
-    portrait, landscape = asset(tall, large=True), asset(wide, large=True)
-    # Les portes recadrent la photo (object-fit: cover) : la largeur utile dépend aussi de la hauteur d'écran.
+    landscape, portrait = asset(wide, large=True), asset(tall, large=True)
+    # La photo couvre tout l'écran (object-fit: cover) : la largeur utile dépend aussi de la hauteur d'écran.
+    wide_ratio = 100 * landscape['width'] / landscape['height']
     tall_ratio = 100 * portrait['width'] / portrait['height']
-    wide_ratio = 25 * landscape['width'] / landscape['height']
-    return (f'<picture><source media="(max-width: 760px)" srcset="{candidates(landscape)}" '
-            f'sizes="max(100vw, {wide_ratio:.0f}vh)" width="{landscape["width"]}" height="{landscape["height"]}">'
-            f'<img src="{quote(portrait["variants"][0][0], safe="/")}" srcset="{candidates(portrait)}" '
-            f'sizes="(max-width: 1100px) max(50vw, {tall_ratio / 2:.0f}vh), max(42vw, {tall_ratio:.0f}vh)" '
-            f'width="{portrait["width"]}" height="{portrait["height"]}" alt="{escape(alt, quote=True)}" '
-            f'loading="eager" decoding="async"' + (' fetchpriority="high"' if first else '') + '></picture>')
+    # Seule la première photo se charge avec la page ; les autres attendent d'être montrées (data-src, js/portal.js),
+    # pour que le premier écran reste léger sur téléphone.
+    lazy = '' if first else 'data-'
+    # Écran en hauteur : 530 px annoncés, l'export de 1600 px suffit même aux écrans très denses (×3) ; jamais 2560 px sur un téléphone.
+    return (f'<picture><source media="(orientation: portrait)" {lazy}srcset="{candidates(portrait)}" '
+            f'sizes="min(max(100vw, {tall_ratio:.0f}vh), 530px)" width="{portrait["width"]}" height="{portrait["height"]}">'
+            f'<img {lazy}src="{quote(landscape["variants"][0][0], safe="/")}" {lazy}srcset="{candidates(landscape)}" '
+            f'sizes="max(100vw, {wide_ratio:.0f}vh)" width="{landscape["width"]}" height="{landscape["height"]}" '
+            f'alt="{escape(alt, quote=True)}" decoding="async"' + (' fetchpriority="high"' if first else '') + '></picture>')
 
 
 def build_universes(albums, picture, write, home_cover, asset):
     rugby = [a for a in albums if a['category'] == 'Rugby']
     by_id = {a['id']: a for a in albums}
     portal = (ROOT / 'templates/portal.html').read_text(encoding='utf-8')
-    # Chaque porte a deux cadrages : une photo verticale pour les panneaux hauts (ordinateur, tablette)
-    # et une photo horizontale pour les bandeaux du téléphone. Toutes viennent d'albums publics.
-    art = by_id['autres']['photos'][1]
-    for index, (token, tall, wide, alt) in enumerate([
-        ('LIFE_IMAGE', 'images/mariage/mariage_argentique (28).jpg', by_id['mariage']['cover'],
+    # Chaque univers a deux cadrages : une photo horizontale pour les écrans larges (ordinateur)
+    # et une photo verticale pour les écrans en hauteur (téléphone). Toutes viennent d'albums publics.
+    for index, (token, wide, tall, alt) in enumerate([
+        ('LIFE_IMAGE', 'images/mariage/mariage_argentique (35).jpg', 'images/mariage/mariage_argentique (28).jpg',
          'Les mariés, le jour de leur mariage'),
-        ('SPORT_IMAGE', 'images/rugby/co_rct/26_06_CO-RCT-0753.jpg', by_id['co_mhr']['cover'],
-         'Une action de match de rugby'),
-        ('CONCERT_IMAGE', 'images/concert/concertsinfonia/IMG_2300 (1).jpg', by_id['concertsinfonia']['cover'],
-         'Le chœur Sinfonia Garonna en concert'),
-        ('ART_IMAGE', art, art, 'Une personne assise dans une église, en noir et blanc')]):
-        portal = portal.replace('{{' + token + '}}', door_picture(asset, tall, wide, alt, first=index == 0))
+        ('SPORT_IMAGE', 'images/rugby/co_rct/26_06_CO-RCT-0796.jpg', 'images/rugby/co_rct/26_06_CO-RCT-0753.jpg',
+         'Une touche de nuit, pendant un match de rugby'),
+        ('CONCERT_IMAGE', 'images/concert/repetition_bougie_sinfonia/2026_09_RepetBougie-19.jpg',
+         'images/concert/concertsinfonia/IMG_2300 (1).jpg', 'Le chœur Sinfonia Garonna en concert'),
+        ('ART_IMAGE', 'images/argentique/argentique_toulouse/argentiqueNB-10.jpg', by_id['autres']['photos'][1],
+         'Une photographie en noir et blanc, tirée des projets personnels')]):
+        portal = portal.replace('{{' + token + '}}', home_picture(asset, wide, tall, alt, first=index == 0))
     # « À propos » et « Contact » ne sont plus des pages : ce sont deux sections sous les portes.
     portal = portal.replace('{{PORTRAIT}}', picture('images/portrait.jpg', 'Thomas Soleil, photographe à Toulouse et Castres',
                             loading='lazy', sizes='(max-width: 760px) calc(100vw - 40px), 40vw'))
@@ -297,7 +300,7 @@ def build_universes(albums, picture, write, home_cover, asset):
     portal = portal.replace('{{CONTACT}}', contact)
     write('index.html', shell(portal, 'Thomas Soleil | Photographe à Toulouse et Castres',
           'Thomas Soleil, photographe à Toulouse et Castres : mariages et événements, rugby, concerts et projets personnels.',
-          'index.html', 'portal', cover=home_cover, scripts=('contact.js',)))
+          'index.html', 'portal', cover=home_cover, scripts=('contact.js', 'portal.js')))
     cards = []
     for album in rugby:
         image = picture(album['cover'], album['title'], '../', sizes='(max-width: 760px) calc(100vw - 40px), 30vw', large=True)

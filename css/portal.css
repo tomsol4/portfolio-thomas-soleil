@@ -1,40 +1,72 @@
-/* Accueil : un bandeau fin et quatre portes qui remplissent l'écran. La page n'a qu'un rôle, orienter. */
-.portal-page{--bg:#000;--ink:#f3f0e9;--muted:#bcb8b1;--line:#ffffff26;--accent:#e8dfcf;--nav-height:76px}
-.portal-page .site-nav{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:8px 24px;min-height:var(--nav-height);padding:10px 32px;border:0}
+/* Accueil : un diaporama plein écran, un univers à la fois. Les quatre univers restent en bas de l'écran. */
+.portal-page{--bg:#000;--ink:#f3f0e9;--muted:#bcb8b1;--line:#ffffff26;--accent:#e8dfcf;--nav-height:88px;--stage-side:clamp(20px,3.4vw,48px)}
+html:has(.portal-page){scroll-padding-top:0}
+
+/* Bandeau posé sur la photo : logo, nom, liens. */
+.portal-page .site-nav{position:absolute;top:0;left:0;right:0;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:8px 24px;min-height:var(--nav-height);padding:14px var(--stage-side);border:0;background:transparent;color:#fff}
 .portal-page .logo{justify-self:start}.portal-page .logo img{height:50px;width:auto;filter:invert(1)}
-.portal-title{text-align:center;min-width:0}
-.portal-title h1{font:400 clamp(1.3rem,2vw,1.75rem)/1.1 "Cormorant Garamond",Georgia,serif;letter-spacing:.28em;text-transform:uppercase;margin-right:-.28em}
-.portal-title p{margin-top:5px;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.3;color:var(--muted)}
-.portal-page .nav-links{justify-self:end;gap:28px;padding:0;width:auto}
-.portal-page .nav-links a{position:relative;font-size:.875rem;letter-spacing:.02em;font-weight:400;text-decoration:none}
+.portal-title{text-align:center;min-width:0;text-shadow:0 2px 16px #0009}
+.portal-title h1{font:400 clamp(1.3rem,2vw,1.8rem)/1.1 "Cormorant Garamond",Georgia,serif;letter-spacing:.3em;text-transform:uppercase;margin-right:-.3em}
+.portal-title p{margin-top:6px;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.3;color:#e6e1d8}
+.portal-page .nav-links{justify-self:end;gap:26px;padding:0;width:auto}
+.portal-page .nav-links a{font-size:.8125rem;letter-spacing:.02em;font-weight:400;text-decoration:none;text-shadow:0 1px 10px #000a}
+.portal-page .nav-links .portal-link:hover{text-decoration:underline}
 .portal-instagram{justify-content:center;width:44px;height:44px;border-radius:50%;transition:background .2s,color .2s}
 .portal-instagram svg{width:24px;height:24px}
 .portal-instagram:hover,.portal-instagram:focus-visible{background:var(--ink);color:var(--bg)}
 
-html:has(.portal-page){scroll-padding-top:0}
-.universe-grid{display:flex;gap:2px;min-width:0;min-height:calc(100vh - var(--nav-height));min-height:calc(100dvh - var(--nav-height))}
-.universe-door{--door-accent:#fff;position:relative;isolation:isolate;flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(18px,2.2vw,36px);overflow:hidden;text-decoration:none;background:#1a1a1a;color:#fff;transition:flex-grow .6s cubic-bezier(.2,.7,.2,1)}
-.universe-door img{position:absolute;inset:0;z-index:-2;width:100%;height:100%;max-width:none;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1),filter .5s}
-.universe-door::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(#0000 38%,#000000d9)}
-.universe-door::after{content:'';position:absolute;inset:auto 0 0;height:3px;background:var(--door-accent);transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
-.universe-door:focus-visible{outline:2px solid #fff;outline-offset:-4px}
-.door-copy h2{font-weight:400;line-height:1.05;text-shadow:0 2px 18px #000a;overflow-wrap:normal}
-.door-copy p{margin-top:10px;font-size:.8125rem;line-height:1.5;letter-spacing:.03em;color:#ffffffe0;text-shadow:0 1px 8px #000}
-.door-go{display:inline-flex;align-items:center;gap:10px;margin-top:18px;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--door-accent)}
-.door-go .nav-arrow{transition:transform .3s}
+/* La scène : la photo couvre tout le premier écran, le titre et les quatre univers s'y posent. */
+.home-stage{position:relative;isolation:isolate;display:grid;grid-template-rows:1fr auto;min-height:100vh;min-height:100svh;padding-top:var(--nav-height);overflow:hidden;background:#0b0b0b;color:#fff;touch-action:pan-y pinch-zoom}
+.home-stage::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,#000000b3 0%,#0000 20%,#0000 46%,#000000e0 100%),linear-gradient(90deg,#00000099 0%,#0000 58%)}
+.home-slides{position:absolute;inset:0;z-index:-2}
+.home-slide{position:absolute;inset:0;margin:0;opacity:0;visibility:hidden;transition:opacity 1.2s ease,visibility 0s 1.2s}
+.home-slide.is-active{opacity:1;visibility:visible;transition:opacity 1.2s ease,visibility 0s}
+.home-slide picture{display:block;height:100%}
+.home-slide img{width:100%;height:100%;max-width:none;object-fit:cover;transform:scale(1.06);transition:transform 7.5s cubic-bezier(.2,.6,.3,1)}
+.home-slide.is-active img{transform:none}
+.home-slide-life img{object-position:50% 62%}.home-slide-sport img{object-position:50% 40%}.home-slide-concert img{object-position:50% 70%}.home-slide-art img{object-position:50% 50%}
 
-/* Chaque porte annonce déjà la typographie et la couleur du sous-site qu'elle ouvre. */
-.door-life{--door-accent:#e9dfcf}
-.door-life h2{font:400 clamp(1.9rem,2.9vw,3.2rem)/1.05 "Cormorant Garamond",Georgia,serif}.door-life h2 em{font-style:italic}
-.door-sport{--door-accent:#55abe0}
-.door-sport h2{font:900 clamp(1.6rem,2.5vw,2.8rem)/1 Arial,Helvetica,sans-serif;text-transform:uppercase;letter-spacing:-.01em}.door-sport h2 span{color:var(--door-accent)}
-.door-concert{--door-accent:#d3bc92}
-.door-concert h2{font:italic 400 clamp(2.1rem,3.2vw,3.6rem)/1 "Cormorant Garamond",Georgia,serif}
-.door-art{--door-accent:#f5f4f1}
-.door-art h2{font:400 clamp(1.6rem,2.3vw,2.5rem)/1.15 "Cormorant Garamond",Georgia,serif;letter-spacing:.03em}
-.door-life img{object-position:42% center}.door-sport img{object-position:40% 30%}.door-concert img{object-position:55% center}.door-art img{object-position:30% center}
+/* Le titre de l'univers affiché, dans la typographie de son sous-site. Les quatre titres partagent la même place. */
+.home-copies{display:grid;align-items:end;padding:28px var(--stage-side) clamp(28px,5vh,56px)}
+.home-copy{grid-area:1/1;max-width:860px;opacity:0;visibility:hidden;transform:translateY(14px);transition:opacity .7s ease,transform .9s cubic-bezier(.2,.7,.2,1),visibility 0s .9s}
+.home-copy.is-active{opacity:1;visibility:visible;transform:none;transition:opacity .9s ease .25s,transform 1s cubic-bezier(.2,.7,.2,1) .25s,visibility 0s}
+.home-copy h2{font-weight:400;line-height:1;text-shadow:0 4px 30px #0009}
+.home-copy p{margin-top:16px;font-size:.9375rem;line-height:1.5;letter-spacing:.03em;color:#ece6dc;text-shadow:0 1px 10px #000}
+.home-go{display:inline-flex;align-items:center;gap:12px;margin-top:28px;min-height:48px;font-size:.75rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;color:#fff}
+.home-go .nav-arrow{transition:transform .3s}
+.home-go:hover .nav-arrow,.home-go:focus-visible .nav-arrow{transform:translate(3px,-3px)}
 
-/* Sous les portes, en défilant : qui je suis (fond clair), puis comment me joindre (fond noir). */
+.home-copy-life h2{font:400 clamp(3.4rem,6.6vw,6.8rem)/1 "Cormorant Garamond",Georgia,serif}.home-copy-life h2 em{font-style:italic}
+.home-copy-life .home-go{padding:0 24px;border:1px solid #e9dfcfb3;color:#f6f1e9}
+.home-copy-sport h2{font:900 clamp(3rem,6.2vw,6.4rem)/.92 Arial,Helvetica,sans-serif;text-transform:uppercase;letter-spacing:-.015em}.home-copy-sport h2 span{display:block;color:#55abe0}
+.home-copy-sport .home-go{padding:0 24px;background:#55abe0;color:#06121d}
+.home-copy-concert h2{font:italic 400 clamp(3.8rem,7.6vw,7.8rem)/.95 "Cormorant Garamond",Georgia,serif}
+.home-copy-concert .home-go{--notch:7px;gap:0;padding:0;color:#3b1820;filter:drop-shadow(0 10px 22px #0009)}
+.home-copy-concert .home-go>span{display:flex;align-items:center;align-self:stretch;background:#ecdfc5}
+.home-ticket-main{padding:0 20px 0 24px;mask:radial-gradient(circle at 0 50%,#0000 var(--notch),#000 calc(var(--notch) + .5px))}
+.home-ticket-stub{padding:0 16px;border-left:1px dashed #78333d99;color:#78333d;mask:radial-gradient(circle at 100% 50%,#0000 var(--notch),#000 calc(var(--notch) + .5px))}
+.home-copy-art h2{font:400 clamp(3rem,5.8vw,6rem)/1.02 "Cormorant Garamond",Georgia,serif;letter-spacing:.02em}
+.home-copy-art .home-go{padding:0;min-height:40px;border-bottom:1px solid #f5f4f1;letter-spacing:.12em}
+
+/* Les quatre univers : la barre de l'univers affiché se remplit pendant qu'il reste à l'écran. */
+.home-chapters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px;padding:0 var(--stage-side) clamp(22px,4vh,40px)}
+.home-chapter{--chapter-accent:#fff;display:block;min-width:0;padding-top:16px;color:#ffffffa6;text-decoration:none;transition:color .3s}
+.home-chapter-life{--chapter-accent:#e9dfcf}.home-chapter-sport{--chapter-accent:#55abe0}.home-chapter-concert{--chapter-accent:#d3bc92}.home-chapter-art{--chapter-accent:#f5f4f1}
+.home-chapter:hover,.home-chapter.is-active{color:#fff}
+.home-chapter-bar{display:block;height:2px;background:#ffffff38;overflow:hidden}
+.home-chapter-bar>span{display:block;height:100%;background:var(--chapter-accent);transform:scaleX(0);transform-origin:left}
+.home-chapter.is-done .home-chapter-bar>span{transform:none;background:#ffffff8c}
+.home-chapter.is-active .home-chapter-bar>span{transform:none}
+.home-stage.is-playing .home-chapter.is-active .home-chapter-bar>span{animation:home-progress var(--home-delay,6.5s) linear forwards}
+.home-stage.is-paused .home-chapter.is-active .home-chapter-bar>span{animation-play-state:paused}
+@keyframes home-progress{from{transform:scaleX(0)}to{transform:none}}
+.home-chapter-row{display:flex;align-items:baseline;gap:12px;margin-top:14px}
+.home-chapter-num{font-size:.75rem;letter-spacing:.16em;color:var(--chapter-accent)}
+.home-chapter-name{font-size:.75rem;font-weight:500;line-height:1.4;letter-spacing:.15em;text-transform:uppercase}
+.home-chapter-short{display:none}
+.home-chapter-sub{display:block;margin-top:4px;font-size:.75rem;line-height:1.5;letter-spacing:.02em;color:#ffffff8c}
+
+/* Sous le diaporama, en défilant : qui je suis (fond clair), puis comment me joindre (fond noir). */
 .portal-eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.17em;line-height:1.7;color:var(--muted)}
 .portal-about{--bg:#f3f0e9;--ink:#171717;--muted:#5a544d;--accent:#171717;--line:#0000001f;background:var(--bg);color:var(--ink);padding-block:clamp(56px,8vw,112px)}
 .portal-about-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1fr);gap:clamp(36px,7vw,100px);align-items:center}
@@ -58,43 +90,52 @@ html:has(.portal-page){scroll-padding-top:0}
 .portal-page input:focus,.portal-page textarea:focus,.portal-page select:focus{border-color:var(--ink)}
 .portal-page .form-status[data-state=error]{color:#ffc8bc}.portal-page .form-status[data-state=success]{color:var(--accent)}
 .portal-page .form-note a{color:var(--ink)}
+
+/* Écran en hauteur (téléphone, tablette debout) : photo verticale, voile plus sombre en bas. */
+@media(orientation:portrait){
+ .home-stage::after{background:linear-gradient(180deg,#000000b3 0%,#0000 18%,#0000 40%,#000000eb 100%)}
+ .home-slide-life img{object-position:50% 50%}.home-slide-sport img{object-position:50% 30%}.home-slide-concert img{object-position:50% 50%}.home-slide-art img{object-position:42% 50%}
+}
+/* Tablette : le nom au centre ne laisse de place qu'à l'icône Instagram. */
+@media(max-width:1100px){.portal-page .nav-links .portal-link{display:none}}
+/* Téléphone : bandeau compact, quatre onglets courts en bas. */
 @media(max-width:760px){
+ .portal-page{--nav-height:64px;--stage-side:20px}
+ .portal-page .site-nav{display:flex;flex-wrap:nowrap;justify-content:flex-start;gap:12px;padding:10px var(--stage-side)}
+ .portal-page .logo{height:auto}.portal-page .logo img{height:38px}
+ .portal-title{text-align:left;flex:1 1 0}
+ .portal-title h1{font-size:1.0625rem;letter-spacing:.16em;margin-right:0;overflow-wrap:normal}
+ .portal-title p{margin-top:3px;font-size:.6875rem;letter-spacing:.04em;text-transform:none}
+ .portal-page .nav-links{margin-left:auto;gap:4px}
+ .home-copies{padding-top:20px;padding-bottom:22px}
+ .home-copy-life h2{font-size:clamp(2.4rem,12.4vw,3.4rem)}
+ .home-copy-sport h2{font-size:clamp(2.2rem,11.6vw,3.2rem)}
+ .home-copy-concert h2{font-size:clamp(3rem,16vw,4.2rem)}
+ .home-copy-art h2{font-size:clamp(2.2rem,11.4vw,3.1rem)}
+ .home-copy p{margin-top:10px;font-size:.8125rem}
+ .home-go{margin-top:20px}
+ .home-chapters{display:flex;flex-wrap:wrap;gap:10px;padding-bottom:22px}
+ .home-chapter{flex:1 1 0;min-width:max-content;padding-top:10px}
+ .home-chapter-row{margin-top:10px}
+ .home-chapter-num,.home-chapter-name,.home-chapter-sub{display:none}
+ .home-chapter-short{display:block;font-size:.75rem;font-weight:500;line-height:1.4;letter-spacing:.08em;text-transform:uppercase}
  .portal-about-grid{grid-template-columns:1fr;gap:32px}
  .portal-portrait img{aspect-ratio:1/1;max-height:420px}
  .portal-about-copy h2,.portal-contact h2{font-size:clamp(1.4rem,9vw,3rem);margin:14px 0 22px;overflow-wrap:anywhere}
  .portal-actions .button{white-space:normal;text-align:center}
 }
-
-@media(hover:hover) and (min-width:1101px){
- .universe-grid:hover .universe-door:not(:hover) img,.universe-grid:focus-within .universe-door:not(:focus-visible) img{filter:brightness(.45) saturate(.6)}
- .universe-door:hover,.universe-door:focus-visible{flex-grow:2.1}
- .universe-door:hover img,.universe-door:focus-visible img{transform:scale(1.04)}
- .universe-door:hover::after,.universe-door:focus-visible::after{transform:scaleX(1)}
- .universe-door:hover .door-go .nav-arrow,.universe-door:focus-visible .door-go .nav-arrow{transform:translate(3px,-3px)}
+@media(max-width:360px){.home-chapters{gap:8px}.home-chapter-short{letter-spacing:.03em}}
+/* Téléphone tenu à l'horizontale : tout tient dans un écran bas. */
+@media(orientation:landscape) and (max-height:560px){
+ .portal-page{--nav-height:62px}
+ .portal-page .site-nav{padding-block:8px}
+ .portal-page .logo img{height:40px}
+ .home-copies{padding-top:12px;padding-bottom:18px}
+ .home-copy h2{font-size:clamp(2.2rem,9vh,3.2rem)}
+ .home-copy p{margin-top:8px}
+ .home-go{margin-top:14px;min-height:44px}
+ .home-chapters{padding-bottom:16px}
+ .home-chapter{padding-top:10px}
+ .home-chapter-row{margin-top:8px}
+ .home-chapter-sub{display:none}
 }
-/* Tablette : deux rangées de deux portes. */
-@media(min-width:761px) and (max-width:1100px){
- .universe-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(220px,1fr)}
- .universe-door{padding:28px}
- .door-life h2,.door-concert h2{font-size:2.6rem}.door-sport h2{font-size:2.2rem}.door-art h2{font-size:2.1rem}
- .door-life img{object-position:center 60%}.door-sport img{object-position:center 22%}.door-concert img{object-position:center 60%}.door-art img{object-position:center 40%}
-}
-/* Téléphone : quatre bandeaux empilés qui tiennent sur l'écran. */
-@media(max-width:760px){
- .portal-page{--nav-height:64px}
- .portal-page .site-nav{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:6px 12px;padding:8px 16px}
- .portal-page .logo{height:auto}.portal-page .logo img{height:40px}
- .portal-title{text-align:left;flex:1 1 0}
- .portal-title h1{font-size:1.0625rem;letter-spacing:.12em;margin-right:0;overflow-wrap:normal}
- .portal-title p{font-size:.6875rem;letter-spacing:.04em;margin-top:2px;text-transform:none}
- .portal-page .nav-links{gap:4px 14px;flex-wrap:wrap;justify-content:flex-end;margin-left:auto}
- .portal-page .nav-links a{font-size:.75rem}
- .universe-grid{flex-direction:column}
- .universe-door{flex:1 0 auto;min-height:132px;justify-content:center;padding:16px 52px 16px 16px}
- .universe-door::before{background:linear-gradient(90deg,#000000d9,#0006 70%,#0003)}
- .door-life h2,.door-concert h2{font-size:clamp(1.5rem,8.4vw,2rem)}.door-sport h2,.door-art h2{font-size:clamp(1.3rem,7vw,1.6rem)}
- .door-copy p{margin-top:6px;font-size:.75rem}
- .door-go{position:absolute;right:16px;top:50%;margin:0;transform:translateY(-50%);font-size:1rem}.door-go-label{display:none}
- .door-life img{object-position:center 30%}.door-sport img{object-position:center 40%}.door-concert img{object-position:center 55%}.door-art img{object-position:center 50%}
-}
-@media(prefers-reduced-motion:reduce){.universe-door,.universe-door img{transition:none}}
