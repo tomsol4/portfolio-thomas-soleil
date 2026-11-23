@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-Disallow: /test-results/
 Sitemap: https://www.tsoleil.fr/sitemap.xml

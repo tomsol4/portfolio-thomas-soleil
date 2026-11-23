@@ -1,0 +1,11 @@
+{
+  "_aide": "Tous les prix affichés sur le site, en euros. Changer un prix ici, puis relancer python scripts/build.py : les pages, le formulaire de contact et les informations données à Google suivent.",
+  "mariage_ceremonie": 500,
+  "mariage_demi_journee": 750,
+  "mariage_journee": 1000,
+  "bapteme": 250,
+  "fiancailles": 300,
+  "seance_couple": 100,
+  "seance_famille": 100,
+  "concert_par_heure": 60
+}

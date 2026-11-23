@@ -12,7 +12,15 @@
     const opener = document.getElementById('album-access-open');
     let opening = false;
     const decode = value => Uint8Array.from(atob(value), character => character.charCodeAt(0));
+    // Album ouvert depuis une liste de reportages (album-lock.js) : la liste a déjà vérifié le mot de passe et confié
+    // à l'onglet la clé de cette page. Elle ne sert qu'une fois : recharger la page redemande le mot de passe.
+    let handoff = null;
+    try {
+        handoff = JSON.parse(sessionStorage.getItem('album-access-key'));
+        sessionStorage.removeItem('album-access-key');
+    } catch (_) {}
     function openDialog() {
+        document.documentElement.classList.remove('album-opening');
         if (!dialog.open) dialog.showModal();
         field.focus();
     }
@@ -99,6 +107,11 @@
         }
         window.albumSecureImages = {resolve:(srcset, fallback, width) => resolve(srcset, fallback, width, viewer, 12)};
     }
+    async function decryptPage(key) {
+        const plaintext = await crypto.subtle.decrypt({name:'AES-GCM', iv:decode(payload.iv),
+            additionalData:new TextEncoder().encode(`album:${payload.id}`)}, key, decode(payload.ciphertext));
+        return new TextDecoder().decode(plaintext);
+    }
     form.addEventListener('submit', async event => {
         event.preventDefault();
         if (opening || !form.reportValidity()) return;
@@ -109,13 +122,10 @@
         status.textContent = '';
         let markup;
         try {
-            const encoder = new TextEncoder();
-            const material = await crypto.subtle.importKey('raw', encoder.encode(field.value), 'PBKDF2', false, ['deriveKey']);
+            const material = await crypto.subtle.importKey('raw', new TextEncoder().encode(field.value), 'PBKDF2', false, ['deriveKey']);
             const key = await crypto.subtle.deriveKey({name:'PBKDF2', salt:decode(payload.salt),
                 iterations:payload.iterations, hash:'SHA-256'}, material, {name:'AES-GCM', length:256}, false, ['decrypt']);
-            const plaintext = await crypto.subtle.decrypt({name:'AES-GCM', iv:decode(payload.iv),
-                additionalData:encoder.encode(`album:${payload.id}`)}, key, decode(payload.ciphertext));
-            markup = new TextDecoder().decode(plaintext);
+            markup = await decryptPage(key);
         } catch (_) {
             status.textContent = 'Mot de passe incorrect. Réessayez.';
             field.setAttribute('aria-invalid', 'true');
@@ -128,6 +138,9 @@
             return;
         }
         field.value = '';
+        await showAlbum(markup);
+    });
+    async function showAlbum(markup) {
         const template = document.createElement('template');
         template.innerHTML = markup;
         dialog.close();
@@ -135,6 +148,7 @@
         const imageKey = content.dataset.imageKey;
         content.removeAttribute('data-image-key');
         document.getElementById('contenu').replaceWith(template.content);
+        document.documentElement.classList.remove('album-opening');
         window.scrollTo(0, 0);
         if (imageKey) secureImages(await crypto.subtle.importKey('raw', decode(imageKey), 'AES-GCM', false, ['decrypt']));
         document.dispatchEvent(new CustomEvent('album:unlocked'));
@@ -155,7 +169,16 @@
             grid.inert = false;
             document.getElementById('contenu').dataset.albumReady = 'true';
         }
-    });
+    }
     field.addEventListener('input', () => field.removeAttribute('aria-invalid'));
-    openDialog();
+    if (handoff && handoff.id === payload.id && handoff.salt === payload.salt) {
+        opening = true;
+        Promise.resolve().then(() => crypto.subtle.importKey('raw', decode(handoff.key), 'AES-GCM', false, ['decrypt']))
+            .then(decryptPage).then(showAlbum, () => {
+                opening = false;
+                openDialog();
+            });
+    } else {
+        openDialog();
+    }
 })();

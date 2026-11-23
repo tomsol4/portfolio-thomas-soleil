@@ -52,8 +52,7 @@
       "images/rugby/co_mhr/2026_05_16_CO-MHR-04016.jpg"
     ],
     "category": "Rugby",
-    "description": "Une sélection du match entre le Castres Olympique et Montpellier.",
-    "project": "sport"
+    "description": "Une sélection du match entre le Castres Olympique et Montpellier."
   },
   {
     "id": "co_rct",
@@ -120,8 +119,7 @@
       "images/rugby/co_rct/26_06_CO-RCT-1810.jpg"
     ],
     "category": "Rugby",
-    "description": "Une sélection du match entre le Castres Olympique et Toulon.",
-    "project": "sport"
+    "description": "Une sélection du match entre le Castres Olympique et Toulon."
   },
   {
     "id": "rugby",
@@ -226,8 +224,7 @@
       "images/rugby/co_bayonne_espoirs/2026_05_09_CO-BayonneEspoirs-8401.jpg"
     ],
     "category": "Rugby",
-    "description": "Une sélection du match entre les Espoirs de Castres et ceux de Bayonne.",
-    "project": "sport"
+    "description": "Une sélection du match entre les Espoirs de Castres et ceux de Bayonne."
   },
   {
     "id": "mariage",
@@ -274,8 +271,7 @@
       "images/mariage/mariage_argentique (33).jpg"
     ],
     "category": "Mariage",
-    "description": "Quelques photos faites à l’argentique lors du mariage d’un ami.",
-    "project": "mariage"
+    "description": "Quelques photos faites à l’argentique lors du mariage d’un ami."
   },
   {
     "id": "bapteme",
@@ -343,8 +339,7 @@
       "images/bapteme/retouché/Aribastire-8715.jpg"
     ],
     "category": "Mariage",
-    "description": "La cérémonie de baptême et la fête en famille.",
-    "project": "bapteme"
+    "description": "La cérémonie de baptême et la fête en famille."
   },
   {
     "id": "concertsinfonia",
@@ -393,8 +388,7 @@
       "images/concert/concertsinfonia/IMG_8656 (1) (1).jpg"
     ],
     "category": "Concerts",
-    "description": "Le concert de Sinfonia Garonna : le chœur, les musiciens et le chef.",
-    "project": "concert"
+    "description": "Le concert de Sinfonia Garonna : le chœur, les musiciens et le chef."
   },
   {
     "id": "noel",
@@ -612,8 +606,7 @@
       "images/concert/noelchorunum/chorunumnoel-260.webp"
     ],
     "category": "Concerts",
-    "description": "Le concert de Noël du Chœur Unum.",
-    "project": "concert"
+    "description": "Le concert de Noël du Chœur Unum."
   },
   {
     "id": "repetition_bougie_sinfonia",
@@ -654,7 +647,6 @@
     ],
     "category": "Concerts",
     "description": "Une répétition de Sinfonia Garonna dans une église, à la lueur des bougies.",
-    "project": "concert",
     "password_protected": false
   },
   {
@@ -675,15 +667,13 @@
       "images/argentique/argentique_couvent/argentiqueNB-17.jpg"
     ],
     "category": "Argentique",
-    "description": "Photographies argentiques en noir et blanc, dans un couvent.",
-    "project": "autre"
+    "description": "Photographies argentiques en noir et blanc, dans un couvent."
   },
   {
     "id": "argentique_toulouse",
     "title": "Argentique — Toulouse",
     "date": "",
     "category": "Argentique",
-    "project": "autre",
     "description": "Toulouse, en argentique noir et blanc.",
     "cover": "images/argentique/argentique_toulouse/argentiqueNB-9.jpg",
     "photos": [
@@ -762,8 +752,7 @@
       "images/montagne/Montagne-69.webp"
     ],
     "category": "Autres regards",
-    "description": "Paysages et moments de randonnée en montagne.",
-    "project": "autre"
+    "description": "Paysages et moments de randonnée en montagne."
   },
   {
     "id": "autres",
@@ -782,7 +771,6 @@
     ],
     "category": "Autres regards",
     "description": "Des photos isolées, prises au fil des jours.",
-    "project": "autre",
     "presentation": "individual"
   }
 ]

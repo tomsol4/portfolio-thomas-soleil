@@ -1,6 +1,7 @@
 """Chiffre le contenu des albums protégés : la page, puis chaque image publiée de l'album.
 
 Seule la couverture reste lisible sans mot de passe (elle illustre la page d'accès et les listes).
+Le chiffrement (AES-256-GCM) est celui que le navigateur sait défaire, avec la clé tirée du mot de passe.
 """
 from pathlib import Path
 import base64
@@ -11,11 +12,13 @@ import json
 import os
 import re
 import sys
-import shutil
-import subprocess
 from html import escape
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT / '.tools/python') not in sys.path:
+    sys.path.insert(0, str(ROOT / '.tools/python'))  # bibliothèques installées pour le projet (requirements-dev.txt)
+from cryptography.exceptions import InvalidTag  # noqa: E402
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM  # noqa: E402
 
 PASSWORD_FILE = ROOT / '.tools/album-passwords.json'
 PRIVATE_EXPORTS = ROOT / '.tools/private-exports'
@@ -33,7 +36,8 @@ def load_passwords():
 def password_for(album_id):
     password = load_passwords().get(album_id)
     if not isinstance(password, str) or not password:
-        raise ValueError(f'Missing local album password for {album_id}. Run: python scripts/album_access.py {album_id}')
+        raise ValueError(f'Mot de passe de l’album « {album_id} » absent de cet ordinateur. '
+                         f'Pour l’enregistrer : python scripts/album_access.py {album_id}')
     return password
 
 
@@ -46,36 +50,42 @@ def lock_badge(album):
     return f'<span class="album-lock">{LOCK_ICON}<span class="sr-only">Album avec mot de passe</span></span>' if album.get('password_protected') else ''
 
 
+def locked_link(album):
+    """Attribut des liens vers un album protégé : sur une liste, le clic demande le mot de passe avant d'ouvrir la page."""
+    return f' data-album-locked="{escape(album["title"])}"' if album.get('password_protected') else ''
+
+
+def access_dialog(title, on_arrival):
+    """Fenêtre du mot de passe : ouverte dès l'arrivée sur la page de l'album, au clic sur une liste de reportages."""
+    return (f'<dialog class="album-access-dialog" id="album-access-dialog" aria-labelledby="album-access-title"{" open" if on_arrival else ""}>\n'
+            f'<form id="album-access-form" method="post"><p class="kicker">Accès à l’album</p><h2 id="album-access-title">{title}</h2>\n'
+            '<label for="album-password">Mot de passe</label><input id="album-password" name="album-password" type="password" '
+            f'autocomplete="current-password" maxlength="256" required{" autofocus" if on_arrival else ""} aria-describedby="album-access-status">\n'
+            f'<p id="album-access-status" role="status" aria-live="polite"></p><button class="button" type="submit"{" disabled" if on_arrival else ""}>Ouvrir l’album</button>'
+            '<button class="album-access-cancel" type="button">Annuler</button></form>\n</dialog>')
+
+
+# Album ouvert depuis une liste avec le bon mot de passe : la page d'accès reste cachée pendant que l'album se déchiffre
+# (album-access.js retire la classe ; au bout de 4 s, elle s'enlève d'elle-même si le script n'a pas pu se charger).
+OPENING_SCRIPT = ('<script>try{if(sessionStorage.getItem("album-access-key")){document.documentElement.classList.add("album-opening");'
+                  'setTimeout(function(){document.documentElement.classList.remove("album-opening")},4000)}}catch(_){}</script>')
+
+
 def decrypt_markup(payload, password):
+    """Contenu d'une page d'album chiffrée ; ValueError si le mot de passe ne l'ouvre pas."""
     salt = base64.b64decode(payload['salt'], validate=True)
     key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, payload['iterations'], dklen=32)
-    return transform('decrypt', key, base64.b64decode(payload['iv'], validate=True),
-        base64.b64decode(payload['ciphertext'], validate=True),
-        ('album:' + payload['id']).encode('utf-8')).decode('utf-8')
-
-
-def transform(action, key, iv, data, associated):
-    """Use Node's native AES-GCM; Playwright already bundles this runtime for local checks."""
-    candidates = [shutil.which('node'), ROOT / '.tools/python/playwright/driver/node.exe',
-                  ROOT / '.tools/python/playwright/driver/node']
-    node = next((str(candidate) for candidate in candidates if candidate and Path(candidate).is_file()), None)
-    if not node:
-        raise RuntimeError('Album encryption needs Node.js or the Playwright development dependencies.')
-    message = {name: base64.b64encode(value).decode('ascii') for name, value in
-               [('key', key), ('iv', iv), ('data', data), ('associated', associated)]}
-    message['action'] = action
-    result = subprocess.run([node, str(ROOT / 'scripts/album_crypto.cjs')],
-        input=json.dumps(message).encode('utf-8'), capture_output=True)
-    if result.returncode:
-        raise ValueError('Album encryption or password verification failed.')
-    return base64.b64decode(result.stdout, validate=True)
+    try:
+        markup = AESGCM(key).decrypt(base64.b64decode(payload['iv'], validate=True),
+                                     base64.b64decode(payload['ciphertext'], validate=True),
+                                     ('album:' + payload['id']).encode('utf-8'))
+    except InvalidTag:
+        raise ValueError(f'Le mot de passe n’ouvre pas l’album « {payload["id"]} ».') from None
+    return markup.decode('utf-8')
 
 
 def encrypt(key, iv, data, associated):
-    try:
-        from cryptography.hazmat.primitives.ciphers.aead import AESGCM
-    except ImportError:
-        return transform('encrypt', key, iv, data, associated)
+    """AES-256-GCM : le texte chiffré suivi de son étiquette de contrôle, comme l'attend le navigateur."""
     return AESGCM(key).encrypt(iv, data, associated)
 
 
@@ -129,7 +139,7 @@ def secure_images(markup, album, password, assets):
 
 
 def expand_protected_page(page):
-    """Let local checks and asset pruning inspect the authenticated album content."""
+    """Page d'album avec son contenu déchiffré, pour les vérifications locales et le tri des exports web."""
     match = PAYLOAD.search(page)
     if not match:
         return page
@@ -159,7 +169,7 @@ def protect_page(page, album, cover, previous='', assets=None):
     if payload is None:
         salt, iv = os.urandom(16), os.urandom(12)
         key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, ITERATIONS, dklen=32)
-        encrypted = transform('encrypt', key, iv, markup.encode('utf-8'), ('album:' + album['id']).encode('utf-8'))
+        encrypted = encrypt(key, iv, markup.encode('utf-8'), ('album:' + album['id']).encode('utf-8'))
         payload = {'id': album['id'], 'version': 1, 'iterations': ITERATIONS,
                    'salt': base64.b64encode(salt).decode('ascii'),
                    'iv': base64.b64encode(iv).decode('ascii'),
@@ -171,23 +181,19 @@ def protect_page(page, album, cover, previous='', assets=None):
 <div class="album-access-cover">{cover}</div>
 <div class="album-access-intro"><p>Ce reportage est accessible avec un mot de passe.</p><button type="button" class="button" id="album-access-open">{LOCK_ICON} Ouvrir l’album</button></div>
 <noscript><p class="album-access-note">Activez JavaScript dans votre navigateur pour saisir le mot de passe et ouvrir cet album.</p></noscript>
-<dialog class="album-access-dialog" id="album-access-dialog" aria-labelledby="album-access-title" open>
-<form id="album-access-form" method="post"><p class="kicker">Accès à l’album</p><h2 id="album-access-title">{escape(album['title'])}</h2>
-<label for="album-password">Mot de passe</label><input id="album-password" name="album-password" type="password" autocomplete="current-password" maxlength="256" required autofocus aria-describedby="album-access-status">
-<p id="album-access-status" role="status" aria-live="polite"></p><button class="button" type="submit" disabled>Ouvrir l’album</button><button class="album-access-cancel" type="button">Annuler</button></form>
-</dialog><script id="album-encrypted-data" type="application/json" data-masonry="../js/masonry.js" data-gallery="../js/gallery.js">{json.dumps(payload, separators=(',', ':'))}</script>
+{access_dialog(escape(album['title']), on_arrival=True)}<script id="album-encrypted-data" type="application/json" data-masonry="../js/masonry.js" data-gallery="../js/gallery.js">{json.dumps(payload, separators=(',', ':'))}</script>
 </main>'''
     page = page[:start] + gate + page[end:]
     page = page.replace('<script src="../js/masonry.js" defer></script>', '')
     page = page.replace('<script src="../js/gallery.js" defer></script>', '<script src="../js/album-access.js" defer></script>')
-    return page.replace('</head>', '<meta name="robots" content="noindex, follow"><link rel="stylesheet" href="../css/album-access.css"></head>', 1)
+    return page.replace('</head>', f'<meta name="robots" content="noindex, follow"><link rel="stylesheet" href="../css/album-access.css">{OPENING_SCRIPT}</head>', 1)
 
 
 if __name__ == '__main__':
     album_id = sys.argv[1] if len(sys.argv) == 2 else ''
     albums = json.loads((ROOT / 'data/albums.json').read_text(encoding='utf-8'))
     if album_id not in {album['id'] for album in albums}:
-        raise SystemExit('Usage: python scripts/album_access.py ALBUM_ID')
+        raise SystemExit('Utilisation : python scripts/album_access.py ID_DE_L_ALBUM (l’« id » de data/albums.json)')
     password = getpass.getpass('Mot de passe réservé à cet album : ')
     if not password or password != getpass.getpass('Confirmer : '):
         raise SystemExit('Les mots de passe sont vides ou ne correspondent pas.')

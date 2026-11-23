@@ -2,7 +2,9 @@
 import json
 from pathlib import Path
 
+# Adresse du site et du compte Instagram : écrites ici seulement, tout le reste les reprend.
 BASE = 'https://www.tsoleil.fr'
+INSTAGRAM = 'https://www.instagram.com/tomsol_photo/'
 
 
 def photo_descriptions(root=Path(__file__).resolve().parents[1]):
@@ -29,13 +31,14 @@ def public_url(path):
 
 
 def structured_data(title, description, url, cover, page_type='WebPage', extra=()):
+    """Informations lisibles par Google : le photographe, son activité, le site et la page."""
     person_id = BASE + '/#photographer'
     website_id = BASE + '/#website'
     business_id = BASE + '/#business'
     graph = [
         {'@type': 'Person', '@id': person_id, 'name': 'Thomas Soleil',
          'jobTitle': 'Photographe', 'url': BASE + '/',
-         'sameAs': ['https://www.instagram.com/tomsol_photo/'],
+         'sameAs': [INSTAGRAM],
          'knowsAbout': ['Photographie sportive', 'Photographie de mariage',
                         'Photographie de concert', 'Photographie argentique']},
         {'@type': 'ProfessionalService', '@id': business_id, 'name': 'Thomas Soleil — Photographe',
@@ -46,7 +49,7 @@ def structured_data(title, description, url, cover, page_type='WebPage', extra=(
                      'addressRegion': 'Occitanie', 'addressCountry': 'FR'},
          'areaServed': [{'@type': 'City', 'name': 'Toulouse'}, {'@type': 'City', 'name': 'Castres'},
                         {'@type': 'AdministrativeArea', 'name': 'Occitanie'}],
-         'sameAs': ['https://www.instagram.com/tomsol_photo/']},
+         'sameAs': [INSTAGRAM]},
         {'@type': 'WebSite', '@id': website_id, 'url': BASE + '/',
          'name': 'Thomas Soleil — Photographe', 'inLanguage': 'fr-FR',
          'publisher': {'@id': person_id}},

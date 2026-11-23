@@ -1,0 +1,16 @@
+/* Pages hors univers (mentions légales, page introuvable) : les couleurs claires de « À propos » sur l'accueil. */
+.site-page{--bg:#f3f0e9;--ink:#171717;--muted:#5a544d;--accent:#171717;--line:#0000001f}
+html:has(.site-page){background:#f3f0e9}
+.site-header{max-width:860px;padding:clamp(48px,7vw,96px) 0 clamp(28px,4vw,44px)}
+.site-header .kicker{color:var(--muted)}
+.site-header h1{margin-top:18px;font:400 clamp(2.4rem,4.4vw,4.4rem)/1.1 "Cormorant Garamond",Georgia,serif;letter-spacing:.02em;overflow-wrap:normal}
+.site-lead{max-width:56ch;margin-top:20px;font-size:.9375rem;line-height:1.9;color:var(--muted)}
+.site-actions{display:flex;align-items:center;flex-wrap:wrap;gap:16px 28px;padding-bottom:clamp(56px,8vw,112px)}
+.site-actions .button{font-weight:500}
+.site-actions .text-link{display:inline-flex;align-items:center;min-height:44px;font-size:.8125rem}
+.legal{max-width:760px;padding-bottom:clamp(56px,8vw,112px)}
+.legal h2{margin:40px 0 14px;font:400 clamp(1.6rem,2.4vw,2rem)/1.2 "Cormorant Garamond",Georgia,serif;letter-spacing:.01em}
+.legal p{margin-bottom:14px;font-size:.9375rem;line-height:1.9;color:var(--muted)}
+.legal strong{font-weight:500;color:var(--ink)}
+.legal a{overflow-wrap:anywhere}
+@media(max-width:760px){.site-header h1{font-size:clamp(2rem,9vw,3rem);overflow-wrap:anywhere}}

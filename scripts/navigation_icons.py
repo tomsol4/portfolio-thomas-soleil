@@ -1,4 +1,4 @@
-"""Render decorative link arrows consistently, without relying on system fonts."""
+"""Remplace les flèches des liens (↗ → ← ↑ ↓) par de petits dessins, identiques sur tous les appareils."""
 import re
 
 

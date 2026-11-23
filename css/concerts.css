@@ -9,11 +9,10 @@ html:has(.concerts-page){background:#110b0e;scroll-padding-top:calc(var(--concer
 .js .concerts-page .nav-links{max-height:calc(100dvh - var(--concert-nav-height,var(--nav-height)) - 8px)}
 
 /* Menu de la page d'accueil des concerts : le lambrequin de velours */
-.concerts-page:has([data-theatre]) .site-nav{background:var(--bg);border-bottom-color:#d3bc9226}
+.concerts-page:has([data-theatre]) .site-nav{isolation:isolate;color:#fff;background:var(--bg);border-bottom-color:#d3bc9226}
 .js .concerts-page:has([data-theatre]) .site-nav{position:fixed;inset:0 0 auto;transition:background-color .25s,border-color .25s,box-shadow .25s}
 .js .concerts-page:has([data-theatre]) .site-nav:not(.scrolled):not(.menu-open){background:transparent;border-bottom-color:transparent}
 .js .concerts-page:has([data-theatre]) .site-nav.scrolled{box-shadow:0 4px 24px #0003}
-.concerts-page:has([data-theatre]) .site-nav{isolation:isolate;color:#fff}
 .concerts-page:has([data-theatre]) .site-nav .brand-copy strong{color:#fff}
 .concerts-page:has([data-theatre]) .site-nav .nav-links a{font-size:.85rem;font-weight:500;text-shadow:0 2px 8px #000;transition:color .2s}
 .concerts-page:has([data-theatre]) .site-nav .nav-links a:hover{color:#ead5ae;text-decoration:none}

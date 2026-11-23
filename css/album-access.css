@@ -1,4 +1,6 @@
 .album-access-page{padding-bottom:64px}
+/* Album ouvert depuis une liste avec le bon mot de passe : rien de la page d'accès ne s'affiche pendant qu'il se déchiffre. */
+.album-opening .album-access-page{visibility:hidden}
 .album-access-page .collection-gallery-header .kicker{margin-top:28px;color:var(--accent)}
 .album-access-cover{max-width:520px;margin:0 auto 28px}
 .album-access-cover img{width:100%;height:auto}
@@ -14,6 +16,7 @@
 .album-access-dialog .button{font-size:.9rem;gap:12px}
 .album-access-dialog button:disabled{opacity:.6;cursor:wait}
 .album-access-dialog [role=status]{font-size:.9rem;line-height:1.6;margin-bottom:20px;color:#ffc8bc}
+.instants-de-vie-page .album-access-dialog [role=status]{color:#8a2929}
 .album-access-dialog [role=status]:empty{display:none}
 .album-access-cancel{display:inline-flex;align-items:center;justify-content:center;min-height:48px;margin-left:14px;padding:8px 4px;border:0;background:none;color:var(--muted);font-size:.85rem;text-decoration:underline;text-underline-offset:.3em}
 .album-access-note{font-size:.9rem;line-height:1.7;color:var(--muted);margin-block:24px}

@@ -1,0 +1,115 @@
+{
+  "_aide": "Les photos montrées en dehors des albums. Chaque chemin désigne un original du dossier images/ (attention aux majuscules et aux espaces). « texte » décrit la photo pour les personnes aveugles et pour Google ; si la photo a déjà une description dans data/photo-descriptions.json, c'est celle-là qui est utilisée. Relancer python scripts/build.py après une modification.",
+  "accueil": {
+    "_aide": "Pour chaque univers : une photo horizontale (écrans d'ordinateur) et une photo verticale (téléphones).",
+    "mariage": {
+      "horizontale": "images/mariage/mariage_argentique (34).jpg",
+      "verticale": "images/mariage/mariage_argentique (37).jpg",
+      "texte": "Les mariés, le jour de leur mariage"
+    },
+    "rugby": {
+      "horizontale": "images/rugby/co_rct/26_06_CO-RCT-0796.jpg",
+      "verticale": "images/rugby/co_rct/26_06_CO-RCT-0753.jpg",
+      "texte": "Une touche de nuit, pendant un match de rugby"
+    },
+    "concerts": {
+      "horizontale": "images/concert/concertsinfonia/IMG_2133.jpg",
+      "verticale": "images/concert/concertsinfonia/IMG_2300 (1).jpg",
+      "texte": "Sinfonia Garonna en concert"
+    },
+    "projets": {
+      "horizontale": "images/argentique/argentique_toulouse/argentiqueNB-10.jpg",
+      "verticale": "images/vrac/Concours.webp",
+      "texte": "Une photographie en noir et blanc, tirée des projets personnels"
+    },
+    "image_de_partage": "images/hero-photo-accueil_2.webp"
+  },
+  "rugby": {
+    "_aide": "La photo d'ouverture doit venir d'un reportage rugby : sa légende reprend le nom et l'année du reportage.",
+    "ouverture": {
+      "photo": "images/rugby/co_rct/26_06_CO-RCT-0796.jpg",
+      "texte": "Une touche sous les projecteurs, Castres face à Toulon"
+    },
+    "tarifs": {
+      "match": {
+        "photo": "images/rugby/co_rct/26_06_CO-RCT-1078.jpg",
+        "texte": "Action de jeu entre le Castres Olympique et le RC Toulon"
+      },
+      "tournoi": {
+        "photo": "images/rugby/TouchCO-5783.jpg",
+        "texte": "Vue du tournoi TouchCO sur les terrains du stade Pierre-Fabre"
+      },
+      "saison": {
+        "photo": "images/rugby/vie du club.jpg",
+        "texte": "Joueurs réunis autour d’un exercice de touche pendant un entraînement de rugby"
+      }
+    }
+  },
+  "concerts": {
+    "_aide": "La photo d'ouverture et celles de la mosaïque doivent venir d'un reportage de concert public (sans mot de passe). La mosaïque se lit rangée par rangée.",
+    "ouverture": "images/concert/repetition_bougie_sinfonia/2026_09_RepetBougie-36.jpg",
+    "mosaique": [
+      [
+        "images/concert/repetition_bougie_sinfonia/2026_09_RepetBougie-36.jpg",
+        "images/concert/concertsinfonia/IMG_8656 (1) (1).jpg",
+        "images/concert/concertsinfonia/IMG_2096.jpg"
+      ],
+      [
+        "images/concert/concertsinfonia/IMG_8581.jpg",
+        "images/concert/repetition_bougie_sinfonia/2026_09_RepetBougie-96.jpg",
+        "images/concert/repetition_bougie_sinfonia/2026_09_RepetBougie-28.jpg",
+        "images/concert/concertsinfonia/IMG_2109.jpg"
+      ]
+    ],
+    "tarifs": "images/concert/concertsinfonia/IMG_8628.jpg"
+  },
+  "mariage": {
+    "_aide": "« mosaiques » : les photos montrées sous la couverture d'un reportage, rangée par rangée, pour chaque album (repéré par son « id » dans data/albums.json).",
+    "ouverture": {
+      "photo": "images/mariage/mariage_argentique (35).jpg",
+      "texte": "Les mariés près d’une voiture ancienne, dans un parc"
+    },
+    "mosaiques": {
+      "mariage": [
+        [
+          "images/mariage/mariage_argentique (22).jpg",
+          "images/mariage/mariage_argentique (21).jpg",
+          "images/mariage/mariage_argentique (10).jpg",
+          "images/mariage/mariage_argentique (5).jpg"
+        ]
+      ]
+    },
+    "formules": {
+      "mariage": {
+        "photo": "images/mariage/mariage_argentique (20).jpg",
+        "texte": "Les mariés à la sortie de la cérémonie"
+      },
+      "bapteme": {
+        "photo": "images/bapteme/Aribastire-8443.jpg",
+        "texte": "Une médaille de baptême tenue entre les doigts"
+      },
+      "couple_et_famille": {
+        "photo": "images/mariage/mariage_argentique (2).jpg",
+        "texte": "Un couple entouré d’enfants, dans un parc"
+      }
+    },
+    "tarifs": {
+      "photo": "images/mariage/mariage_argentique (9).jpg",
+      "texte": "Les mariés pendant la cérémonie, entourés de leurs proches"
+    },
+    "tarifs_bapteme": [
+      {
+        "photo": "images/bapteme/Aribastire-8289.jpg",
+        "texte": "Une main bénit un bébé en tenue blanche pendant son baptême, en noir et blanc"
+      },
+      {
+        "photo": "images/bapteme/Aribastire-8443.jpg",
+        "texte": "Une médaille dorée tenue entre les doigts, près de la main d’un bébé"
+      }
+    ],
+    "contact": {
+      "photo": "images/mariage/mariage_argentique (5).jpg",
+      "texte": "Les mariés côte à côte pendant la cérémonie, en noir et blanc"
+    }
+  }
+}

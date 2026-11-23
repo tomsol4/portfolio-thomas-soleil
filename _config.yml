@@ -1,11 +1,9 @@
-﻿exclude:
-  - .tools
-  - .backups
+﻿# Fichiers du dépôt qui servent à fabriquer le site mais ne sont pas publiés.
+# (.tools, .backups et test-results ne vont jamais sur GitHub : voir .gitignore.)
+exclude:
   - scripts
   - templates
   - data
   - tests
-  - test-results
-  - Microsoft
   - apercu.bat
   - requirements-dev.txt

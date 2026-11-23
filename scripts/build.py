@@ -18,28 +18,43 @@ from datetime import date
 from html import escape
 from urllib.parse import quote
 from PIL import Image, ImageOps
-from universes import build_universes, shell as universe_shell
-from site_metadata import structured_data, public_url, PHOTO_DESCRIPTIONS
+from universes import build_universes, shell, PAGE_PHOTOS, LOGO
+from site_metadata import public_url, PHOTO_DESCRIPTIONS, BASE, INSTAGRAM
 from gallery_markup import lightbox_markup
 from album_access import protect_page, expand_protected_page, has_password, PRIVATE_EXPORTS
 from navigation_icons import render_navigation_arrows
+from prices import price_tokens
 
-BASE = 'https://www.tsoleil.fr'
 ALBUMS = json.loads((ROOT / 'data/albums.json').read_text(encoding='utf-8'))
 ASSETS = ROOT / 'images/optimized'
 ASSETS.mkdir(parents=True, exist_ok=True)
 CACHE = {}
 GENERATED_PAGES = set()
-HIGH_RES_CONCERT_PREFIXES = ('images/concert/concertsinfonia/', 'images/concert/repetition_bougie_sinfonia/')
-HIGH_RES_SOURCE_PREFIXES = ('images/rugby/', *HIGH_RES_CONCERT_PREFIXES)
+# Originaux en haute définition : leurs exports montent jusqu'à MAX_WIDTH pixels de large.
+HIGH_RES_SOURCE_PREFIXES = ('images/rugby/', 'images/concert/concertsinfonia/', 'images/concert/repetition_bougie_sinfonia/')
 MAX_WIDTH = 2560
 FULL_WIDTH_PREFIXES = ('images/mariage/',)
+# Qualité des exports web, sur 100 : les grandes versions (visionneuse) et les autres. Il suffit de changer un nombre :
+# à la génération suivante, les exports concernés sont refaits, car la qualité de chaque export est notée dans
+# data/image-manifest.json (« qualites »). Les exports faits avant cette notation (novembre 2026) étaient en 80.
+QUALITY = 80
+QUALITY_LARGE = 82
+LEGACY_QUALITY = 80
 MANIFEST_PATH = ROOT / 'data/image-manifest.json'
 MANIFEST = json.loads(MANIFEST_PATH.read_text(encoding='utf-8')) if MANIFEST_PATH.exists() else {}
 SITEMAP_DATES_PATH = ROOT / 'data/sitemap-dates.json'
 FROZEN = set()
 # Photos réservées aux albums protégés : leurs exports lisibles vont dans PRIVATE_EXPORTS, jamais dans ASSETS.
 PRIVATE_SOURCES = set()
+# Jetons utilisables dans tous les modèles de pages : les prix ({{PRIX_…}}) et l'adresse Instagram.
+TOKENS = {**price_tokens(), '{{INSTAGRAM}}': INSTAGRAM}
+LEFTOVER_TOKEN = re.compile(r'\{\{[A-Z0-9_]+\}\}')
+# Logo des pages : une copie de images/logo.png assez grande pour un écran très dense (56 px affichés × 3, et plus).
+LOGO_SOURCE = ROOT / 'images/logo.png'
+LOGO_SIZE = 210
+# Anciennes adresses, remplacées par une section d'une autre page.
+REDIRECTS = {'rugby/a-propos.html': ('index.html#presentation', 'À propos'),
+             'instants-de-vie/a-propos.html': ('index.html#presentation', 'À propos')}
 
 
 def export_path(src, name):
@@ -55,8 +70,10 @@ def export_path(src, name):
             shutil.move(published, target)
     return target
 
+
 def e(value):
     return escape(str(value), quote=True)
+
 
 VERSIONS = {}
 
@@ -77,6 +94,11 @@ def versioned(match):
 def write(path, content):
     target = ROOT / path
     if target.suffix == '.html':
+        for token, value in TOKENS.items():
+            content = content.replace(token, value)
+        leftover = LEFTOVER_TOKEN.search(content)
+        if leftover:
+            raise ValueError(f'Jeton non remplacé dans {path} : {leftover[0]}')
         content = render_navigation_arrows(content)
     album = next((a for a in ALBUMS if path == f'albums/{a["id"]}.html' and a.get('password_protected')), None)
     if album:
@@ -90,6 +112,7 @@ def write(path, content):
     if target.suffix == '.html':
         GENERATED_PAGES.add(target)
 
+
 def asset(src, large=False):
     high_resolution = src.startswith(HIGH_RES_SOURCE_PREFIXES)
     cache_key = (src, large)
@@ -102,8 +125,9 @@ def asset(src, large=False):
     if available:
         with Image.open(path) as probe:
             width, height = probe.size
-            rotated = probe.getexif().get(274) in (2, 3, 4, 5, 6, 7, 8)
-            if probe.getexif().get(274) in (5, 6, 7, 8):
+            orientation = probe.getexif().get(274)
+            rotated = orientation in (2, 3, 4, 5, 6, 7, 8)
+            if orientation in (5, 6, 7, 8):
                 width, height = height, width
         entry.update(width=width, height=height)
         if src == 'images/portrait.jpg':
@@ -119,27 +143,30 @@ def asset(src, large=False):
         sizes = (480, 960, 1600, MAX_WIDTH) if high_resolution or src.startswith(FULL_WIDTH_PREFIXES) else (480, 960, 1600)
     variants = []
     im = None
+    qualities = entry.setdefault('qualites', {})
     for size in sorted(set(min(n, width) for n in sizes)):
         target = export_path(src, f'{key}-{size}.webp')
-        fresh = target.exists() and target.stat().st_size > 0 and (
-            not available or target.stat().st_mtime >= path.stat().st_mtime)
-        if not fresh:
-            if not available:
-                raise ValueError(f'Export web manquant ({target.name}) et original absent : {src}')
-            full_width = size == width
-            if full_width and not high_resolution and not rotated and path.suffix.lower() == '.webp':
-                shutil.copyfile(path, target)
+        exported = target.exists() and target.stat().st_size > 0
+        if available:
+            # Pleine largeur : un original WebP est publié tel quel ; sinon la grande version prend QUALITY_LARGE.
+            if size == width and not high_resolution and not rotated and path.suffix.lower() == '.webp':
+                wanted = 'original'
             else:
-                if im is None:
-                    with Image.open(path) as original:
-                        im = ImageOps.exif_transpose(original).convert('RGB')
-                resized = im if size == width else im.resize(
-                    (size, max(1, round(height * size / width))), Image.Resampling.LANCZOS, reducing_gap=3.0)
-                if high_resolution:
-                    quality = 88 if size >= 1600 or (large and full_width) else 80
+                wanted = QUALITY_LARGE if size == width or (high_resolution and size >= 1600) else QUALITY
+            fresh = exported and target.stat().st_mtime >= path.stat().st_mtime and qualities.get(str(size), LEGACY_QUALITY) == wanted
+            if not fresh:
+                if wanted == 'original':
+                    shutil.copyfile(path, target)
                 else:
-                    quality = 90 if large and full_width else 80
-                resized.save(target, 'WEBP', quality=quality, method=4)
+                    if im is None:
+                        with Image.open(path) as original:
+                            im = ImageOps.exif_transpose(original).convert('RGB')
+                    resized = im if size == width else im.resize(
+                        (size, max(1, round(height * size / width))), Image.Resampling.LANCZOS, reducing_gap=3.0)
+                    resized.save(target, 'WEBP', quality=wanted, method=4)
+            qualities[str(size)] = wanted
+        elif not exported:
+            raise ValueError(f'Export web manquant ({target.name}) et original absent : {src}')
         variants.append((f'images/optimized/{target.name}', size))
     result = {'width': width, 'height': height, 'variants': variants}
     CACHE[cache_key] = result
@@ -163,6 +190,7 @@ def variant_key(src):
 def known(src):
     return (ROOT / src).is_file() or 'width' in MANIFEST.get(src, {})
 
+
 def picture(src, alt, prefix='', loading='lazy', sizes='(max-width: 760px) 45vw, 30vw', css='', hero=False, large=False):
     alt = PHOTO_DESCRIPTIONS.get(src, alt)
     a = asset(src, large=hero or large)
@@ -174,39 +202,9 @@ def picture(src, alt, prefix='', loading='lazy', sizes='(max-width: 760px) 45vw,
             (f' style="--source-width:{a["width"]}px"' if hero else '') +
             (f' class="{css}"' if css else '') + '>')
 
-def concert_viewer_asset(src):
-    """Exports haute qualité dédiés à la visionneuse des concerts, plafonnés à MAX_WIDTH."""
-    if not src.startswith(HIGH_RES_CONCERT_PREFIXES):
-        return asset(src, large=True)
-    normal = asset(src, large=False)
-    cache_key = (src, 'concert-viewer')
-    if cache_key in CACHE:
-        return CACHE[cache_key]
-    source = ROOT / src
-    base = variant_key(src)
-    variants = [v for v in normal['variants'] if v[1] <= 480 and v[1] < normal['width']]
-    available = source.is_file()
-    image = None
-    for width in sorted({min(size, normal['width']) for size in (960, 1600, MAX_WIDTH)}):
-        target = export_path(src, f'{base}-viewer-hq-{width}.webp')
-        fresh = target.exists() and target.stat().st_size > 0 and (
-            not available or target.stat().st_mtime >= source.stat().st_mtime)
-        if not fresh:
-            if not available:
-                raise ValueError(f'Export web manquant ({target.name}) et original absent : {src}')
-            if image is None:
-                with Image.open(source) as original:
-                    image = ImageOps.exif_transpose(original).convert('RGB')
-            export = image.resize(
-                (width, max(1, round(normal['height'] * width / normal['width']))), Image.Resampling.LANCZOS)
-            export.save(target, 'WEBP', quality=95, method=4)
-        variants.append((f'images/optimized/{target.name}', width))
-    result = {**normal, 'variants': variants}
-    CACHE[cache_key] = result
-    return result
-
 
 def social_image(src, name):
+    """Image de partage (réseaux sociaux, messageries) : 1200 × 630 px, recadrée depuis l'original."""
     target = ASSETS / f'og-{name}.jpg'
     source = ROOT / src
     if not source.is_file():
@@ -217,66 +215,31 @@ def social_image(src, name):
         ImageOps.fit(ImageOps.exif_transpose(im).convert('RGB'), (1200, 630)).save(target, quality=85, optimize=True)
     return target.relative_to(ROOT).as_posix()
 
-def layout(body, title, description, path, active='', prefix='', scripts=(), cover=None, noindex=False):
-    url = public_url(path)
-    cover = cover or 'images/optimized/og-home-cover.jpg'
-    nav = ''
-    # « À propos » et « Contact » sont des sections de l'accueil, plus des pages.
-    for anchor, label in [('univers', 'Tous les univers'), ('a-propos', 'À propos'), ('contact', 'Contact')]:
-        css = ' class="nav-contact"' if anchor == 'contact' else ''
-        nav += f'<a href="{prefix}index.html#{anchor}"{css}>{label}</a>\n'
-    page_type = 'CollectionPage' if path.startswith('albums/') else 'WebPage'
-    schema_tag = '' if noindex else structured_data(title, description, url, cover, page_type)
-    extra_styles = ''.join(f'<link rel="stylesheet" href="{prefix}css/{name}.css">\n' for name in
-                           (['gallery'] if path.startswith('albums/') else []))
-    script_tags = '\n'.join(f'<script src="{prefix}js/{s}" defer></script>' for s in ('main.js', *scripts))
-    return f'''<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{e(title)}</title>
-<meta name="description" content="{e(description)}">
-<meta name="author" content="Thomas Soleil">
-<meta name="theme-color" content="#f7f5f0">
-<meta name="referrer" content="strict-origin-when-cross-origin">
-{'<meta name="robots" content="noindex, follow">' if noindex else ''}
-<link rel="canonical" href="{e(url)}">
-<link rel="icon" type="image/png" sizes="32x32" href="{prefix}images/favicon-32.png">
-<link rel="apple-touch-icon" sizes="180x180" href="{prefix}images/apple-touch-icon.png">
-<link rel="preload" href="{prefix}fonts/CormorantGaramond-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="{prefix}fonts/cormorant-garamond.css">
-<link rel="stylesheet" href="{prefix}fonts/montserrat.css">
-<link rel="stylesheet" href="{prefix}css/style.css">
-<link rel="stylesheet" href="{prefix}css/navigation-icons.css">
-{extra_styles}
-<meta property="og:type" content="website">
-<meta property="og:locale" content="fr_FR">
-<meta property="og:site_name" content="Thomas Soleil — Photographe">
-<meta property="og:title" content="{e(title)}">
-<meta property="og:description" content="{e(description)}">
-<meta property="og:url" content="{e(url)}">
-<meta property="og:image" content="{BASE}/{cover}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="{e(title)}">
-<meta name="twitter:card" content="summary_large_image">
-{schema_tag}
-{script_tags}
-</head>
-<body>
-<a class="skip-link" href="#contenu">Aller au contenu</a>
-<nav class="site-nav" aria-label="Navigation principale">
-<a href="{prefix}index.html" class="logo" aria-label="Thomas Soleil — Accueil"><img src="{prefix}images/logo.png" width="46" height="58" alt=""><span>Thomas Soleil<br>Photographe</span></a>
-<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="navigation" aria-label="Ouvrir le menu"><span aria-hidden="true"></span><span aria-hidden="true"></span></button>
-<div class="nav-links" id="navigation">{nav}</div>
-</nav>
-{body}
-<footer class="site-footer"><div class="container footer-inner">
-<p>© <span id="footer-year">2026</span> Thomas Soleil · Toulouse &amp; Castres</p>
-<div class="footer-links"><a href="{prefix}mentions.html">Mentions légales &amp; confidentialité</a><a href="{prefix}index.html#contact">Contact</a><a href="https://www.instagram.com/tomsol_photo/" target="_blank" rel="noopener noreferrer">Instagram<span class="sr-only"> (nouvel onglet)</span></a></div>
-</div></footer>
-</body></html>'''
+
+def small_logo():
+    """Fabrique la petite copie du logo utilisée par les pages (WebP sans perte : identique à l'écran)."""
+    target = ROOT / LOGO
+    if not LOGO_SOURCE.is_file():
+        if target.is_file():
+            return
+        raise ValueError(f'Logo introuvable : {LOGO_SOURCE.relative_to(ROOT).as_posix()}')
+    if target.is_file() and target.stat().st_mtime >= LOGO_SOURCE.stat().st_mtime:
+        return
+    with Image.open(LOGO_SOURCE) as logo:
+        ImageOps.contain(logo.convert('RGBA'), (LOGO_SIZE, LOGO_SIZE), Image.Resampling.LANCZOS).save(target, 'WEBP', lossless=True)
+
+
+def redirect(path, target, label):
+    """Ancienne adresse : renvoie aussitôt vers la page qui l'a remplacée (GitHub Pages n'a pas de vraie redirection)."""
+    folder = path.rsplit('/', 1)[0] + '/' if '/' in path else ''
+    canonical = public_url(folder + target.split('#')[0])
+    write(path, f'''<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{e(label)} | Thomas Soleil</title><meta name="robots" content="noindex, follow">
+<link rel="canonical" href="{e(canonical)}"><meta http-equiv="refresh" content="0; url={e(target)}"></head>
+<body><main><h1>{e(label)}</h1><p>Cette page a changé d’adresse : <a href="{e(target)}">continuer vers la nouvelle page</a>.</p></main></body></html>
+''')
+
 
 def legal_blocks():
     """Bloc d'identification légal, construit à partir de data/legal.json (valeurs vides omises)."""
@@ -313,12 +276,8 @@ def legal_blocks():
     return {'{{LEGAL_PUBLISHER}}': publisher, '{{LEGAL_HOST}}': '<p>' + '<br>'.join(host_lines) + '</p>', '{{LEGAL_MEDIATION}}': mediation}
 
 
-def banner(prefix=''):
-    return f'''<section class="contact-banner" aria-labelledby="contact-title"><h2 id="contact-title">Un projet ?</h2><p>Mariage, match ou concert : indiquez la date et le lieu.</p><a class="button" href="{prefix}index.html#contact">Me contacter</a></section>'''
-
-
 def prune_optimized_images():
-    """Remove only derived images that the current site no longer references."""
+    """Supprime les seuls exports web que plus aucune page, feuille de style ou script n'utilise."""
     references = set()
     sources = GENERATED_PAGES | set((ROOT / 'css').glob('*.css')) | set((ROOT / 'js').glob('*.js'))
     sources.add(ROOT / 'data/albums.json')
@@ -329,7 +288,7 @@ def prune_optimized_images():
     frozen_prefixes = tuple(variant_key(src) + '-' for a in ALBUMS if a['id'] in FROZEN for src in [a['cover'], *a['photos']])
     missing = [name for name in references if not (ASSETS / name).is_file()]
     if missing:
-        raise ValueError(f'Missing optimized images: {missing}')
+        raise ValueError(f'Exports web manquants : {missing}')
     removed, size = 0, 0
     for path in ASSETS.iterdir():
         if path.is_symlink() or not path.is_file() or path.suffix not in ('.jpg', '.webp', '.bin'):
@@ -337,20 +296,21 @@ def prune_optimized_images():
         if path.suffix == '.bin' and FROZEN:
             continue  # images chiffrées d'un album non régénéré : sa page ne peut pas être lue ici
         if path.resolve().parent != ASSETS.resolve():
-            raise ValueError(f'Image outside the generated directory: {path}')
+            raise ValueError(f'Image hors du dossier des exports : {path}')
         if path.name not in references and not (frozen_prefixes and path.name.startswith(frozen_prefixes)):
             size += path.stat().st_size
             path.unlink()
             removed += 1
-    print(f'Optimized image cleanup: {removed} unused files, {size / 1048576:.1f} MiB removed.')
+    print(f'Nettoyage des exports web : {removed} fichiers inutilisés supprimés ({size / 1048576:.1f} Mo).')
+
 
 def build():
     ids = [a['id'] for a in ALBUMS]
     if len(ids) != len(set(ids)):
-        raise ValueError('Duplicate album id')
+        raise ValueError('Deux albums ont le même id dans data/albums.json')
     for a in ALBUMS:
         if not a['photos'] or len(a['photos']) != len(set(a['photos'])):
-            raise ValueError(f'Empty or duplicate photo selection: {a["id"]}')
+            raise ValueError(f'Album vide ou photo en double : {a["id"]}')
         if a.get('password_protected') and not has_password(a['id']):
             if not (ROOT / f'albums/{a["id"]}.html').is_file():
                 raise ValueError(f'Album protégé sans mot de passe local ni page existante : {a["id"]}')
@@ -359,7 +319,7 @@ def build():
             print(f'ATTENTION : album protégé « {a["id"]} » non régénéré (mot de passe absent sur cette machine).')
         for src in [a['cover']] if a['id'] in FROZEN else [a['cover'], *a['photos']]:
             if not known(src):
-                raise ValueError(f'Missing image: {src}')
+                raise ValueError(f'Photo introuvable : {src}')
     public = {a['cover'] for a in ALBUMS} | {src for a in ALBUMS if not a.get('password_protected') for src in a['photos']}
     PRIVATE_SOURCES.update(src for a in ALBUMS if a.get('password_protected') and a['id'] not in FROZEN
                            for src in a['photos'] if src not in public)
@@ -368,28 +328,26 @@ def build():
         with Image.open(favicon_source) as icon:
             for size, name in [(32, 'favicon-32.png'), (180, 'apple-touch-icon.png')]:
                 ImageOps.contain(icon.convert('RGBA'), (size, size)).save(ROOT / 'images' / name, optimize=True)
-    hero_src = 'images/hero-photo-accueil_2.webp'
-    home_og = social_image(hero_src, 'home-cover')
+    small_logo()
+    home_og = social_image(PAGE_PHOTOS['accueil']['image_de_partage'], 'home-cover')
     print_references = build_universes(ALBUMS, picture, write, home_og, asset)
 
-    pages = [
-        ('mentions', 'Mentions légales & confidentialité | Thomas Soleil', 'Informations sur l’éditeur, l’hébergement, les photographies et l’utilisation des données du formulaire de contact de Thomas Soleil.')]
-    for name, title, desc in pages:
-        body = (ROOT / 'templates' / f'{name}.html').read_text(encoding='utf-8')
-        body = body.replace('{{BANNER}}', banner())
-        for token, block in legal_blocks().items():
-            body = body.replace(token, block)
-        write(f'{name}.html', layout(body, title, desc, f'{name}.html', f'{name}.html', cover=home_og))
+    mentions = (ROOT / 'templates/mentions.html').read_text(encoding='utf-8')
+    for token, block in legal_blocks().items():
+        mentions = mentions.replace(token, block)
+    write('mentions.html', shell(mentions, 'Mentions légales & confidentialité | Thomas Soleil',
+          'Informations sur l’éditeur, l’hébergement, les photographies et l’utilisation des données du formulaire de contact de Thomas Soleil.',
+          'mentions.html', 'site', cover=home_og))
 
     dialog = lightbox_markup()
     for a in ALBUMS:
         if a['id'] in FROZEN:
             continue
-        print(f'Building {a["id"]}: {len(a["photos"])} photos', flush=True)
+        print(f'Album {a["id"]} : {len(a["photos"])} photos', flush=True)
         items = []
         for i, src in enumerate(a['photos']):
             alt = a.get('photo_alts', {}).get(src, PHOTO_DESCRIPTIONS.get(src, f'{a["title"]} — photographie {i + 1}'))
-            viewer = concert_viewer_asset(src) if a['category'] == 'Concerts' else asset(src, large=True)
+            viewer = asset(src, large=True)
             img = picture(src, alt, '../', loading='eager' if i < 3 else 'lazy')
             candidates = viewer['variants']
             largest = quote(candidates[-1][0], safe="/")
@@ -402,26 +360,29 @@ def build():
         date_prefix = e(a['date']) + ' · ' if a.get('date') else ''
         context = f'<p class="gallery-description">{e(description)}</p><p class="gallery-meta">{date_prefix}{len(a["photos"])} photographies</p>'
         top_link = '<a class="back-to-top" href="#contenu" hidden>Retour en haut <span aria-hidden="true">↑</span></a>'
-        body = f'''<main id="contenu"><div class="container"><header class="gallery-header"><a class="back-link" href="../index.html#univers">← Tous les univers</a><h1>{e(a['title'])}</h1><p>{e(description)}</p><p class="gallery-meta">{date_prefix}{len(a['photos'])} photographies</p></header><ul class="photo-grid" aria-label="Photographies du reportage">{''.join(items)}</ul><div class="gallery-end"><a class="text-link" href="../index.html#univers">← Choisir un univers</a><a class="button secondary" href="../index.html?projet={a['project']}#contact">Un projet similaire ?</a><a class="text-link" href="#contenu">Retour en haut ↑</a></div></div>{banner('../')}</main>{dialog}'''
         og = social_image(a['cover'], a['id'])
         if a['category'] == 'Rugby':
             body = f'''<main id="contenu"><div class="frame"><header class="rugby-gallery-header"><a href="../rugby/index.html#reportages">← Les reportages rugby</a><h1>{e(a['title'].removeprefix('Rugby — '))}</h1><p class="gallery-description">{e(description)}</p></header><ul class="photo-grid" aria-label="Photographies du reportage">{''.join(items)}</ul><div class="gallery-end"><a href="../rugby/index.html#reportages">← Les reportages</a><a class="button outline" href="../rugby/contact.html">Demander un reportage sport ↗</a></div></div>{top_link}</main>{dialog}'''
-            write(path, universe_shell(body, a['title'] + ' | Thomas Soleil Rugby', description, path, 'rugby', '../', og, ('masonry.js', 'gallery.js')))
+            write(path, shell(body, a['title'] + ' | Thomas Soleil Rugby', description, path, 'rugby', '../', og, ('masonry.js', 'gallery.js')))
         elif a['category'] in ('Argentique', 'Autres regards'):
             gallery_label = 'Photographies individuelles' if a.get('presentation') == 'individual' else 'Photographies de la série'
             body = f'''<main id="contenu" class="frame art-gallery"><header class="art-gallery-header"><h1>{e(a['title'])}</h1>{context}</header><ul class="photo-grid" aria-label="{gallery_label}">{''.join(items)}</ul><div class="gallery-end"><a href="../regards/index.html">← Les projets personnels</a></div>{top_link}</main>{dialog}'''
-            write(path, universe_shell(body, a['title'] + ' | Thomas Soleil', description, path, 'regards', '../', og, ('masonry.js', 'gallery.js')))
+            write(path, shell(body, a['title'] + ' | Thomas Soleil', description, path, 'regards', '../', og, ('masonry.js', 'gallery.js')))
         elif a['category'] in ('Mariage', 'Concerts'):
             universe = 'instants-de-vie' if a['category'] == 'Mariage' else 'concerts'
             contact_href = f'../{universe}/contact.html'
             return_href = f'../{universe}/index.html' + ('#reportages' if a['category'] == 'Concerts' else '')
             body = f'''<main id="contenu" class="frame"><header class="collection-gallery-header"><a href="{return_href}">← Les reportages</a><h1>{e(a['title'])}</h1>{context}</header><ul class="photo-grid" aria-label="Photographies du reportage">{''.join(items)}</ul><div class="gallery-end"><a href="{return_href}">← Les reportages</a><a href="{contact_href}">Contact ↗</a></div>{top_link}</main>{dialog}'''
-            write(path, universe_shell(body, a['title'] + ' | Thomas Soleil', description, path, universe, '../', og, ('masonry.js', 'gallery.js')))
+            write(path, shell(body, a['title'] + ' | Thomas Soleil', description, path, universe, '../', og, ('masonry.js', 'gallery.js')))
         else:
-            write(path, layout(body, a['title'] + ' | Thomas Soleil', description, path, '', '../', ('masonry.js', 'gallery.js'), cover=og))
-    missing = '<main id="contenu" class="container section"><p class="eyebrow">Erreur 404</p><h1>Cette page a changé de chemin.</h1><p>Retrouvez les reportages ou contactez-moi pour trouver ce que vous cherchez.</p><div class="actions"><a class="button" href="/index.html#univers">Découvrir les univers</a><a class="text-link" href="/index.html#contact">Me contacter</a></div></main>'
-    write('404.html', layout(missing, 'Page introuvable | Thomas Soleil', 'Retrouvez les reportages de Thomas Soleil.', '404.html', prefix='/', noindex=True))
-    urls = ['', 'rugby/index.html', 'rugby/contact.html', 'rugby/tarifs.html', 'instants-de-vie/index.html', 'instants-de-vie/prestations.html', 'instants-de-vie/contact.html', 'concerts/index.html', 'concerts/tarifs.html', 'concerts/contact.html', 'regards/index.html', 'regards/tirages.html'] + [name + '.html' for name, _, _ in pages] + [f'albums/{a["id"]}.html' for a in ALBUMS if not a.get('password_protected')]
+            raise ValueError(f'Catégorie d’album inconnue : « {a["category"]} » ({a["id"]}). '
+                             'Catégories possibles : Rugby, Mariage, Concerts, Argentique, Autres regards.')
+    missing = (ROOT / 'templates/404.html').read_text(encoding='utf-8')
+    write('404.html', shell(missing, 'Page introuvable | Thomas Soleil', 'Retrouvez les reportages de Thomas Soleil.',
+                            '404.html', 'site', '/', home_og, noindex=True))
+    for path, (target, label) in REDIRECTS.items():
+        redirect(path, target, label)
+    urls = ['', 'rugby/index.html', 'rugby/contact.html', 'rugby/tarifs.html', 'instants-de-vie/index.html', 'instants-de-vie/prestations.html', 'instants-de-vie/contact.html', 'concerts/index.html', 'concerts/tarifs.html', 'concerts/contact.html', 'regards/index.html', 'regards/tirages.html', 'mentions.html'] + [f'albums/{a["id"]}.html' for a in ALBUMS if not a.get('password_protected')]
     dates = json.loads(SITEMAP_DATES_PATH.read_text(encoding='utf-8')) if SITEMAP_DATES_PATH.exists() else {}
     entries = []
     for url in urls:
@@ -433,10 +394,11 @@ def build():
     listed = {url or 'index.html' for url in urls}
     SITEMAP_DATES_PATH.write_text(json.dumps({page: dates[page] for page in sorted(listed)}, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
     write('sitemap.xml', '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + '\n'.join(entries) + '\n</urlset>\n')
-    write('robots.txt', 'User-agent: *\nAllow: /\nDisallow: /test-results/\nSitemap: ' + BASE + '/sitemap.xml\n')
+    write('robots.txt', 'User-agent: *\nAllow: /\nSitemap: ' + BASE + '/sitemap.xml\n')
     prune_optimized_images()
     MANIFEST_PATH.write_text(json.dumps({src: MANIFEST[src] for src in sorted(MANIFEST)}, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
-    print(f'Complete: {len(ALBUMS)} albums, {sum(len(a["photos"]) for a in ALBUMS)} photos.')
+    print(f'Terminé : {len(ALBUMS)} albums, {sum(len(a["photos"]) for a in ALBUMS)} photos.')
+
 
 if __name__ == '__main__':
     build()

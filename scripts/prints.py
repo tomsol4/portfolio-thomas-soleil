@@ -1,4 +1,4 @@
-"""Build a simple print enquiry page with one illustrative photograph."""
+"""Page des tirages : une photo d'exemple et un formulaire de demande."""
 from pathlib import Path
 from html import escape
 import json
@@ -12,7 +12,7 @@ def build_prints(albums, picture, write, shell):
     source = config['example_source']
     example_album = next((a for a in personal if source in a['photos']), None)
     if example_album is None:
-        raise ValueError(f'The print example must belong to a published personal project: {source}')
+        raise ValueError(f'La photo d’exemple des tirages doit venir d’un projet personnel publié : {source}')
     image = picture(source, 'Intérieur du couvent en noir et blanc', '../',
                     loading='eager', sizes='(max-width:760px) 80vw, 40vw')
     body = (ROOT / 'templates/prints.html').read_text(encoding='utf-8')

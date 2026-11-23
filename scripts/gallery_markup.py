@@ -1,4 +1,4 @@
-"""Accessible viewer shared by galleries and individual photographs."""
+"""Visionneuse accessible, partagée par les albums et les photos isolées des projets personnels."""
 
 
 def lightbox_markup():

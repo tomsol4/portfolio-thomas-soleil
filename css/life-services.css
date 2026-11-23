@@ -31,7 +31,6 @@
 .life-offer-notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 32px;margin-top:40px;padding-top:32px;border-top:1px solid var(--line)}
 .life-offer-notes p{font-size:.9rem;line-height:1.75;color:var(--muted)}
 .life-offer-notes strong{display:block;margin-bottom:4px;color:var(--ink);font-weight:500}
-.life-budget-note{max-width:40ch;margin:48px auto 0;text-align:center;font:italic 400 clamp(1.35rem,2vw,1.6rem)/1.45 "Cormorant Garamond",Georgia,serif;color:var(--ink)}
 
 .life-baptism{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:56px;align-items:center;margin-top:88px;padding:56px;background:var(--sand)}
 .life-baptism-copy{grid-column:2;grid-row:1}
@@ -47,7 +46,6 @@
 .life-other-grid h3{font-size:1.9rem;line-height:1.2;margin-bottom:10px}
 .life-other-grid p:not(.life-other-price){font-size:.95rem;line-height:1.75;color:var(--muted)}
 .life-other-grid .life-other-price{margin-block:20px 12px}
-.life-other-grid .life-launch-note{font-size:.85rem;line-height:1.6;margin-bottom:12px}
 .life-other-grid a{display:inline-flex;align-items:center;gap:10px;min-height:44px;margin-top:auto;padding-top:14px;border-top:1px solid var(--line);font-size:.85rem;letter-spacing:.02em;color:var(--accent);text-decoration:none}
 .life-other-grid a:hover{text-decoration:underline}
 
@@ -87,7 +85,6 @@
  .life-price-row h3{font-size:1.8rem}
  .life-price{font-size:2.6rem}
  .life-price-row .button{width:100%;min-width:0}
- .life-budget-note{margin-top:36px}
  .life-baptism{margin-top:56px;padding:24px 20px 32px}
  .life-baptism-photos{gap:8px}
  .life-other-services{padding-top:56px}
