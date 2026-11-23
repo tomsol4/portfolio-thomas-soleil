@@ -1,0 +1,11 @@
+﻿exclude:
+  - .tools
+  - .backups
+  - scripts
+  - templates
+  - data
+  - tests
+  - test-results
+  - Microsoft
+  - apercu.bat
+  - requirements-dev.txt

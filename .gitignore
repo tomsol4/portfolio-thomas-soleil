@@ -1,0 +1,14 @@
+.tools/
+.backups/
+__pycache__/
+Microsoft/
+test-results/
+
+# Originaux : jamais envoyés sur GitHub, donc jamais publiés.
+# Dans images/, seuls les exports web (images/optimized/) et quelques fichiers du site sont suivis.
+/images/*
+!/images/optimized/
+!/images/logo.png
+!/images/favicon-32.png
+!/images/apple-touch-icon.png
+!/images/hero-photo-accueil_2.webp

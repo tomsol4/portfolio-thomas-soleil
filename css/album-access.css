@@ -1,0 +1,20 @@
+.album-access-page{padding-bottom:64px}
+.album-access-page .collection-gallery-header .kicker{margin-top:28px;color:var(--accent)}
+.album-access-cover{max-width:520px;margin:0 auto 28px}
+.album-access-cover img{width:100%;height:auto}
+.album-access-intro{text-align:center}
+.album-access-intro p{color:var(--muted);margin-bottom:22px}
+.album-access-intro .button{font-size:.9rem;gap:12px}
+.album-access-dialog{position:fixed;inset:0;width:min(480px,calc(100% - 40px));max-height:calc(100dvh - 40px);height:fit-content;margin:auto;padding:32px;border:1px solid var(--line);background:var(--bg);color:var(--ink);box-shadow:0 24px 100px #0008;overflow-y:auto}
+.album-access-dialog::backdrop{background:#080508c9;backdrop-filter:blur(5px)}
+.album-access-dialog .kicker{color:var(--accent);margin-bottom:14px}
+.album-access-dialog h2{font-size:2.1rem;line-height:1.15;margin-bottom:28px}
+.album-access-dialog label{display:block;font-size:.9rem;margin-bottom:8px}
+.album-access-dialog input{display:block;width:100%;padding:13px 14px;border:1px solid var(--muted);background:transparent;color:var(--ink);font:inherit;font-size:1rem;margin-bottom:20px}
+.album-access-dialog .button{font-size:.9rem;gap:12px}
+.album-access-dialog button:disabled{opacity:.6;cursor:wait}
+.album-access-dialog [role=status]{font-size:.9rem;line-height:1.6;margin-bottom:20px;color:#ffc8bc}
+.album-access-dialog [role=status]:empty{display:none}
+.album-access-cancel{display:inline-flex;align-items:center;justify-content:center;min-height:48px;margin-left:14px;padding:8px 4px;border:0;background:none;color:var(--muted);font-size:.85rem;text-decoration:underline;text-underline-offset:.3em}
+.album-access-note{font-size:.9rem;line-height:1.7;color:var(--muted);margin-block:24px}
+@media(max-width:760px){.album-access-dialog{padding:26px}.album-access-dialog h2{font-size:1.8rem}.album-access-intro p{font-size:.95rem}}
