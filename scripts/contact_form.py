@@ -50,10 +50,10 @@ def contact_aside(intro=INTRO, heading='h2', css='contact-aside'):
 
 
 def contact_page(title, side, form, main_class='container', header_class='page-header', eyebrow_class='eyebrow',
-                 layout_class='contact-layout'):
-    """Page Contact d'un univers : le titre, puis l'encadré (ou une photo) à côté du formulaire."""
+                 layout_class='contact-layout', after=''):
+    """Page Contact d'un univers : le titre, puis l'encadré (ou une photo) à côté du formulaire ; `after` vient dessous."""
     return (f'<main id="contenu" class="{main_class}"><header class="{header_class}"><p class="{eyebrow_class}">Contact</p>'
-            f'<h1>{title}</h1></header>\n<div class="{layout_class}">{side}\n{form}</div></main>\n')
+            f'<h1>{title}</h1></header>\n<div class="{layout_class}">{side}\n{form}</div>{after}</main>\n')
 
 
 def home_contact():

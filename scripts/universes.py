@@ -28,7 +28,7 @@ UNIVERSE_LINKS = {
     'instants-de-vie': [('instants-de-vie/index.html#reportages', 'Photos'), ('instants-de-vie/index.html#presentation', 'À propos'),
                         ('instants-de-vie/prestations.html', 'Tarifs'), ('instants-de-vie/contact.html', 'Contact')],
     'concerts': [('concerts/index.html#reportages', 'Reportages'), ('concerts/index.html#presentation', 'À propos'),
-                 ('concerts/tarifs.html', 'Tarifs'), ('concerts/contact.html', 'Contact')],
+                 ('concerts/contact.html', 'Contact')],
     'site': [('index.html#a-propos', 'À propos'), ('index.html#contact', 'Contact')],
 }
 UNIVERSE_LABELS = {'rugby': 'Sport', 'instants-de-vie': 'Mariage &amp; événements', 'concerts': 'Concerts'}
@@ -256,12 +256,16 @@ def build_concerts(albums, picture, write, asset):
 
 
 def build_concert_contact(write):
-    """Contact des concerts : le formulaire est un billet, les informations pratiques sont sur son talon."""
+    """Contact des concerts : le formulaire est un billet, les informations pratiques sont sur son talon.
+
+    Les concerts n'ont pas de page de tarifs : les questions fréquentes (templates/concerts-faq.html), sous le billet,
+    répondent sans afficher de prix."""
     body = contact_page('Un concert à photographier ?',
                         contact_aside('Indiquez le concert ou la répétition, la date et le lieu.', css='contact-aside concert-booking-stub'),
                         contact_form('../', project='concert', message_hint='Le programme, la durée, les répétitions éventuelles…'),
                         main_class='frame contact-page concert-subpage', header_class='concert-page-header',
-                        eyebrow_class='kicker', layout_class='contact-layout concert-booking')
+                        eyebrow_class='kicker', layout_class='contact-layout concert-booking',
+                        after=(ROOT / 'templates/concerts-faq.html').read_text(encoding='utf-8'))
     write('concerts/contact.html', shell(body, 'Votre projet concert | Contacter Thomas Soleil',
           'Un concert ou une répétition à photographier ? Écrivez à Thomas Soleil, photographe à Toulouse et Castres.',
           'concerts/contact.html', 'concerts', '../', 'images/optimized/og-concertsinfonia.jpg', ('contact.js',)))
@@ -344,12 +348,6 @@ def build_universes(albums, picture, write, home_cover, asset):
 
     build_concerts(albums, picture, write, asset)
     build_concert_contact(write)
-    content = (ROOT / 'templates/concerts-tarifs.html').read_text(encoding='utf-8')
-    content = content.replace('{{PHOTO}}', page_picture(picture, albums, PAGE_PHOTOS['concerts']['tarifs'], loading='eager',
-                              sizes='(max-width: 760px) calc(100vw - 108px), (max-width: 1000px) 60vw, 420px', large=True))
-    write('concerts/tarifs.html', shell(content, 'Tarifs concerts | Thomas Soleil',
-          f'Photos de concert et de répétition : {euros(PRICES["concert_par_heure"])} de l’heure, retouche comprise, sans minimum. Toulouse et Castres.',
-          'concerts/tarifs.html', 'concerts', '../', 'images/optimized/og-concertsinfonia.jpg'))
 
     build_life_universe(albums, picture, write, asset)
     print_references = build_prints(albums, picture, write, shell)

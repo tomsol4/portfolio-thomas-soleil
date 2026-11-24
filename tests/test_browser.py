@@ -18,7 +18,7 @@ from build import variant_key
 from site_metadata import photo_descriptions
 
 PAGES = ['index.html', 'rugby/index.html', 'rugby/contact.html', 'rugby/tarifs.html', 'instants-de-vie/index.html',
-         'instants-de-vie/prestations.html', 'instants-de-vie/contact.html', 'concerts/index.html', 'concerts/tarifs.html',
+         'instants-de-vie/prestations.html', 'instants-de-vie/contact.html', 'concerts/index.html',
          'concerts/contact.html', 'regards/index.html', 'regards/tirages.html', 'mentions.html', '404.html']
 WIDTHS = [320, 390, 768, 1440]
 ENDPOINT = 'https://formspree.io/f/xblwgnop'
@@ -176,7 +176,7 @@ class BrowserTests(unittest.TestCase):
         """Captures rangées dans test-results/, pour juger la mise en page d'un coup d'œil."""
         page = self.page
         paths = ['index.html', 'rugby/index.html', 'instants-de-vie/index.html', 'concerts/index.html', 'regards/index.html',
-                 'instants-de-vie/prestations.html', 'instants-de-vie/contact.html', 'rugby/tarifs.html', 'concerts/tarifs.html',
+                 'instants-de-vie/prestations.html', 'instants-de-vie/contact.html', 'rugby/tarifs.html', 'concerts/contact.html',
                  'mentions.html', '404.html']
         for width in [390, 1440]:
             for path in paths:
@@ -517,10 +517,9 @@ class BrowserTests(unittest.TestCase):
                 expect(page.locator('body')).to_have_class('instants-de-vie-page')
 
     def test_tariff_contact_links(self):
-        """Tarifs du sport et des concerts : le devis ouvre le contact de l'univers, avec le bon projet."""
+        """Tarifs du sport : le devis ouvre le contact de l'univers, avec le bon projet (les concerts n'ont pas de tarifs)."""
         page = self.page
-        for universe, contact_path, project, button in [('rugby', '/rugby/contact.html', 'sport', '.rugby-pricing-summary .button'),
-                                                        ('concerts', '/concerts/contact.html', 'concert', '.concert-rate .button')]:
+        for universe, contact_path, project, button in [('rugby', '/rugby/contact.html', 'sport', '.rugby-pricing-summary .button')]:
             with self.subTest(universe=universe):
                 self.open(universe + '/index.html', 1440)
                 page.locator('#navigation a').filter(has_text='Tarifs').click()

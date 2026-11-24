@@ -60,8 +60,7 @@
         "images/concert/repetition_bougie_sinfonia/2026_09_RepetBougie-28.jpg",
         "images/concert/concertsinfonia/IMG_2109.jpg"
       ]
-    ],
-    "tarifs": "images/concert/concertsinfonia/IMG_8628.jpg"
+    ]
   },
   "mariage": {
     "_aide": "« mosaiques » : les photos montrées sous la couverture d'un reportage, rangée par rangée, pour chaque album (repéré par son « id » dans data/albums.json).",

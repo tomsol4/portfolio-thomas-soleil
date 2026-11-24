@@ -115,6 +115,27 @@ class Concerts(unittest.TestCase):
         expect(page.locator('#wedding-offer-group')).to_have_count(1)
         fallback.close()
 
+    def test_questions_without_prices(self):
+        """Pas de page Tarifs : le contact répond aux questions fréquentes sans aucun prix ; l'ancienne adresse y mène."""
+        context, page = self.new_page(viewport={'width': 390, 'height': 844}, reduced_motion='reduce')
+        for path in ['concerts/index.html', 'concerts/contact.html', 'albums/concertsinfonia.html']:
+            page.goto(self.base + path)
+            expect(page.locator('a[href*="tarifs"]')).to_have_count(0)
+            expect(page.locator('body')).not_to_contain_text('€')
+        page.goto(self.base + 'concerts/contact.html')
+        questions = page.locator('#questions details')
+        expect(questions).to_have_count(4)
+        answer = questions.first.locator('p')
+        expect(answer).to_be_hidden()
+        questions.first.locator('summary').click()
+        expect(answer).to_be_visible()
+        page.locator('.concert-faq-more a').click()
+        expect(page.locator('#contact-form')).to_be_in_viewport()
+        page.goto(self.base + 'concerts/tarifs.html', wait_until='commit')
+        page.wait_for_url('**/concerts/contact.html#questions')
+        expect(page.locator('#questions')).to_be_in_viewport()
+        context.close()
+
     def test_blocked_session_storage(self):
         """Navigation privée stricte : la première entrée s'ouvre, et le rechargement garde la scène ouverte."""
         context, page = self.new_page(viewport={'width': 390, 'height': 844})

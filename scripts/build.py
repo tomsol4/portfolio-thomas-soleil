@@ -54,7 +54,8 @@ LOGO_SOURCE = ROOT / 'images/logo.png'
 LOGO_SIZE = 210
 # Anciennes adresses, remplacées par une section d'une autre page.
 REDIRECTS = {'rugby/a-propos.html': ('index.html#presentation', 'À propos'),
-             'instants-de-vie/a-propos.html': ('index.html#presentation', 'À propos')}
+             'instants-de-vie/a-propos.html': ('index.html#presentation', 'À propos'),
+             'concerts/tarifs.html': ('contact.html#questions', 'Questions fréquentes')}
 
 
 def export_path(src, name):
@@ -382,7 +383,7 @@ def build():
                             '404.html', 'site', '/', home_og, noindex=True))
     for path, (target, label) in REDIRECTS.items():
         redirect(path, target, label)
-    urls = ['', 'rugby/index.html', 'rugby/contact.html', 'rugby/tarifs.html', 'instants-de-vie/index.html', 'instants-de-vie/prestations.html', 'instants-de-vie/contact.html', 'concerts/index.html', 'concerts/tarifs.html', 'concerts/contact.html', 'regards/index.html', 'regards/tirages.html', 'mentions.html'] + [f'albums/{a["id"]}.html' for a in ALBUMS if not a.get('password_protected')]
+    urls = ['', 'rugby/index.html', 'rugby/contact.html', 'rugby/tarifs.html', 'instants-de-vie/index.html', 'instants-de-vie/prestations.html', 'instants-de-vie/contact.html', 'concerts/index.html', 'concerts/contact.html', 'regards/index.html', 'regards/tirages.html', 'mentions.html'] + [f'albums/{a["id"]}.html' for a in ALBUMS if not a.get('password_protected')]
     dates = json.loads(SITEMAP_DATES_PATH.read_text(encoding='utf-8')) if SITEMAP_DATES_PATH.exists() else {}
     entries = []
     for url in urls:
