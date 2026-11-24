@@ -24,8 +24,9 @@ from gallery_markup import lightbox_markup
 from album_access import protect_page, expand_protected_page, has_password, PRIVATE_EXPORTS
 from navigation_icons import render_navigation_arrows
 from prices import price_tokens
+from album_list import load_albums, page_photos, public_photos
 
-ALBUMS = json.loads((ROOT / 'data/albums.json').read_text(encoding='utf-8'))
+ALBUMS = load_albums()
 ASSETS = ROOT / 'images/optimized'
 ASSETS.mkdir(parents=True, exist_ok=True)
 CACHE = {}
@@ -205,10 +206,12 @@ def picture(src, alt, prefix='', loading='lazy', sizes='(max-width: 760px) 45vw,
 
 
 def social_image(src, name):
-    """Image de partage (réseaux sociaux, messageries) : 1200 × 630 px, recadrée depuis l'original."""
+    """Image de partage (réseaux sociaux, messageries) : 1200 × 630 px, recadrée depuis l'original.
+
+    Elle n'est refaite que si l'original est plus récent qu'elle."""
     target = ASSETS / f'og-{name}.jpg'
     source = ROOT / src
-    if not source.is_file():
+    if not source.is_file() or (target.is_file() and target.stat().st_mtime >= source.stat().st_mtime):
         if target.is_file():
             return target.relative_to(ROOT).as_posix()
         raise ValueError(f'Image de partage manquante ({target.name}) et original absent : {src}')
@@ -321,7 +324,7 @@ def build():
         for src in [a['cover']] if a['id'] in FROZEN else [a['cover'], *a['photos']]:
             if not known(src):
                 raise ValueError(f'Photo introuvable : {src}')
-    public = {a['cover'] for a in ALBUMS} | {src for a in ALBUMS if not a.get('password_protected') for src in a['photos']}
+    public = public_photos(ALBUMS, page_photos())
     PRIVATE_SOURCES.update(src for a in ALBUMS if a.get('password_protected') and a['id'] not in FROZEN
                            for src in a['photos'] if src not in public)
     favicon_source = ROOT / 'images/favicon1.png'

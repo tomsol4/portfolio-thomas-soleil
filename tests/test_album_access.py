@@ -1,12 +1,12 @@
 """Albums protégés par un mot de passe : page et images chiffrées, déchiffrées dans le navigateur."""
-import json
 import re
 import unittest
 
 import support
-from support import ROOT, OUT, CHROME, expect, offline, check_masonry
+from support import ROOT, CHROME, expect, offline, check_masonry
 from playwright.sync_api import sync_playwright
 from album_access import password_for, has_password
+from album_list import load_albums, page_photos, public_photos
 from build import variant_key
 
 # Sur chaque page : combien de fois une fenêtre modale s'est ouverte, et si la page d'accès d'un album a été affichée
@@ -27,15 +27,14 @@ HTMLDialogElement.prototype.showModal = function () { window.albumDialogs += 1; 
 class AlbumAccess(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.albums = json.loads((ROOT / 'data/albums.json').read_text(encoding='utf-8'))
+        cls.albums = load_albums()
         cls.album = next(album for album in cls.albums if album['id'] == 'noel')
         cls.password = password_for('noel')
+        cls.public_concert = next(a for a in cls.albums if a['category'] == 'Concerts' and not a.get('password_protected'))
         cls._site = support.local_site()
         cls.base = cls._site.__enter__() + '/'
         cls._playwright = sync_playwright().start()
         cls.browser = cls._playwright.chromium.launch(executable_path=CHROME)
-        cls.out = OUT / 'album-access'
-        cls.out.mkdir(exist_ok=True)
 
     @classmethod
     def tearDownClass(cls):
@@ -56,8 +55,8 @@ class AlbumAccess(unittest.TestCase):
         assert self.password not in source
         assert 'class="photo-link"' not in source, 'La galerie n’existe pas avant le mot de passe'
         assert 'album-encrypted-data' in source
-        covers = {a['cover'] for a in self.albums}
-        shared = covers | {src for a in self.albums if not a.get('password_protected') for src in a['photos']}
+        # Seules restent lisibles les couvertures, les photos des albums publics et celles choisies pour les pages.
+        shared = public_photos(self.albums, page_photos())
         for protected in (a for a in self.albums if a.get('password_protected') and has_password(a['id'])):
             page_source = (ROOT / f'albums/{protected["id"]}.html').read_text(encoding='utf-8')
             assert password_for(protected['id']) not in page_source
@@ -79,10 +78,7 @@ class AlbumAccess(unittest.TestCase):
                 listing = page.url
                 locked = page.locator('.collection-link[href="../albums/noel.html"]')
                 expect(locked.locator('.album-lock')).to_have_count(1)
-                expect(page.locator('.collection-link[href="../albums/concertsinfonia.html"] .album-lock')).to_have_count(0)
-                if width in [390, 1440]:
-                    locked.locator('img').evaluate('(img) => img.decode()')
-                    locked.screenshot(path=str(self.out / f'locked-ticket-{width}.png'))
+                expect(page.locator(f'.collection-link[href="../albums/{self.public_concert["id"]}.html"] .album-lock')).to_have_count(0)
                 expect(locked).to_have_attribute('aria-haspopup', 'dialog')
                 locked.click()
                 dialog = page.locator('#album-access-dialog')
@@ -91,8 +87,6 @@ class AlbumAccess(unittest.TestCase):
                 expect(page.locator('#album-access-title')).to_have_text(album['title'])
                 assert page.url == listing, 'La page de l’album ne s’ouvre pas avant le mot de passe'
                 assert not page.evaluate('document.documentElement.scrollWidth > innerWidth + 1')
-                if width in [390, 1440]:
-                    page.screenshot(path=str(self.out / f'list-password-dialog-{width}.png'))
                 page.keyboard.press('Escape')
                 expect(dialog).not_to_be_visible()
                 expect(locked).to_be_focused()
@@ -113,7 +107,7 @@ class AlbumAccess(unittest.TestCase):
                 assert encrypted_image.endswith('.bin'), 'Les photos de l’album sont publiées chiffrées'
                 expect(page.locator('#contenu')).to_have_attribute('data-album-ready', 'true')
                 expect(page.locator('#contenu')).not_to_have_attribute('data-image-key', re.compile('.'))
-                check_masonry(page, width)
+                check_masonry(page)
                 page.wait_for_function('''() => { const image = document.querySelectorAll(".photo-link img")[1];
                     return image.src.startsWith("blob:") && image.complete && image.naturalWidth > 1; }''')
                 page.wait_for_function('document.querySelector("#lightbox .lightbox-close") !== null')
@@ -137,8 +131,6 @@ class AlbumAccess(unittest.TestCase):
                 expect(page.locator('#album-password')).to_be_focused()
                 expect(page.locator('.photo-link')).to_have_count(0)
                 assert not page.evaluate('document.documentElement.scrollWidth > innerWidth + 1')
-                if width in [390, 1440]:
-                    page.screenshot(path=str(self.out / f'password-dialog-{width}.png'))
                 page.keyboard.press('Escape')
                 expect(dialog).not_to_be_visible()
                 expect(page.locator('#album-access-open')).to_be_focused()
@@ -151,8 +143,8 @@ class AlbumAccess(unittest.TestCase):
                 page.keyboard.press('Enter')
                 expect(page.locator('.photo-link')).to_have_count(len(album['photos']))
                 assert not posts, 'Le mot de passe n’est jamais envoyé à un serveur'
-                page.goto(self.base + 'albums/concertsinfonia.html')
-                expect(page.locator('.photo-link')).to_have_count(38)
+                page.goto(self.base + f'albums/{self.public_concert["id"]}.html')
+                expect(page.locator('.photo-link')).to_have_count(len(self.public_concert['photos']))
                 expect(page.locator('#album-access-dialog')).to_have_count(0)
                 response = page.request.get(self.base + 'albums/' + encrypted_image)
                 assert response.ok
@@ -180,7 +172,6 @@ class AlbumAccess(unittest.TestCase):
                 page.locator('#album-password').fill('incorrect-test-password')
                 page.keyboard.press('Enter')
                 expect(page.locator('#album-access-status')).to_contain_text('incorrect')
-                page.screenshot(path=str(self.out / f'list-password-dialog-bapteme-{width}.png'))
                 page.keyboard.press('Escape')
                 expect(button).to_be_focused()
                 page.locator('.collection-link[href="../albums/bapteme.html"]').click()

@@ -6,6 +6,7 @@ import json
 import re
 import xml.etree.ElementTree as ET
 from album_access import expand_protected_page, has_password, PAYLOAD
+from album_list import load_albums, page_photos, public_photos
 from site_metadata import photo_descriptions
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -113,7 +114,7 @@ def check():
                     errors.append(f'{f.name} : référence un original non publié : {ref}')
             elif u.fragment and target in pages and unquote(u.fragment) not in pages[target].ids:
                 errors.append(f'{f.name} : ancre introuvable {ref}')
-    albums = json.loads((ROOT / 'data/albums.json').read_text(encoding='utf-8'))
+    albums = load_albums(ROOT)
     actual_images = {p.relative_to(ROOT).as_posix() for p in (ROOT / 'images').rglob('*') if p.is_file()}
     manifest_path = ROOT / 'data/image-manifest.json'
     manifest = json.loads(manifest_path.read_text(encoding='utf-8')) if manifest_path.exists() else {}
@@ -131,18 +132,13 @@ def check():
                 errors.append(f'{a["id"]} : nom de fichier introuvable (attention aux majuscules) : {src}')
         if content.count('class="photo-link"') != len(a['photos']):
             errors.append(f'{a["id"]} : la page ne montre pas le bon nombre de photos')
-    published, private = photo_descriptions(ROOT)
-    descriptions = {**published, **private}
-    public = {a['cover'] for a in albums} | {src for a in albums if not a.get('password_protected') for src in a['photos']}
-    for src in published:
+    # Les descriptions sont facultatives ; celles qui existent doivent être valables, et aucune ne doit dire ce que
+    # cache un album protégé (data/ est visible sur GitHub).
+    descriptions = photo_descriptions(ROOT)
+    public = public_photos(albums, page_photos(ROOT))
+    for src in descriptions:
         if src not in public and any(src in a['photos'] for a in albums if a.get('password_protected')):
-            errors.append(f'Description publiée d’une photo d’album protégé (à mettre dans .tools/private-photo-descriptions.json) : {src}')
-    for album in albums:
-        if album.get('password_protected') and not private:
-            continue  # descriptions des albums protégés absentes de cet ordinateur
-        for src in album['photos']:
-            if not (album.get('photo_alts', {}).get(src) or descriptions.get(src)):
-                errors.append(f'{album["id"]} : description manquante pour {src}')
+            errors.append(f'Description publiée d’une photo d’album protégé (elle dirait ce que l’album cache) : {src}')
     for src, alt in descriptions.items():
         if not alt.strip() or (originals_here and src not in actual_images):
             errors.append(f'Description de photo invalide : {src}')

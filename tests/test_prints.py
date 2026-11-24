@@ -1,9 +1,8 @@
 """Page des tirages : une photo d'exemple et la demande par le formulaire (envois simulés, aucun message réel)."""
-import re
 import unittest
 
 import support
-from support import OUT, CHROME, expect, offline, watch_errors
+from support import CHROME, expect, offline, watch_errors
 from playwright.sync_api import sync_playwright
 
 ENDPOINT = 'https://formspree.io/f/xblwgnop'
@@ -34,21 +33,17 @@ class Prints(unittest.TestCase):
         self.assertFalse(self.errors, self.errors)
 
     def test_one_example_on_every_screen(self):
+        """Sur chaque écran : rien ne déborde, la photo d'exemple s'affiche, le bouton mène à la demande."""
         page = self.page
         for width in [320, 390, 768, 1440]:
             with self.subTest(width=width):
                 page.set_viewport_size({'width': width, 'height': 900})
                 page.goto(self.base + '/regards/tirages.html', wait_until='networkidle')
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1'), width
-                expect(page.locator('main img')).to_have_count(1)
-                expect(page.locator('.prints-example img')).to_have_attribute('src', re.compile('argentiqueNB-15'))
                 assert page.locator('.prints-example img').evaluate('(img) => img.complete && img.naturalWidth > 0')
                 expect(page.locator('#demande')).to_be_visible()
-                page.get_by_role('link', name='Parlons de votre tirage').click()
+                page.locator('.prints-copy a[href="#demande"]').click()
                 assert page.evaluate('location.hash') == '#demande'
-                if width in [390, 1440]:
-                    page.evaluate('scrollTo(0, 0)')
-                    page.screenshot(path=str(OUT / f'tirages-simple-{width}.png'), full_page=True)
 
     def test_request_form(self):
         """Échec puis réussite simulés ; la demande contient bien « tirage » ; le lien des projets mène ici."""

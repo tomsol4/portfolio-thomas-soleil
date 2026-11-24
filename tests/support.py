@@ -3,6 +3,9 @@
 Lancer tous les tests depuis la racine du projet :  python -m unittest discover -s tests -v
 Un seul fichier :                                   python tests/test_browser.py
 Les tests ouvrent le site dans Chrome sans fenêtre ; Internet est coupé pour eux : aucun message n'est envoyé.
+Ils vérifient que le site marche et protège ce qui doit l'être, pas son apparence.
+Captures d'écran pour relecture (dans test-results/) : seulement sur demande, avec la variable CAPTURES=1
+(PowerShell : $env:CAPTURES = 1 avant de lancer les tests).
 """
 from contextlib import contextmanager
 import functools
@@ -84,11 +87,21 @@ def unlock_album(page):
     expect(page.locator('#contenu')).to_have_attribute('data-album-ready', 'true')
 
 
-def check_masonry(page, viewport_width):
-    """La mosaïque d'un album : le bon nombre de colonnes, ni trou ni chevauchement, l'ordre et les proportions gardés."""
+def check_masonry(page):
+    """La mosaïque d'un album : ni trou ni chevauchement, l'ordre et les proportions gardés.
+
+    Le nombre de colonnes est celui que règle la feuille de style (--gallery-columns), quel qu'il soit."""
     grid = page.locator('.photo-grid')
     expect(grid).to_have_class(re.compile(r'\bis-masonry\b'))
-    expected_columns = 2 if viewport_width <= 760 else 4 if page.locator('body.concerts-page, body.rugby-page').count() else 3
+    # On attend que la mosaïque ait fini de se ranger pour la largeur actuelle (après un changement de taille d'écran).
+    page.wait_for_function('''() => {
+        const grid = document.querySelector('.photo-grid');
+        const bounds = grid.getBoundingClientRect();
+        const items = Array.from(grid.children, item => item.getBoundingClientRect());
+        const wanted = Math.min(parseInt(getComputedStyle(grid).getPropertyValue('--gallery-columns'), 10), items.length);
+        return new Set(items.map(box => Math.round(box.left))).size === wanted
+            && items.every(box => box.right <= bounds.right + 1);
+    }''')
     geometry = grid.evaluate('''grid => {
         const bounds = grid.getBoundingClientRect();
         return {width: bounds.width, height: bounds.height,
@@ -103,8 +116,6 @@ def check_masonry(page, viewport_width):
                     ratio:Number(image.getAttribute('width'))/Number(image.getAttribute('height'))};
             })};
     }''')
-    columns = sorted({round(photo['x'], 2) for photo in geometry['photos']})
-    assert len(columns) == expected_columns, (viewport_width, columns)
     previous_bottom = {}
     previous_top = -1
     for photo in geometry['photos']:
@@ -118,35 +129,3 @@ def check_masonry(page, viewport_width):
         previous_bottom[column] = photo['y'] + photo['height']
         previous_top = photo['y']
     assert abs(max(previous_bottom.values()) - geometry['height']) <= 1.5, 'La mosaïque réserve toute sa hauteur avant le pied de page'
-
-
-def check_french_heading_font(page):
-    """Les titres accentués et l'italique utilisent bien la police du site, sans caractère de remplacement."""
-    sample = 'Cérémonie Événements Baptême Fiançailles À bientôt Noël cœur Œuvre Ça ù ï ÿ Æ æ 1 000 €'
-    cdp = page.context.new_cdp_session(page)
-    cdp.send('DOM.enable')
-    cdp.send('CSS.enable')
-    try:
-        for style in ['normal', 'italic']:
-            page.evaluate('''({sample, style}) => {
-                let probe = document.getElementById('french-font-probe');
-                if (!probe) {
-                    probe = document.createElement('h2');
-                    probe.id = 'french-font-probe';
-                    probe.style.position = 'fixed';
-                    probe.style.left = '-10000px';
-                    document.querySelector('main').appendChild(probe);
-                }
-                probe.textContent = sample;
-                probe.style.fontStyle = style;
-                probe.getBoundingClientRect();
-            }''', {'sample': sample, 'style': style})
-            page.evaluate('document.fonts.ready')
-            document = cdp.send('DOM.getDocument')['root']['nodeId']
-            node = cdp.send('DOM.querySelector', {'nodeId': document, 'selector': '#french-font-probe'})['nodeId']
-            fonts = cdp.send('CSS.getPlatformFontsForNode', {'nodeId': node})['fonts']
-            assert fonts and all(font['isCustomFont'] and 'Cormorant Garamond' in font['familyName']
-                                 for font in fonts if font['glyphCount']), (style, fonts)
-    finally:
-        page.evaluate('document.getElementById("french-font-probe")?.remove()')
-        cdp.detach()

@@ -8,17 +8,15 @@ INSTAGRAM = 'https://www.instagram.com/tomsol_photo/'
 
 
 def photo_descriptions(root=Path(__file__).resolve().parents[1]):
-    """Descriptions des photos : (publiées, privées).
+    """Descriptions des photos, facultatives : lues aux personnes aveugles, elles aident aussi Google Images.
 
-    Celles des photos d'un album protégé disent ce que l'album cache : elles restent sur cet ordinateur,
-    dans .tools/private-photo-descriptions.json (jamais publié), et n'apparaissent que dans les pages chiffrées.
+    Une photo sans description est décrite par le titre de son album (« Titre — photographie 12 »). Les photos des
+    albums protégés n'en ont pas : leur description dirait ce que l'album cache.
     """
-    published = json.loads((root / 'data/photo-descriptions.json').read_text(encoding='utf-8'))
-    private = root / '.tools/private-photo-descriptions.json'
-    return published, json.loads(private.read_text(encoding='utf-8')) if private.is_file() else {}
+    return json.loads((root / 'data/photo-descriptions.json').read_text(encoding='utf-8'))
 
 
-PHOTO_DESCRIPTIONS = {src: text for part in photo_descriptions() for src, text in part.items()}
+PHOTO_DESCRIPTIONS = photo_descriptions()
 
 
 def public_url(path):

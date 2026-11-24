@@ -204,8 +204,11 @@ def concert_ticket(index, album, picture):
 
 
 def concert_mosaic(concerts, picture, asset):
-    """Photos des reportages publics, en rangées justifiées (photos entières, jamais recadrées) ; chacune ouvre son reportage."""
-    source = {src: album for album in concerts if not album.get('password_protected') for src in album['photos']}
+    """Photos des reportages, en rangées justifiées (photos entières, jamais recadrées) ; chacune ouvre son reportage.
+
+    Une photo d'album protégé choisie ici devient publique ; son lien demande le mot de passe de l'album."""
+    # Une photo présente dans un album public et dans un album protégé ouvre l'album public.
+    source = {src: album for album in sorted(concerts, key=lambda a: not a.get('password_protected')) for src in album['photos']}
     rows = []
     for row in PAGE_PHOTOS['concerts']['mosaique']:
         cells = []
@@ -216,7 +219,7 @@ def concert_mosaic(concerts, picture, asset):
             dimensions = asset(src)
             ratio = dimensions['width'] / dimensions['height']
             photo = picture(src, album['title'], '../', sizes=f'(max-width: 760px) 50vw, {round(ratio * 340)}px')
-            cells.append(f'<a class="concert-mosaic-photo" style="--ratio:{ratio:.4f}" href="../albums/{album["id"]}.html">'
+            cells.append(f'<a class="concert-mosaic-photo" style="--ratio:{ratio:.4f}" href="../albums/{album["id"]}.html"{locked_link(album)}>'
                          f'{photo}<span class="concert-mosaic-caption"><span class="sr-only">Voir le reportage : </span>'
                          f'{escape(album["title"])}</span></a>')
         if cells:
@@ -236,9 +239,10 @@ def build_concerts(albums, picture, write, asset):
         summary += ' · ' + (years[0] if len(years) == 1 else f'{years[0]} – {years[-1]}')
     # Photo d'ouverture : elle remplit toute la scène derrière le rideau (recadrée à l'écran).
     hero = PAGE_PHOTOS['concerts']['ouverture']
-    hero_album = next((a for a in concerts if hero in a['photos'] and not a.get('password_protected')), None)
+    # Un reportage public de préférence ; une photo d'album protégé est permise et devient publique.
+    hero_album = next((a for a in sorted(concerts, key=lambda a: bool(a.get('password_protected'))) if hero in a['photos']), None)
     if hero_album is None:
-        raise ValueError(f'La photo d’ouverture des concerts doit venir d’un reportage de concert public : {hero}')
+        raise ValueError(f'La photo d’ouverture des concerts doit venir d’un reportage de concert : {hero}')
     hero_dimensions = asset(hero, large=True)
     hero_width_in_vh = 100 * hero_dimensions['width'] / hero_dimensions['height']
     body = (ROOT / 'templates/concerts.html').read_text(encoding='utf-8')

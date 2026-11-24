@@ -98,6 +98,68 @@ class PublishedReferences(unittest.TestCase):
             self.assertIn('Description publiée d’une photo d’album protégé', output.getvalue())
 
 
+class AlbumFolders(unittest.TestCase):
+    """Un album peut donner tout un dossier au lieu de la liste de ses photos."""
+
+    def test_folder_album(self):
+        from album_list import load_albums
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            folder = root / 'images/concert/ete'
+            (folder / 'sous-dossier').mkdir(parents=True)
+            for name in ['photo-10.jpg', 'photo-2.JPG', 'photo-1.webp', 'a-retirer.jpg', 'notes.txt', 'sous-dossier/autre.jpg']:
+                (folder / name).write_bytes(b'')
+            (root / 'data').mkdir()
+            albums = [{'id': 'ete', 'dossier': 'images/concert/ete', 'sauf': ['a-retirer.jpg']},
+                      {'id': 'choisi', 'cover': 'images/x.jpg', 'photos': ['images/y.jpg', 'images/x.jpg']}]
+            (root / 'data/albums.json').write_text(json.dumps(albums), encoding='utf-8')
+            folder_album, chosen = load_albums(root)
+            self.assertEqual(folder_album['photos'], ['images/concert/ete/photo-1.webp', 'images/concert/ete/photo-2.JPG',
+                                                      'images/concert/ete/photo-10.jpg'])
+            self.assertEqual(folder_album['cover'], 'images/concert/ete/photo-1.webp')
+            self.assertEqual(chosen['photos'], ['images/y.jpg', 'images/x.jpg'], 'Une liste écrite garde son ordre')
+            self.assertEqual(chosen['cover'], 'images/x.jpg')
+            # Sans les originaux (autre ordinateur), le manifeste des images donne les mêmes photos.
+            manifest = {src: {'width': 1, 'height': 1} for src in folder_album['photos'] + ['images/concert/ete/a-retirer.jpg']}
+            (root / 'data/image-manifest.json').write_text(json.dumps(manifest), encoding='utf-8')
+            for item in sorted(folder.rglob('*'), reverse=True):
+                item.rmdir() if item.is_dir() else item.unlink()
+            folder.rmdir()
+            self.assertEqual(load_albums(root)[0]['photos'], folder_album['photos'])
+
+
+class ProtectedPhotosOnPages(unittest.TestCase):
+    """Une photo d'album protégé choisie pour une page devient publique ; dans la mosaïque des concerts, son lien
+    demande le mot de passe de l'album."""
+
+    def test_page_photos_are_public(self):
+        from album_list import page_photos, public_photos
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'data').mkdir()
+            pages = {'_aide': 'images/pas-une-photo.jpg', 'concerts': {'ouverture': 'images/noel/1.jpg',
+                     'mosaique': [['images/noel/2.jpg']], 'tarifs': {'photo': 'images/noel/3.jpg', 'texte': 'Une scène'}}}
+            (root / 'data/photos-des-pages.json').write_text(json.dumps(pages), encoding='utf-8')
+            chosen = page_photos(root)
+            self.assertEqual(chosen, {'images/noel/1.jpg', 'images/noel/2.jpg', 'images/noel/3.jpg'})
+            albums = [{'id': 'noel', 'cover': 'images/noel/0.jpg', 'password_protected': True,
+                       'photos': ['images/noel/0.jpg', 'images/noel/1.jpg', 'images/noel/2.jpg', 'images/noel/9.jpg']}]
+            public = public_photos(albums, chosen)
+            self.assertIn('images/noel/1.jpg', public)
+            self.assertNotIn('images/noel/9.jpg', public, 'Une photo protégée qui n’est sur aucune page reste chiffrée')
+
+    def test_mosaic_link_asks_for_the_password(self):
+        import universes
+        albums = [{'id': 'public', 'title': 'Public', 'photos': ['images/a.jpg']},
+                  {'id': 'noel', 'title': 'Noël', 'password_protected': True, 'photos': ['images/b.jpg']}]
+        picture = lambda src, alt, prefix, **options: f'<img alt="{alt}">'
+        asset = lambda src, large=False: {'width': 3, 'height': 2, 'variants': []}
+        with patch.dict(universes.PAGE_PHOTOS['concerts'], {'mosaique': [['images/a.jpg', 'images/b.jpg']]}):
+            mosaic = universes.concert_mosaic(albums, picture, asset)
+        self.assertIn('href="../albums/public.html">', mosaic)
+        self.assertIn('href="../albums/noel.html" data-album-locked="Noël"', mosaic)
+
+
 class Prices(unittest.TestCase):
     def test_prices_never_break_across_lines(self):
         from prices import euros
