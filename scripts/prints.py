@@ -1,13 +1,21 @@
-"""Page des tirages : une photo d'exemple et un formulaire de demande."""
+"""Page des tirages : une photo d'exemple et un formulaire de demande.
+
+Elle peut être retirée du site sans être perdue : « en_ligne » à false dans data/prints.json.
+"""
 from pathlib import Path
 from html import escape
 import json
 
 ROOT = Path(__file__).resolve().parents[1]
+CONFIG = json.loads((ROOT / 'data/prints.json').read_text(encoding='utf-8'))
+# Page Tirages publiée ? Sinon ni la page ni le lien « Tirages photo » des projets personnels n'apparaissent.
+PRINTS_ONLINE = CONFIG.get('en_ligne', True)
 
 
 def build_prints(albums, picture, write, shell):
-    config = json.loads((ROOT / 'data/prints.json').read_text(encoding='utf-8'))
+    if not PRINTS_ONLINE:
+        return {}
+    config = CONFIG
     personal = [a for a in albums if a['category'] in ('Argentique', 'Autres regards')]
     source = config['example_source']
     example_album = next((a for a in personal if source in a['photos']), None)

@@ -1,0 +1,277 @@
+[
+ {
+  "emplacement": "hall_1",
+  "photo": "projet_perso_vrac_vrac-3",
+  "tailles": [
+   480,
+   960,
+   1500
+  ]
+ },
+ {
+  "emplacement": "hall_2",
+  "photo": "projet_perso_vrac_vrac-14",
+  "tailles": [
+   480,
+   960,
+   1250
+  ]
+ },
+ {
+  "emplacement": "hall_3",
+  "photo": "projet_perso_vrac_chartres-12",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2000
+  ]
+ },
+ {
+  "emplacement": "hall_4",
+  "photo": "projet_perso_vrac_vrac-8",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2000
+  ]
+ },
+ {
+  "emplacement": "hall_5",
+  "photo": "projet_perso_vrac_vrac-2",
+  "tailles": [
+   480,
+   960,
+   1500
+  ]
+ },
+ {
+  "emplacement": "hall_6",
+  "photo": "projet_perso_vrac_vrac-1",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2000
+  ]
+ },
+ {
+  "emplacement": "couvent_1",
+  "photo": "projet_perso_argentique_argentique_couvent_argentiqueNB-15",
+  "tailles": [
+   480,
+   960,
+   1600,
+   1871
+  ]
+ },
+ {
+  "emplacement": "couvent_2",
+  "photo": "projet_perso_argentique_argentique_couvent_argentiqueNB-4",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2560
+  ]
+ },
+ {
+  "emplacement": "couvent_3",
+  "photo": "projet_perso_argentique_argentique_couvent_argentiqueNB-8",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2560
+  ]
+ },
+ {
+  "emplacement": "couvent_4",
+  "photo": "projet_perso_argentique_argentique_couvent_argentiqueNB-13",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2080
+  ]
+ },
+ {
+  "emplacement": "toulouse_1",
+  "photo": "projet_perso_argentique_argentique_toulouse_argentiqueNB-9",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2560
+  ]
+ },
+ {
+  "emplacement": "toulouse_2",
+  "photo": "projet_perso_argentique_argentique_toulouse_argentiqueNB-10",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2560
+  ]
+ },
+ {
+  "emplacement": "toulouse_3",
+  "photo": "projet_perso_argentique_argentique_toulouse_argentiqueNB-11",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2560
+  ]
+ },
+ {
+  "emplacement": "toulouse_4",
+  "photo": "projet_perso_argentique_argentique_toulouse_argentiqueNB-23",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2056
+  ]
+ },
+ {
+  "emplacement": "garde_1",
+  "photo": "projet_perso_la_garde_2026_02_LaGarde-29",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2560
+  ]
+ },
+ {
+  "emplacement": "garde_2",
+  "photo": "projet_perso_la_garde_2026_02_LaGarde-25",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2560
+  ]
+ },
+ {
+  "emplacement": "garde_3",
+  "photo": "projet_perso_la_garde_2026_02_LaGarde-9",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2560
+  ]
+ },
+ {
+  "emplacement": "garde_4",
+  "photo": "projet_perso_la_garde_2026_02_LaGarde-21",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2560
+  ]
+ },
+ {
+  "emplacement": "messe_1",
+  "photo": "projet_perso_messe_2026_08_Rentr-eScoute-5511-b37d43af",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2560
+  ]
+ },
+ {
+  "emplacement": "messe_2",
+  "photo": "projet_perso_messe_2026_08_Rentr-eScoute-5489-524fd3bf",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2560
+  ]
+ },
+ {
+  "emplacement": "messe_3",
+  "photo": "projet_perso_messe_2026_08_MesseDeRentr-e-5232-1290e039",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2560
+  ]
+ },
+ {
+  "emplacement": "messe_4",
+  "photo": "projet_perso_messe_2026_08_Rentr-eScoute-5582-ee59a3d6",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2560
+  ]
+ },
+ {
+  "emplacement": "messe_5",
+  "photo": "projet_perso_messe_IMG_8463",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2560
+  ]
+ },
+ {
+  "emplacement": "messe_6",
+  "photo": "projet_perso_messe_2026_08_MesseDeRentr-e-5203-240bbafd",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2560
+  ]
+ },
+ {
+  "emplacement": "montagne_1",
+  "photo": "projet_perso_montagne_Montagne-59",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2000
+  ]
+ },
+ {
+  "emplacement": "montagne_2",
+  "photo": "projet_perso_montagne_Montagne-5",
+  "tailles": [
+   480,
+   960,
+   1600
+  ]
+ },
+ {
+  "emplacement": "montagne_3",
+  "photo": "projet_perso_montagne_Montagne-18",
+  "tailles": [
+   480,
+   960,
+   1600,
+   2000
+  ]
+ },
+ {
+  "emplacement": "montagne_4",
+  "photo": "projet_perso_montagne_Montagne-64",
+  "tailles": [
+   480,
+   960,
+   1333
+  ]
+ }
+]

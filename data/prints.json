@@ -1,4 +1,6 @@
 {
-  "example_source": "images/argentique/argentique_couvent/argentiqueNB-15.jpg",
+  "_aide": "Page Tirages (regards/tirages.html). « en_ligne » : true pour la remettre sur le site, avec le lien « Tirages photo » des projets personnels ; false pour la retirer (son ancienne adresse mène alors aux projets personnels). Le texte et la photo d'exemple restent ici en attendant. Relancer python scripts/build.py après une modification.",
+  "en_ligne": false,
+  "example_source": "images/projet_perso/argentique/argentique_couvent/argentiqueNB-15.jpg",
   "introduction": "Les photos de mes projets personnels sont disponibles en tirage. Si l’une d’elles vous plaît, écrivez-moi."
 }

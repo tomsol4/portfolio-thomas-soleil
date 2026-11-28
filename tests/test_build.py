@@ -29,7 +29,7 @@ class WebExports(unittest.TestCase):
         for width in (320, 480, 600, 1920, 3000):
             with self.subTest(width=width), tempfile.TemporaryDirectory() as directory:
                 root, original, exports = self.export_folder(directory, width)
-                with patch.multiple(build, ROOT=root, ASSETS=exports, CACHE={}, MANIFEST={}):
+                with patch.multiple(build, ROOT=root, ASSETS=exports, CACHE={}, MANIFEST={}, HIGH_RES_SOURCES={self.SOURCE}):
                     result = build.asset(self.SOURCE, large=True)
                     widths = [size for _, size in result['variants']]
                     self.assertEqual(widths, sorted(set(widths)))
@@ -45,7 +45,7 @@ class WebExports(unittest.TestCase):
     def test_quality_change_redoes_the_exports(self):
         with tempfile.TemporaryDirectory() as directory:
             root, original, exports = self.export_folder(directory, 3000)
-            with patch.multiple(build, ROOT=root, ASSETS=exports, CACHE={}, MANIFEST={}):
+            with patch.multiple(build, ROOT=root, ASSETS=exports, CACHE={}, MANIFEST={}, HIGH_RES_SOURCES={self.SOURCE}):
                 build.asset(self.SOURCE, large=True)
                 self.assertEqual(build.MANIFEST[self.SOURCE]['qualites'], {'480': 80, '960': 80, '1600': 82, '2560': 82})
                 largest = exports / Path(build.CACHE[(self.SOURCE, True)]['variants'][-1][0]).name

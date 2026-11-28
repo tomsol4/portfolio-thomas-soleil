@@ -1,6 +1,6 @@
 (() => {
     'use strict';
-    const gallery = document.querySelector('.photo-grid, .art-slides');
+    const gallery = document.querySelector('.photo-grid');
     const dialog = document.getElementById('lightbox');
     if (!gallery || !dialog || typeof dialog.showModal !== 'function') return;
     const photos = [...gallery.querySelectorAll('.photo-link')];

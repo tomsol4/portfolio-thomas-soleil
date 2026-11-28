@@ -18,23 +18,24 @@ from datetime import date
 from html import escape
 from urllib.parse import quote
 from PIL import Image, ImageOps
-from universes import build_universes, shell, PAGE_PHOTOS, LOGO
+from universes import build_universes, shell, personal_projects_href, PAGE_PHOTOS, LOGO
 from site_metadata import public_url, PHOTO_DESCRIPTIONS, BASE, INSTAGRAM
 from gallery_markup import lightbox_markup
 from album_access import protect_page, expand_protected_page, has_password, PRIVATE_EXPORTS
 from navigation_icons import render_navigation_arrows
 from prices import price_tokens
 from album_list import load_albums, page_photos, public_photos
+from prints import PRINTS_ONLINE
 
 ALBUMS = load_albums()
 ASSETS = ROOT / 'images/optimized'
 ASSETS.mkdir(parents=True, exist_ok=True)
 CACHE = {}
 GENERATED_PAGES = set()
-# Originaux en haute définition : leurs exports montent jusqu'à MAX_WIDTH pixels de large.
-HIGH_RES_SOURCE_PREFIXES = ('images/rugby/', 'images/concert/concertsinfonia/', 'images/concert/repetition_bougie_sinfonia/')
+# Photos des albums publics et des pages : leurs grandes versions (visionneuse, ouvertures) montent jusqu'à MAX_WIDTH
+# pixels de large ; celles des albums protégés s'arrêtent à 1600 px. Rempli au début de build().
+HIGH_RES_SOURCES = set()
 MAX_WIDTH = 2560
-FULL_WIDTH_PREFIXES = ('images/mariage/',)
 # Qualité des exports web, sur 100 : les grandes versions (visionneuse) et les autres. Il suffit de changer un nombre :
 # à la génération suivante, les exports concernés sont refaits, car la qualité de chaque export est notée dans
 # data/image-manifest.json (« qualites »). Les exports faits avant cette notation (novembre 2026) étaient en 80.
@@ -116,7 +117,7 @@ def write(path, content):
 
 
 def asset(src, large=False):
-    high_resolution = src.startswith(HIGH_RES_SOURCE_PREFIXES)
+    high_resolution = src in HIGH_RES_SOURCES
     cache_key = (src, large)
     if cache_key in CACHE:
         return CACHE[cache_key]
@@ -142,7 +143,7 @@ def asset(src, large=False):
     key = variant_key(src)
     sizes = (480, 960)
     if large:
-        sizes = (480, 960, 1600, MAX_WIDTH) if high_resolution or src.startswith(FULL_WIDTH_PREFIXES) else (480, 960, 1600)
+        sizes = (480, 960, 1600, MAX_WIDTH) if high_resolution else (480, 960, 1600)
     variants = []
     im = None
     qualities = entry.setdefault('qualites', {})
@@ -151,7 +152,7 @@ def asset(src, large=False):
         exported = target.exists() and target.stat().st_size > 0
         if available:
             # Pleine largeur : un original WebP est publié tel quel ; sinon la grande version prend QUALITY_LARGE.
-            if size == width and not high_resolution and not rotated and path.suffix.lower() == '.webp':
+            if size == width and not rotated and path.suffix.lower() == '.webp':
                 wanted = 'original'
             else:
                 wanted = QUALITY_LARGE if size == width or (high_resolution and size >= 1600) else QUALITY
@@ -280,9 +281,35 @@ def legal_blocks():
     return {'{{LEGAL_PUBLISHER}}': publisher, '{{LEGAL_HOST}}': '<p>' + '<br>'.join(host_lines) + '</p>', '{{LEGAL_MEDIATION}}': mediation}
 
 
+GALLERY_PLAN = ROOT / 'regards/galerie/plan.json'
+GALLERY_EXPORTS = set()   # exports web des photos de la visite en 3D : gardés au nettoyage
+
+
+def gallery_photos():
+    """Originaux des photos accrochées dans la visite en 3D (regards/galerie/accrochage.json, fait par
+    scripts/accrocher.py), paysage de la baie compris : une photo retirée d'un album reste exportée tant qu'elle
+    est accrochée."""
+    if not GALLERY_PLAN.is_file():
+        return []
+    plan = json.loads(GALLERY_PLAN.read_text(encoding='utf-8'))
+    hanging = GALLERY_PLAN.parent / 'accrochage.json'   # photos posées sur les emplacements (scripts/accrocher.py)
+    keys = {h['photo'] for h in json.loads(hanging.read_text(encoding='utf-8'))} if hanging.is_file() else set()
+    if 'vue' in plan.get('matieres', {}):
+        keys.add(plan['matieres']['vue']['photo'])
+    originals = {}
+    for path in (ROOT / 'images/projet_perso').rglob('*'):
+        if path.suffix.lower() in ('.jpg', '.jpeg', '.png', '.webp'):
+            src = path.relative_to(ROOT).as_posix()
+            originals[variant_key(src)] = src
+    missing = sorted(keys - originals.keys())
+    if missing:
+        raise ValueError(f'Photos de la visite en 3D sans original dans images/projet_perso : {missing}')
+    return [originals[key] for key in sorted(keys)]
+
+
 def prune_optimized_images():
     """Supprime les seuls exports web que plus aucune page, feuille de style ou script n'utilise."""
-    references = set()
+    references = set(GALLERY_EXPORTS)
     sources = GENERATED_PAGES | set((ROOT / 'css').glob('*.css')) | set((ROOT / 'js').glob('*.js'))
     sources.add(ROOT / 'data/albums.json')
     frozen_pages = {ROOT / f'albums/{album_id}.html' for album_id in FROZEN}
@@ -325,6 +352,8 @@ def build():
             if not known(src):
                 raise ValueError(f'Photo introuvable : {src}')
     public = public_photos(ALBUMS, page_photos())
+    HIGH_RES_SOURCES.update(src for a in ALBUMS if not a.get('password_protected') for src in a['photos'])
+    HIGH_RES_SOURCES.update(page_photos())
     PRIVATE_SOURCES.update(src for a in ALBUMS if a.get('password_protected') and a['id'] not in FROZEN
                            for src in a['photos'] if src not in public)
     favicon_source = ROOT / 'images/favicon1.png'
@@ -370,7 +399,7 @@ def build():
             write(path, shell(body, a['title'] + ' | Thomas Soleil Rugby', description, path, 'rugby', '../', og, ('masonry.js', 'gallery.js')))
         elif a['category'] in ('Argentique', 'Autres regards'):
             gallery_label = 'Photographies individuelles' if a.get('presentation') == 'individual' else 'Photographies de la série'
-            body = f'''<main id="contenu" class="frame art-gallery"><header class="art-gallery-header"><h1>{e(a['title'])}</h1>{context}</header><ul class="photo-grid" aria-label="{gallery_label}">{''.join(items)}</ul><div class="gallery-end"><a href="../regards/index.html">← Les projets personnels</a></div>{top_link}</main>{dialog}'''
+            body = f'''<main id="contenu" class="frame art-gallery"><header class="art-gallery-header"><h1>{e(a['title'])}</h1>{context}</header><ul class="photo-grid" aria-label="{gallery_label}">{''.join(items)}</ul><div class="gallery-end"><a href="../{personal_projects_href(a['id'])}">← Les projets personnels</a></div>{top_link}</main>{dialog}'''
             write(path, shell(body, a['title'] + ' | Thomas Soleil', description, path, 'regards', '../', og, ('masonry.js', 'gallery.js')))
         elif a['category'] in ('Mariage', 'Concerts'):
             universe = 'instants-de-vie' if a['category'] == 'Mariage' else 'concerts'
@@ -386,7 +415,11 @@ def build():
                             '404.html', 'site', '/', home_og, noindex=True))
     for path, (target, label) in REDIRECTS.items():
         redirect(path, target, label)
-    urls = ['', 'rugby/index.html', 'rugby/contact.html', 'rugby/tarifs.html', 'instants-de-vie/index.html', 'instants-de-vie/prestations.html', 'instants-de-vie/contact.html', 'concerts/index.html', 'concerts/contact.html', 'regards/index.html', 'regards/tirages.html', 'mentions.html'] + [f'albums/{a["id"]}.html' for a in ALBUMS if not a.get('password_protected')]
+    if not PRINTS_ONLINE:
+        # Page Tirages retirée pour le moment (data/prints.json) : son ancienne adresse mène aux projets personnels.
+        redirect('regards/tirages.html', 'index.html', 'Projets personnels')
+    prints_page = ['regards/tirages.html'] if PRINTS_ONLINE else []
+    urls = ['', 'rugby/index.html', 'rugby/contact.html', 'rugby/tarifs.html', 'instants-de-vie/index.html', 'instants-de-vie/prestations.html', 'instants-de-vie/contact.html', 'concerts/index.html', 'concerts/contact.html', 'regards/index.html', *prints_page, 'mentions.html'] + [f'albums/{a["id"]}.html' for a in ALBUMS if not a.get('password_protected')]
     dates = json.loads(SITEMAP_DATES_PATH.read_text(encoding='utf-8')) if SITEMAP_DATES_PATH.exists() else {}
     entries = []
     for url in urls:
@@ -399,6 +432,9 @@ def build():
     SITEMAP_DATES_PATH.write_text(json.dumps({page: dates[page] for page in sorted(listed)}, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
     write('sitemap.xml', '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + '\n'.join(entries) + '\n</urlset>\n')
     write('robots.txt', 'User-agent: *\nAllow: /\nSitemap: ' + BASE + '/sitemap.xml\n')
+    for src in gallery_photos():   # visite en 3D : en grand jusqu'à 2560 px, comme dans les albums
+        HIGH_RES_SOURCES.add(src)
+        GALLERY_EXPORTS.update(Path(name).name for name, _ in asset(src, large=True)['variants'])
     prune_optimized_images()
     MANIFEST_PATH.write_text(json.dumps({src: MANIFEST[src] for src in sorted(MANIFEST)}, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
     print(f'Terminé : {len(ALBUMS)} albums, {sum(len(a["photos"]) for a in ALBUMS)} photos.')

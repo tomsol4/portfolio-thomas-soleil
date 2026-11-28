@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Essai des sensations de jeu | Galerie</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" sizes="32x32" href="../../images/favicon-32.png">
+<style>
+@font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:300 600;font-display:swap;src:url(../../fonts/CormorantGaramond-normal-latin.woff2) format('woff2')}
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:400 600;font-display:swap;src:url(../../fonts/Montserrat-latin-0.woff2) format('woff2')}
+html,body{margin:0;background:#e9e6e0;color:#1e1e1e;font:500 13px/1.5 Montserrat,system-ui,sans-serif}
+main{max-width:880px;margin:0 auto;padding:72px 16px 48px}
+h1{margin:0 0 6px;font:500 2.1rem/1.1 'Cormorant Garamond',Georgia,serif}
+h2{margin:0 0 10px;font:500 1.35rem/1.2 'Cormorant Garamond',Georgia,serif}
+p{margin:0 0 10px;color:#4a463f}
+section{margin:14px 0;padding:14px 18px 16px;border-radius:18px;background:rgba(250,249,246,.72);box-shadow:0 6px 22px rgba(0,0,0,.08)}
+.b{margin:3px 2px;padding:8px 14px;border:0;border-radius:999px;background:rgba(0,0,0,.06);color:inherit;font:inherit;cursor:pointer}
+.b:hover{background:rgba(0,0,0,.1)}
+.b[aria-pressed="true"]{background:#282828;color:#fff}
+.b.fort{background:#282828;color:#fff}
+pre{margin:0;padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.045);font:12px/1.45 ui-monospace,Consolas,monospace;white-space:pre-wrap}
+table{border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
+th,td{padding:4px 8px;text-align:right;border-bottom:1px solid rgba(0,0,0,.08)}
+th:first-child,td:first-child{text-align:left}
+.etat{font-size:.75rem;color:#6b665f}
+input[type=range]{vertical-align:middle;width:200px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Essai des sensations de jeu</h1>
+  <p>Page de contrôle de <code>jeu.js</code>, sans 3D. Les navigateurs exigent un geste avant le son : « Activer le son » d’abord.</p>
+
+  <section>
+    <h2>Son</h2>
+    <button class="b fort" id="unlock" type="button">Activer le son</button>
+    <span class="etat" id="etat-son">son pas encore activé</span>
+    <p style="margin-top:12px">Un pas sur :</p>
+    <div id="surfaces"></div>
+    <p style="margin-top:12px">Marche continue (même calcul que galerie.js : phase du balancement, un pas à chaque multiple de π) :</p>
+    <button class="b" id="marcher" type="button" aria-pressed="false">Marcher</button>
+    <button class="b" id="courir" type="button" aria-pressed="false">Courir</button>
+    <button class="b" id="grince" type="button">Un grincement de parquet</button>
+    <span class="etat" id="etat-marche"></span>
+    <p style="margin-top:12px">Salle (réverbération et fond sonore) :</p>
+    <div id="salles"></div>
+  </section>
+
+  <section>
+    <h2>Mesures (rendu hors ligne, sans haut-parleur)</h2>
+    <p>Crête de chaque pas et niveau du fond sonore, en dB sous le maximum (0 dB = saturation), volume à 100 %.</p>
+    <button class="b" id="mesurer" type="button">Mesurer</button>
+    <div id="mesures" style="margin-top:10px;overflow:auto"></div>
+  </section>
+
+  <section>
+    <h2>Manette</h2>
+    <p>Branchez une manette et appuyez sur un bouton pour qu’elle apparaisse.</p>
+    <pre id="manette">aucune manette</pre>
+  </section>
+
+  <section>
+    <h2>Champ de vision en courant</h2>
+    <label>vitesse / course <input type="range" id="vitesse" min="0" max="1" step="0.01" value="0"></label>
+    <span id="fov">0,00 → +0,00°</span>
+  </section>
+
+  <section>
+    <h2>Réglages (roue en haut à droite)</h2>
+    <button class="b" id="ouvrir" type="button">Ouvrir / fermer le panneau</button>
+    <pre id="reglages" style="margin-top:10px"></pre>
+  </section>
+</main>
+<script type="module">
+import { createAudio, createSettings, readGamepad, surfaceOf, fovKick, stepDue, REGLAGES } from './jeu.js';
+
+const $ = id => document.getElementById(id);
+const SURFACES = ['parquet', 'bois', 'pierre', 'beton', 'carrelage', 'marbre'];
+const SALLES = { hall: 'Hall', couvent: 'Couvent', toulouse: 'Toulouse', garde: 'La Garde', messe: 'Messe', montagne: 'Montagne' };
+const audio = createAudio();
+window.__essai = { audio, REGLAGES, surfaceOf, readGamepad };
+
+const montrerReglages = () => { $('reglages').textContent = JSON.stringify(REGLAGES, null, 2); };
+const reglages = createSettings(document.body, { audio, onChange: montrerReglages });
+window.__essai.reglages = reglages;
+montrerReglages();
+$('ouvrir').addEventListener('click', () => reglages.toggle());
+
+// Son
+const etat = () => {
+  const c = audio.context;
+  $('etat-son').textContent = c ? `${c.state} · ${c.sampleRate} Hz · salle ${audio.room?.id ?? '—'} (réverbération ${audio.room?.rt ?? '—'} s, sol ${audio.room?.surface ?? '—'}) · pas qui sonnent : ${audio.actives}` : 'son pas encore activé';
+};
+$('unlock').addEventListener('click', () => { audio.unlock(); audio.setRoom('hall'); setTimeout(etat, 200); });
+addEventListener('pointerdown', () => audio.unlock());   // comme dans la galerie : chaque geste
+for (const s of SURFACES) {
+  const b = document.createElement('button');
+  b.className = 'b'; b.type = 'button'; b.textContent = s;
+  b.addEventListener('click', () => { audio.footstep(s); etat(); });
+  $('surfaces').appendChild(b);
+}
+for (const [id, nom] of Object.entries(SALLES)) {
+  const b = document.createElement('button');
+  b.className = 'b'; b.type = 'button'; b.textContent = nom; b.dataset.salle = id;
+  b.addEventListener('click', () => {
+    audio.setRoom(id);
+    for (const x of $('salles').children) x.setAttribute('aria-pressed', String(x === b));
+    setTimeout(etat, 50);
+  });
+  $('salles').appendChild(b);
+}
+const grinceur = createAudio({ grince: 1 });
+$('grince').addEventListener('click', () => {   // un moteur à part, qui grince à chaque pas
+  grinceur.unlock(); grinceur.setVolume(REGLAGES.volume); grinceur.setEnabled(REGLAGES.son); grinceur.setRoom(audio.room?.id ?? 'hall');
+  setTimeout(() => grinceur.footstep('parquet'), 60);
+});
+
+// Marche continue : la même règle que celle conseillée pour galerie.js
+const WALK = 1.7, RUN = 3.2;
+let allure = 0, phase = 0, avant = performance.now(), pas = 0;
+function boucle(now) {
+  const dt = Math.min(0.05, (now - avant) / 1000); avant = now;
+  if (allure > 0) {
+    const precedente = phase;
+    phase += dt * allure * 3.9;
+    if (stepDue(precedente, phase) && audio.footstep(null, Math.min(1.4, allure / WALK))) pas++;
+    $('etat-marche').textContent = `${allure} m/s · ${pas} pas · pas qui sonnent : ${audio.actives}`;
+  }
+  const g = readGamepad();
+  $('manette').textContent = g ? JSON.stringify(g, (k, v) => (typeof v === 'number' ? Math.round(v * 1000) / 1000 : v), 2) : 'aucune manette';
+  if (g?.menu) reglages.toggle();
+  requestAnimationFrame(boucle);
+}
+requestAnimationFrame(boucle);
+const allures = { marcher: WALK, courir: RUN };
+for (const id of Object.keys(allures)) {
+  $(id).addEventListener('click', () => {
+    allure = allure === allures[id] ? 0 : allures[id];
+    for (const k of Object.keys(allures)) $(k).setAttribute('aria-pressed', String(allure === allures[k]));
+    if (!allure) $('etat-marche').textContent = '';
+  });
+}
+
+// Champ de vision
+const majFov = () => { const v = +$('vitesse').value; $('fov').textContent = `${v.toFixed(2).replace('.', ',')} → +${fovKick(v).toFixed(2).replace('.', ',')}°`; };
+$('vitesse').addEventListener('input', majFov); majFov();
+
+// Mesures hors ligne : on rend le son dans un tampon et on lit les niveaux (pas besoin d'écouter)
+const dB = v => (v > 0 ? 20 * Math.log10(v) : -Infinity);
+function crete(buf, de, a) {
+  let m = 0;
+  for (let c = 0; c < buf.numberOfChannels; c++) {
+    const d = buf.getChannelData(c), i0 = Math.max(0, Math.floor(de * buf.sampleRate)), i1 = Math.min(d.length, Math.floor(a * buf.sampleRate));
+    for (let i = i0; i < i1; i++) m = Math.max(m, Math.abs(d[i]));
+  }
+  return m;
+}
+function rms(buf, de, a) {
+  let e = 0, n = 0;
+  for (let c = 0; c < buf.numberOfChannels; c++) {
+    const d = buf.getChannelData(c), i0 = Math.floor(de * buf.sampleRate), i1 = Math.min(d.length, Math.floor(a * buf.sampleRate));
+    for (let i = i0; i < i1; i++) { e += d[i] * d[i]; n++; }
+  }
+  return Math.sqrt(e / Math.max(1, n));
+}
+async function rendre(duree, preparer, options = {}) {
+  const off = new OfflineAudioContext(2, Math.round(48000 * duree), 48000);
+  const a = createAudio({ contexte: off, ...options });
+  a.unlock(); a.setVolume(1);
+  preparer(a);
+  const buf = await off.startRendering();
+  return { buf, a };
+}
+async function mesurer() {
+  const ecart = 0.6, resultats = [];
+  for (const salle of Object.keys(SALLES)) {
+    const pasSalle = await rendre(0.2 + SURFACES.length * ecart + 0.6, a => { a.setRoom(salle); SURFACES.forEach((s, i) => a.footstep(s, 1, 0.1 + i * ecart)); });
+    const fond = await rendre(5, a => a.setRoom(salle));
+    const course = await rendre(2, a => { a.setRoom(salle); for (let i = 0; i < 8; i++) a.footstep('marbre', 1.6, 0.05 + i * 0.12); });
+    resultats.push({
+      salle, rt: pasSalle.a.room.rt,
+      pas: SURFACES.map((s, i) => dB(crete(pasSalle.buf, 0.1 + i * ecart, 0.1 + (i + 1) * ecart))),
+      fond: dB(rms(fond.buf, 3, 5)), fondCrete: dB(crete(fond.buf, 3, 5)),
+      pire: dB(crete(course.buf, 0, 2)),
+    });
+  }
+  const grince = await rendre(1, a => { a.setRoom('hall'); a.footstep('parquet', 1, 0.05); }, { grince: 1 });
+  const sansGrince = await rendre(1, a => { a.setRoom('hall'); a.footstep('parquet', 1, 0.05); }, { grince: 0 });
+  const f = v => (Number.isFinite(v) ? v.toFixed(1) : '−∞');
+  $('mesures').innerHTML = `<table><tr><th>Salle</th><th>Réverb. (s)</th>${SURFACES.map(s => `<th>${s}</th>`).join('')}<th>Fond (RMS)</th><th>Fond (crête)</th><th>Pire cas</th></tr>`
+    + resultats.map(r => `<tr><td>${SALLES[r.salle]}</td><td>${r.rt}</td>${r.pas.map(v => `<td>${f(v)}</td>`).join('')}<td>${f(r.fond)}</td><td>${f(r.fondCrete)}</td><td>${f(r.pire)}</td></tr>`).join('')
+    + `</table><p class="etat" style="margin-top:8px">Pire cas : 8 pas de course sur marbre en 1 s (force 1,6). Pas sur parquet : ${f(dB(rms(sansGrince.buf, 0.05, 0.2)))} dB RMS. Juste après (0,2 à 0,5 s) : ${f(dB(rms(grince.buf, 0.2, 0.5)))} dB avec grincement, ${f(dB(rms(sansGrince.buf, 0.2, 0.5)))} sans.</p>`;
+  window.__essai.mesures = resultats;
+  return resultats;
+}
+window.__essai.mesurer = mesurer;
+$('mesurer').addEventListener('click', async e => { e.target.disabled = true; e.target.textContent = 'Mesure…'; await mesurer(); e.target.textContent = 'Mesurer'; e.target.disabled = false; });
+</script>
+</body>
+</html>

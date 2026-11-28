@@ -12,13 +12,22 @@
     const opener = document.getElementById('album-access-open');
     let opening = false;
     const decode = value => Uint8Array.from(atob(value), character => character.charCodeAt(0));
-    // Album ouvert depuis une liste de reportages (album-lock.js) : la liste a déjà vérifié le mot de passe et confié
-    // à l'onglet la clé de cette page. Elle ne sert qu'une fois : recharger la page redemande le mot de passe.
-    let handoff = null;
-    try {
-        handoff = JSON.parse(sessionStorage.getItem('album-access-key'));
-        sessionStorage.removeItem('album-access-key');
-    } catch (_) {}
+    const encode = bytes => btoa(String.fromCharCode(...new Uint8Array(bytes)));
+    // Clés des albums déjà ouverts dans cet onglet (ici ou depuis une liste, par album-lock.js) : tant que l'onglet
+    // reste ouvert, recharger la page ou revenir sur l'album ne redemande pas le mot de passe. Fermer l'onglet les oublie.
+    const STORE = 'album-access-keys';
+    function remembered() {
+        try { return JSON.parse(sessionStorage.getItem(STORE)) || {}; } catch (_) { return {}; }
+    }
+    function remember(bits) {
+        try {
+            const keys = remembered();
+            if (bits) keys[payload.id] = {salt:payload.salt, key:encode(bits)};
+            else delete keys[payload.id];
+            sessionStorage.setItem(STORE, JSON.stringify(keys));
+        } catch (_) {}
+    }
+    const known = remembered()[payload.id];
     function openDialog() {
         document.documentElement.classList.remove('album-opening');
         if (!dialog.open) dialog.showModal();
@@ -74,10 +83,10 @@
             const url = choose(srcset, fallback, width);
             if (!url || !/\.bin$/.test(url)) return Promise.resolve(url);
             if (store.has(url)) {
-                const known = store.get(url);
+                const cached = store.get(url);
                 store.delete(url);
-                store.set(url, known);
-                return known;
+                store.set(url, cached);
+                return cached;
             }
             const pending = decrypt(url);
             store.set(url, pending);
@@ -112,6 +121,7 @@
             additionalData:new TextEncoder().encode(`album:${payload.id}`)}, key, decode(payload.ciphertext));
         return new TextDecoder().decode(plaintext);
     }
+    const pageKey = bits => crypto.subtle.importKey('raw', bits, 'AES-GCM', false, ['decrypt']);
     form.addEventListener('submit', async event => {
         event.preventDefault();
         if (opening || !form.reportValidity()) return;
@@ -120,12 +130,12 @@
         submit.textContent = 'Ouverture…';
         form.setAttribute('aria-busy', 'true');
         status.textContent = '';
-        let markup;
+        let markup, bits;
         try {
-            const material = await crypto.subtle.importKey('raw', new TextEncoder().encode(field.value), 'PBKDF2', false, ['deriveKey']);
-            const key = await crypto.subtle.deriveKey({name:'PBKDF2', salt:decode(payload.salt),
-                iterations:payload.iterations, hash:'SHA-256'}, material, {name:'AES-GCM', length:256}, false, ['decrypt']);
-            markup = await decryptPage(key);
+            const material = await crypto.subtle.importKey('raw', new TextEncoder().encode(field.value), 'PBKDF2', false, ['deriveBits']);
+            bits = await crypto.subtle.deriveBits({name:'PBKDF2', salt:decode(payload.salt),
+                iterations:payload.iterations, hash:'SHA-256'}, material, 256);
+            markup = await decryptPage(await pageKey(bits));
         } catch (_) {
             status.textContent = 'Mot de passe incorrect. Réessayez.';
             field.setAttribute('aria-invalid', 'true');
@@ -138,6 +148,7 @@
             return;
         }
         field.value = '';
+        remember(bits);
         await showAlbum(markup);
     });
     async function showAlbum(markup) {
@@ -171,14 +182,16 @@
         }
     }
     field.addEventListener('input', () => field.removeAttribute('aria-invalid'));
-    if (handoff && handoff.id === payload.id && handoff.salt === payload.salt) {
+    if (known && known.salt === payload.salt) {
+        // Album déjà ouvert dans cet onglet : il s'ouvre sans redemander le mot de passe.
         opening = true;
-        Promise.resolve().then(() => crypto.subtle.importKey('raw', decode(handoff.key), 'AES-GCM', false, ['decrypt']))
-            .then(decryptPage).then(showAlbum, () => {
-                opening = false;
-                openDialog();
-            });
+        Promise.resolve().then(() => pageKey(decode(known.key))).then(decryptPage).then(showAlbum, () => {
+            remember(null);
+            opening = false;
+            openDialog();
+        });
     } else {
+        if (known) remember(null);  // clé d'une ancienne version de l'album
         openDialog();
     }
 })();

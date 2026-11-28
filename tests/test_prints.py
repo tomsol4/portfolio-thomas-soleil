@@ -1,13 +1,32 @@
-"""Page des tirages : une photo d'exemple et la demande par le formulaire (envois simulés, aucun message réel)."""
+"""Page des tirages : une photo d'exemple et la demande par le formulaire (envois simulés, aucun message réel).
+
+Quand la page est retirée (« en_ligne » à false dans data/prints.json), on vérifie seulement que plus rien n'y mène."""
 import unittest
 
 import support
-from support import CHROME, expect, offline, watch_errors
+from support import ROOT, CHROME, expect, offline, watch_errors
 from playwright.sync_api import sync_playwright
+from prints import PRINTS_ONLINE
 
 ENDPOINT = 'https://formspree.io/f/xblwgnop'
 
 
+@unittest.skipIf(PRINTS_ONLINE, 'page Tirages en ligne : vérifiée par les tests de Prints')
+class PrintsOffline(unittest.TestCase):
+    def test_nothing_leads_to_the_removed_page(self):
+        """Page Tirages retirée : aucune page n'y renvoie, et son ancienne adresse ouvre les projets personnels."""
+        old = ROOT / 'regards/tirages.html'
+        pages = [p for p in ROOT.glob('*.html') if p.is_file()]
+        for folder in ('albums', 'rugby', 'instants-de-vie', 'concerts', 'regards'):
+            pages += (ROOT / folder).glob('*.html')
+        for page in pages:
+            if page != old:
+                self.assertNotIn('tirages.html', page.read_text(encoding='utf-8'), page.relative_to(ROOT).as_posix())
+        self.assertIn('http-equiv="refresh" content="0; url=index.html"', old.read_text(encoding='utf-8'))
+        self.assertNotIn('regards/tirages.html', (ROOT / 'sitemap.xml').read_text(encoding='utf-8'))
+
+
+@unittest.skipUnless(PRINTS_ONLINE, 'page Tirages retirée pour le moment (« en_ligne » dans data/prints.json)')
 class Prints(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

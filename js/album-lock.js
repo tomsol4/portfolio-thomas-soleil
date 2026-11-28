@@ -2,10 +2,9 @@
     'use strict';
     // Sur une liste de reportages, un album protégé demande son mot de passe au clic : on n'arrive sur la page
     // de l'album qu'avec le bon. Le mot de passe est vérifié ici, dans le navigateur, sur le contenu chiffré de la page ;
-    // la clé de la page est ensuite confiée à l'onglet le temps d'y arriver (album-access.js l'efface dès qu'il la lit).
-    const KEY = 'album-access-key';
-    const forget = () => { try { sessionStorage.removeItem(KEY); } catch (_) {} };
-    forget();
+    // la clé de la page est ensuite retenue par l'onglet (album-access.js la relit) : tant que l'onglet reste ouvert,
+    // l'album s'ouvre sans redemander le mot de passe. Fermer l'onglet l'oublie.
+    const STORE = 'album-access-keys';
     const links = document.querySelectorAll('a[data-album-locked]');
     const dialog = document.getElementById('album-access-dialog');
     // Sans ces outils, le lien mène à la page de l'album, qui demande elle-même le mot de passe.
@@ -21,6 +20,15 @@
     let opening = false;
     const decode = value => Uint8Array.from(atob(value), character => character.charCodeAt(0));
     const encode = bytes => btoa(String.fromCharCode(...new Uint8Array(bytes)));
+
+    function remembered() {
+        try { return JSON.parse(sessionStorage.getItem(STORE)) || {}; } catch (_) { return {}; }
+    }
+    function store(keys) {
+        try { sessionStorage.setItem(STORE, JSON.stringify(keys)); } catch (_) {
+            // Sans stockage pour l'onglet, la page de l'album redemandera le mot de passe.
+        }
+    }
 
     // Le contenu chiffré de l'album se charge dès que la fenêtre s'ouvre, pendant que le visiteur tape.
     function encryptedPage(href) {
@@ -61,13 +69,28 @@
         dialog.showModal();
         field.focus();
     }
+    // Album déjà ouvert dans cet onglet : on y va directement, si sa clé vaut toujours (elle change quand l'album est refait).
+    async function openRemembered(target) {
+        try {
+            const payload = await encryptedPage(target.href);
+            const known = remembered()[payload.id];
+            if (known && known.salt === payload.salt) return location.assign(target.href);
+            if (known) {
+                const keys = remembered();
+                delete keys[payload.id];
+                store(keys);
+            }
+        } catch (_) {}
+        open(target);
+    }
     links.forEach(target => {
         target.setAttribute('aria-haspopup', 'dialog');
         target.addEventListener('click', event => {
             // Ctrl, Cmd, Maj ou la molette : nouvel onglet ou nouvelle fenêtre, sur la page de l'album qui demande le mot de passe.
             if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
             event.preventDefault();
-            open(target);
+            if (Object.keys(remembered()).length) openRemembered(target);
+            else open(target);
         });
     });
     form.querySelector('.album-access-cancel').addEventListener('click', () => dialog.close());
@@ -103,17 +126,14 @@
             return;
         }
         field.value = '';
-        try {
-            sessionStorage.setItem(KEY, JSON.stringify({id:payload.id, salt:payload.salt, key:encode(bits)}));
-        } catch (_) {
-            // Sans stockage pour l'onglet, la page de l'album redemandera le mot de passe.
-        }
+        const keys = remembered();
+        keys[payload.id] = {salt:payload.salt, key:encode(bits)};
+        store(keys);
         location.assign(link.href);
     });
-    // Retour sur la liste avec le bouton Précédent : la fenêtre se referme et une clé restée inutilisée est effacée.
+    // Retour sur la liste avec le bouton Précédent : la fenêtre se referme ; l'onglet garde les albums déjà ouverts.
     addEventListener('pageshow', event => {
         if (!event.persisted) return;
-        forget();
         ready();
         if (dialog.open) dialog.close();
     });

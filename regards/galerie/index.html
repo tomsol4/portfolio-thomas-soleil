@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Galerie | Thomas Soleil</title>
+<meta name="description" content="Visite en 3D des projets personnels de Thomas Soleil : une salle par série, des photographies à voir en grand.">
+<meta name="robots" content="noindex, follow">
+<link rel="icon" type="image/png" sizes="32x32" href="../../images/favicon-32.png">
+<style>
+@font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:300 600;font-display:swap;src:url(../../fonts/CormorantGaramond-normal-latin.woff2) format('woff2')}
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:400 600;font-display:swap;src:url(../../fonts/Montserrat-latin-0.woff2) format('woff2')}
+html,body{margin:0;height:100%;overflow:hidden;background:#e9e6e0;-webkit-tap-highlight-color:transparent}
+canvas{position:fixed;inset:0;display:block;width:100%;height:100%;touch-action:none;cursor:grab;outline:none}
+canvas.dragging{cursor:grabbing}
+canvas.pointing{cursor:pointer}
+.ui{position:fixed;inset:0;pointer-events:none;font:500 13px/1.4 Montserrat,system-ui,sans-serif;color:#1e1e1e}
+.ui::before{content:"";position:absolute;inset:0;background:radial-gradient(125% 95% at 50% 45%,transparent 58%,rgba(22,18,14,.2) 100%)}
+.chip{pointer-events:auto;display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border:0;border-radius:999px;background:rgba(250,249,246,.84);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 6px 22px rgba(0,0,0,.14);color:inherit;font:inherit;letter-spacing:.03em;text-decoration:none;cursor:pointer}
+.back{position:absolute;top:max(16px,env(safe-area-inset-top));left:16px}
+.bar{pointer-events:auto;position:absolute;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;align-items:center;gap:4px;padding:6px;border-radius:999px;background:rgba(250,249,246,.86);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.bar button{width:46px;height:46px;border:0;border-radius:50%;background:transparent;color:inherit;font:400 24px/1 Montserrat,system-ui,sans-serif;cursor:pointer}
+.bar button:hover{background:rgba(0,0,0,.06)}
+.room{min-width:170px;max-width:52vw;padding:0 6px;text-align:center}
+.room strong{display:block;font:500 1.3rem/1.15 'Cormorant Garamond',Georgia,serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.room button{width:auto;height:auto;padding:2px 8px;border-radius:999px;font:500 .66rem/1.6 Montserrat,system-ui,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:#6b665f}
+.menu{pointer-events:auto;position:absolute;left:50%;bottom:calc(max(18px,env(safe-area-inset-bottom)) + 70px);transform:translateX(-50%);display:grid;gap:2px;min-width:230px;padding:8px;border-radius:18px;background:rgba(250,249,246,.94);box-shadow:0 14px 40px rgba(0,0,0,.2)}
+.menu[hidden]{display:none}
+.menu button{padding:10px 14px;border:0;border-radius:12px;background:transparent;font:500 1.12rem/1.2 'Cormorant Garamond',Georgia,serif;text-align:left;cursor:pointer;color:#1e1e1e}
+.menu button:hover,.menu button[aria-current]{background:rgba(0,0,0,.06)}
+.hint{position:absolute;left:50%;top:62%;transform:translate(-50%,-50%);margin:0;padding:12px 18px;border-radius:999px;background:rgba(18,18,18,.55);color:#fff;font-size:.8rem;white-space:nowrap;transition:opacity .8s}
+.hint.gone{opacity:0}
+.loading{position:fixed;inset:0;z-index:5;display:grid;place-items:center;background:#f3f1ec url(accueil.jpg) center/cover no-repeat;transition:opacity 1s ease}
+.loading::before{content:"";position:absolute;inset:0;background:rgba(243,241,236,.58);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.loading>div{position:relative}
+.loading.done{opacity:0;pointer-events:none}
+.loading p{margin:0 0 16px;font:400 1.8rem/1 'Cormorant Garamond',Georgia,serif;color:#282828;text-align:center;letter-spacing:.04em}
+.loading i{display:block;width:200px;height:1px;background:#d6d1c8}
+.loading b{display:block;width:0;height:100%;background:#282828;transition:width .3s}
+.viewer{position:fixed;inset:0;z-index:4;display:grid;grid-template-rows:1fr auto;background:rgba(12,12,12,.96);color:#f1ede6;opacity:0;transition:opacity .35s;font:500 13px/1.4 Montserrat,system-ui,sans-serif}
+.viewer.open{opacity:1}
+.viewer[hidden]{display:none}
+.viewer figure{margin:0;display:flex;align-items:center;justify-content:center;min-height:0;padding:clamp(16px,4vh,48px) clamp(56px,8vw,120px) 0}
+.viewer img{display:block;max-width:100%;max-height:100%;object-fit:contain;box-shadow:0 20px 60px rgba(0,0,0,.5);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.viewer footer{display:flex;align-items:center;justify-content:center;gap:18px;padding:18px 16px max(20px,env(safe-area-inset-bottom))}
+.viewer h2{margin:0;font:400 1.5rem/1.2 'Cormorant Garamond',Georgia,serif}
+.viewer a{color:#cfc8bb;font-size:.7rem;letter-spacing:.13em;text-transform:uppercase;text-decoration:none}
+.viewer a:hover{color:#fff;text-decoration:underline}
+.viewer .side{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:52px;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#fff;font:300 28px/1 Montserrat,system-ui,sans-serif;cursor:pointer}
+.viewer .side:hover{background:rgba(255,255,255,.18)}
+.viewer .prev{left:clamp(6px,2vw,28px)}.viewer .next{right:clamp(6px,2vw,28px)}
+.viewer .close{position:absolute;top:max(14px,env(safe-area-inset-top));right:16px;width:46px;height:46px;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#fff;font:300 26px/1 Montserrat,system-ui,sans-serif;cursor:pointer}
+.viewer figure{touch-action:pan-y pinch-zoom}
+.stick{pointer-events:auto;position:absolute;left:max(22px,env(safe-area-inset-left));bottom:calc(max(18px,env(safe-area-inset-bottom)) + 84px);width:116px;height:116px;border-radius:50%;background:rgba(250,249,246,.28);border:1px solid rgba(255,255,255,.6);box-shadow:0 6px 22px rgba(0,0,0,.12);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);touch-action:none;-webkit-user-select:none;user-select:none}
+.stick[hidden]{display:none}
+.stick i{position:absolute;left:50%;top:50%;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;background:rgba(250,249,246,.92);box-shadow:0 4px 14px rgba(0,0,0,.22);transition:transform .18s ease-out}
+.stick.on i{transition:none}
+.crosshair{position:fixed;left:50%;top:50%;width:18px;height:18px;margin:-9px 0 0 -9px;display:none;pointer-events:none;transition:transform .12s}
+.crosshair::before,.crosshair::after{content:"";position:absolute;border-radius:1px;background:rgba(255,255,255,.92);box-shadow:0 0 0 1px rgba(0,0,0,.35)}
+.crosshair::before{left:8px;top:0;width:2px;height:18px}
+.crosshair::after{left:0;top:8px;width:18px;height:2px}
+.crosshair.aim{transform:scale(1.4) rotate(45deg)}
+.esc{display:none;position:absolute;top:max(16px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);margin:0;padding:8px 14px;border-radius:999px;background:rgba(18,18,18,.5);color:#fff;font-size:.75rem;letter-spacing:.03em;white-space:nowrap}
+body.playing .crosshair,body.playing .esc{display:block}
+body.playing .bar,body.playing .back{opacity:.4}
+@media (max-width:600px){.hint{width:78vw;white-space:normal;text-align:center;border-radius:14px}.room{min-width:130px}.viewer figure{padding:56px 8px 0}.viewer .side{top:auto;bottom:70px;transform:none}}
+</style>
+<script type="importmap">{"imports":{"three":"./lib/three.module.min.js","three/addons/":"./lib/addons/"}}</script>
+</head>
+<body>
+<h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Galerie des projets personnels de Thomas Soleil</h1>
+<div class="loading" id="loading"><div><p id="loading-text">Galerie</p><i><b id="progress"></b></i></div></div>
+<div class="ui">
+  <a class="chip back" href="../index.html">← Projets personnels</a>
+  <p class="hint" id="hint">Glissez pour regarder · touchez le sol pour marcher · touchez une photo pour la voir en grand</p>
+  <div class="menu" id="menu" hidden></div>
+  <div class="stick" id="stick" hidden aria-hidden="true"><i></i></div>
+  <div class="crosshair" id="crosshair" aria-hidden="true"></div>
+  <p class="esc">Échap pour lâcher la souris · clic sur une photo pour la voir en grand</p>
+  <nav class="bar" aria-label="Visite de la galerie">
+    <button type="button" id="prev" aria-label="Photo précédente de la salle">‹</button>
+    <div class="room"><strong id="room-title">Hall</strong><button type="button" id="rooms" aria-expanded="false" aria-controls="menu">Salles</button></div>
+    <button type="button" id="next" aria-label="Photo suivante de la salle">›</button>
+  </nav>
+</div>
+<div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-label="Photographie en grand">
+  <figure><img id="viewer-img" alt=""></figure>
+  <footer><h2 id="viewer-title"></h2><a id="viewer-album" hidden>Voir toute la série →</a></footer>
+  <button type="button" class="side prev" id="viewer-prev" aria-label="Photo précédente">‹</button>
+  <button type="button" class="side next" id="viewer-next" aria-label="Photo suivante">›</button>
+  <button type="button" class="close" id="viewer-close" aria-label="Fermer">×</button>
+</div>
+<script>
+// Ouverte par un double-clic (adresse « file:// »), la page ne peut pas charger la 3D : on le dit au lieu de rester bloqué.
+if (location.protocol === 'file:') document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('loading-text').innerHTML = '<span style="font-size:1.05rem;line-height:1.6">La galerie ne s’ouvre pas en double-cliquant sur le fichier.<br>'
+    + 'Lancez apercu.bat, puis <a href="http://localhost:8765/regards/galerie/index.html" style="color:inherit">ouvrez la galerie ici</a>.</span>';
+});
+</script>
+<script type="module" src="galerie.js?v=14"></script>
+</body>
+</html>

@@ -118,8 +118,6 @@ def check():
     actual_images = {p.relative_to(ROOT).as_posix() for p in (ROOT / 'images').rglob('*') if p.is_file()}
     manifest_path = ROOT / 'data/image-manifest.json'
     manifest = json.loads(manifest_path.read_text(encoding='utf-8')) if manifest_path.exists() else {}
-    selected = {src for a in albums for src in [a['cover'], *a['photos']]}
-    originals_here = selected <= actual_images
     for a in albums:
         if any(src not in a['photos'] or not alt.strip() for src, alt in a.get('photo_alts', {}).items()):
             errors.append(f'{a["id"]} : les descriptions de photos doivent concerner des photos de l’album')
@@ -139,9 +137,10 @@ def check():
     for src in descriptions:
         if src not in public and any(src in a['photos'] for a in albums if a.get('password_protected')):
             errors.append(f'Description publiée d’une photo d’album protégé (elle dirait ce que l’album cache) : {src}')
+    # Une description dont la photo a été supprimée n'apparaît nulle part : on l'ignore.
     for src, alt in descriptions.items():
-        if not alt.strip() or (originals_here and src not in actual_images):
-            errors.append(f'Description de photo invalide : {src}')
+        if not alt.strip():
+            errors.append(f'Description de photo vide : {src}')
     for file in files:
         content = file.read_text(encoding='utf-8')
         if file.name == '404.html' or REDIRECT.search(content):

@@ -1,0 +1,1601 @@
+{
+ "version": 1795873553,
+ "K": 6.0,
+ "tonalite": {
+  "ev": [
+   -12.47393,
+   12.5260688117
+  ],
+  "valeurs": [
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   0.0,
+   5e-05,
+   0.00014,
+   0.00032,
+   0.00064,
+   0.00111,
+   0.00182,
+   0.00278,
+   0.00409,
+   0.00589,
+   0.00827,
+   0.01134,
+   0.01538,
+   0.02068,
+   0.02739,
+   0.03601,
+   0.04692,
+   0.05884,
+   0.07167,
+   0.0864,
+   0.10248,
+   0.11997,
+   0.13968,
+   0.16181,
+   0.18593,
+   0.21262,
+   0.24314,
+   0.27634,
+   0.31226,
+   0.35305,
+   0.39657,
+   0.4423,
+   0.48989,
+   0.53591,
+   0.58032,
+   0.62226,
+   0.66073,
+   0.69697,
+   0.73095,
+   0.76135,
+   0.78972,
+   0.81619,
+   0.84015,
+   0.86207,
+   0.88257,
+   0.90143,
+   0.91846,
+   0.9344,
+   0.94932,
+   0.96269,
+   0.97525,
+   0.98697,
+   0.99736,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ "salles": {
+  "hall": {
+   "titre": "Hall",
+   "rect": [
+    -5,
+    5,
+    -6,
+    6
+   ],
+   "hauteur": 5.0,
+   "entree": [
+    0,
+    5.0,
+    0.0
+   ]
+  },
+  "couvent": {
+   "titre": "Couvent",
+   "lien": "../../albums/Argentique.html",
+   "rect": [
+    -12.3,
+    -5.3,
+    -6,
+    -0.15
+   ],
+   "hauteur": 4.4,
+   "porte": [
+    -5.15,
+    -3.0
+   ],
+   "largeur": 2.2,
+   "entree": [
+    -6.5,
+    -3.0,
+    1.5707963267948966
+   ]
+  },
+  "toulouse": {
+   "titre": "Toulouse",
+   "lien": "../../albums/argentique_toulouse.html",
+   "rect": [
+    -12.3,
+    -5.3,
+    0.15,
+    6
+   ],
+   "hauteur": 4.2,
+   "porte": [
+    -5.15,
+    3.0
+   ],
+   "largeur": 2.2,
+   "entree": [
+    -6.5,
+    3.0,
+    1.5707963267948966
+   ]
+  },
+  "garde": {
+   "titre": "La Garde",
+   "lien": "../../albums/la_garde.html",
+   "rect": [
+    5.3,
+    12.3,
+    -6,
+    -0.15
+   ],
+   "hauteur": 4.6,
+   "porte": [
+    5.15,
+    -3.0
+   ],
+   "largeur": 2.2,
+   "entree": [
+    6.5,
+    -3.0,
+    -1.5707963267948966
+   ]
+  },
+  "messe": {
+   "titre": "Messe",
+   "lien": "../../albums/messe.html",
+   "rect": [
+    5.3,
+    12.3,
+    0.15,
+    6
+   ],
+   "hauteur": 4.2,
+   "porte": [
+    5.15,
+    3.0
+   ],
+   "largeur": 2.2,
+   "entree": [
+    6.5,
+    3.0,
+    -1.5707963267948966
+   ]
+  },
+  "montagne": {
+   "titre": "Échappées en montagne",
+   "lien": "../../albums/montagne.html",
+   "rect": [
+    -5,
+    5,
+    -14.3,
+    -6.3
+   ],
+   "hauteur": 4.6,
+   "porte": [
+    0,
+    -6.15
+   ],
+   "largeur": 3.2,
+   "entree": [
+    0,
+    -7.4,
+    0.0
+   ]
+  }
+ },
+ "accrochages": [
+  {
+   "id": "hall_1",
+   "salle": "hall",
+   "centre": [
+    -5,
+    1.55,
+    0
+   ],
+   "normale": [
+    1,
+    0,
+    0
+   ],
+   "taille": 1.22,
+   "photo": "projet_perso_vrac_vrac-3"
+  },
+  {
+   "id": "hall_2",
+   "salle": "hall",
+   "centre": [
+    5,
+    1.55,
+    0
+   ],
+   "normale": [
+    -1,
+    0,
+    0
+   ],
+   "taille": 1.22,
+   "photo": "projet_perso_vrac_vrac-14"
+  },
+  {
+   "id": "hall_3",
+   "salle": "hall",
+   "centre": [
+    -3.3,
+    1.55,
+    6
+   ],
+   "normale": [
+    0,
+    0,
+    -1
+   ],
+   "taille": 1.22,
+   "photo": "projet_perso_vrac_chartres-12"
+  },
+  {
+   "id": "hall_4",
+   "salle": "hall",
+   "centre": [
+    3.3,
+    1.55,
+    6
+   ],
+   "normale": [
+    0,
+    0,
+    -1
+   ],
+   "taille": 1.22,
+   "photo": "projet_perso_vrac_vrac-8"
+  },
+  {
+   "id": "hall_5",
+   "salle": "hall",
+   "centre": [
+    -3.3,
+    1.55,
+    -6
+   ],
+   "normale": [
+    0,
+    0,
+    1
+   ],
+   "taille": 1.22,
+   "photo": "projet_perso_vrac_vrac-2"
+  },
+  {
+   "id": "hall_6",
+   "salle": "hall",
+   "centre": [
+    3.3,
+    1.55,
+    -6
+   ],
+   "normale": [
+    0,
+    0,
+    1
+   ],
+   "taille": 1.22,
+   "photo": "projet_perso_vrac_vrac-1"
+  },
+  {
+   "id": "couvent_1",
+   "salle": "couvent",
+   "centre": [
+    -12.3,
+    1.6,
+    -3.075
+   ],
+   "normale": [
+    1,
+    0,
+    0
+   ],
+   "taille": 1.647,
+   "photo": "projet_perso_argentique_argentique_couvent_argentiqueNB-15"
+  },
+  {
+   "id": "couvent_2",
+   "salle": "couvent",
+   "centre": [
+    -11.1333,
+    1.55,
+    -6
+   ],
+   "normale": [
+    0,
+    0,
+    1
+   ],
+   "taille": 1.159,
+   "photo": "projet_perso_argentique_argentique_couvent_argentiqueNB-4"
+  },
+  {
+   "id": "couvent_3",
+   "salle": "couvent",
+   "centre": [
+    -6.4667,
+    1.55,
+    -6
+   ],
+   "normale": [
+    0,
+    0,
+    1
+   ],
+   "taille": 1.159,
+   "photo": "projet_perso_argentique_argentique_couvent_argentiqueNB-8"
+  },
+  {
+   "id": "couvent_4",
+   "salle": "couvent",
+   "centre": [
+    -8.8,
+    1.55,
+    -0.15
+   ],
+   "normale": [
+    0,
+    0,
+    -1
+   ],
+   "taille": 1.159,
+   "photo": "projet_perso_argentique_argentique_couvent_argentiqueNB-13"
+  },
+  {
+   "id": "toulouse_1",
+   "salle": "toulouse",
+   "centre": [
+    -12.3,
+    1.6,
+    3.075
+   ],
+   "normale": [
+    1,
+    0,
+    0
+   ],
+   "taille": 1.8,
+   "photo": "projet_perso_argentique_argentique_toulouse_argentiqueNB-9"
+  },
+  {
+   "id": "toulouse_2",
+   "salle": "toulouse",
+   "centre": [
+    -10.4,
+    1.55,
+    0.15
+   ],
+   "normale": [
+    0,
+    0,
+    1
+   ],
+   "taille": 1.22,
+   "photo": "projet_perso_argentique_argentique_toulouse_argentiqueNB-10"
+  },
+  {
+   "id": "toulouse_3",
+   "salle": "toulouse",
+   "centre": [
+    -7.4,
+    1.55,
+    0.15
+   ],
+   "normale": [
+    0,
+    0,
+    1
+   ],
+   "taille": 1.22,
+   "photo": "projet_perso_argentique_argentique_toulouse_argentiqueNB-11"
+  },
+  {
+   "id": "toulouse_4",
+   "salle": "toulouse",
+   "centre": [
+    -8.8,
+    1.55,
+    6
+   ],
+   "normale": [
+    0,
+    0,
+    -1
+   ],
+   "taille": 1.22,
+   "photo": "projet_perso_argentique_argentique_toulouse_argentiqueNB-23"
+  },
+  {
+   "id": "garde_1",
+   "salle": "garde",
+   "centre": [
+    12.3,
+    1.5,
+    -3.075
+   ],
+   "normale": [
+    -1,
+    0,
+    0
+   ],
+   "taille": 1.586,
+   "photo": "projet_perso_la_garde_2026_02_LaGarde-29"
+  },
+  {
+   "id": "garde_2",
+   "salle": "garde",
+   "centre": [
+    7.3,
+    1.55,
+    -6
+   ],
+   "normale": [
+    0,
+    0,
+    1
+   ],
+   "taille": 1.342,
+   "photo": "projet_perso_la_garde_2026_02_LaGarde-25"
+  },
+  {
+   "id": "garde_3",
+   "salle": "garde",
+   "centre": [
+    10.4,
+    1.55,
+    -6
+   ],
+   "normale": [
+    0,
+    0,
+    1
+   ],
+   "taille": 1.22,
+   "photo": "projet_perso_la_garde_2026_02_LaGarde-9"
+  },
+  {
+   "id": "garde_4",
+   "salle": "garde",
+   "centre": [
+    8.8,
+    1.55,
+    -0.15
+   ],
+   "normale": [
+    0,
+    0,
+    -1
+   ],
+   "taille": 1.22,
+   "photo": "projet_perso_la_garde_2026_02_LaGarde-21"
+  },
+  {
+   "id": "messe_1",
+   "salle": "messe",
+   "centre": [
+    12.3,
+    1.85,
+    3.075
+   ],
+   "normale": [
+    -1,
+    0,
+    0
+   ],
+   "taille": 1.464,
+   "photo": "projet_perso_messe_2026_08_Rentr-eScoute-5511-b37d43af"
+  },
+  {
+   "id": "messe_2",
+   "salle": "messe",
+   "centre": [
+    7.3,
+    1.66,
+    0.15
+   ],
+   "normale": [
+    0,
+    0,
+    1
+   ],
+   "taille": 1.159,
+   "photo": "projet_perso_messe_2026_08_Rentr-eScoute-5489-524fd3bf"
+  },
+  {
+   "id": "messe_3",
+   "salle": "messe",
+   "centre": [
+    10.4,
+    1.66,
+    0.15
+   ],
+   "normale": [
+    0,
+    0,
+    1
+   ],
+   "taille": 1.159,
+   "photo": "projet_perso_messe_2026_08_MesseDeRentr-e-5232-1290e039"
+  },
+  {
+   "id": "messe_4",
+   "salle": "messe",
+   "centre": [
+    10.9,
+    1.66,
+    6
+   ],
+   "normale": [
+    0,
+    0,
+    -1
+   ],
+   "taille": 1.159,
+   "photo": "projet_perso_messe_2026_08_Rentr-eScoute-5582-ee59a3d6"
+  },
+  {
+   "id": "messe_5",
+   "salle": "messe",
+   "centre": [
+    8.8,
+    1.66,
+    6
+   ],
+   "normale": [
+    0,
+    0,
+    -1
+   ],
+   "taille": 1.159,
+   "photo": "projet_perso_messe_IMG_8463"
+  },
+  {
+   "id": "messe_6",
+   "salle": "messe",
+   "centre": [
+    6.7,
+    1.66,
+    6
+   ],
+   "normale": [
+    0,
+    0,
+    -1
+   ],
+   "taille": 1.159,
+   "photo": "projet_perso_messe_2026_08_MesseDeRentr-e-5203-240bbafd"
+  },
+  {
+   "id": "montagne_1",
+   "salle": "montagne",
+   "centre": [
+    -5,
+    1.6,
+    -10.3
+   ],
+   "normale": [
+    1,
+    0,
+    0
+   ],
+   "taille": 1.8,
+   "photo": "projet_perso_montagne_Montagne-59"
+  },
+  {
+   "id": "montagne_2",
+   "salle": "montagne",
+   "centre": [
+    5,
+    1.55,
+    -8.6
+   ],
+   "normale": [
+    -1,
+    0,
+    0
+   ],
+   "taille": 1.342,
+   "photo": "projet_perso_montagne_Montagne-5"
+  },
+  {
+   "id": "montagne_3",
+   "salle": "montagne",
+   "centre": [
+    5,
+    1.55,
+    -12.0
+   ],
+   "normale": [
+    -1,
+    0,
+    0
+   ],
+   "taille": 1.342,
+   "photo": "projet_perso_montagne_Montagne-18"
+  },
+  {
+   "id": "montagne_4",
+   "salle": "montagne",
+   "centre": [
+    3.3,
+    1.55,
+    -6.3
+   ],
+   "normale": [
+    0,
+    0,
+    -1
+   ],
+   "taille": 1.342,
+   "photo": "projet_perso_montagne_Montagne-64"
+  }
+ ],
+ "matieres": {
+  "parquet": {
+   "texture": "herringbone_parquet",
+   "tuile": 3.4,
+   "teinte": [
+    0.78,
+    0.72,
+    0.66
+   ],
+   "rugosite": 0.75,
+   "reflets": 0.45,
+   "variation": 0.12,
+   "profondeur": 0.002
+  },
+  "parquet_clair": {
+   "texture": "herringbone_parquet",
+   "tuile": 3.4,
+   "teinte": [
+    1.12,
+    1.08,
+    1.02
+   ],
+   "rugosite": 0.8,
+   "reflets": 0.45,
+   "variation": 0.12,
+   "profondeur": 0.002
+  },
+  "dalles": {
+   "texture": "monastery_stone_floor",
+   "tuile": 1.8,
+   "teinte": [
+    1.5,
+    1.46,
+    1.4
+   ],
+   "rugosite": 0.9,
+   "reflets": 0.5,
+   "variation": 0.14,
+   "melange": "hex"
+  },
+  "beton": {
+   "texture": "concrete_floor_02",
+   "tuile": 2.0,
+   "teinte": [
+    1.05,
+    1.12,
+    1.4
+   ],
+   "rugosite": 0.7,
+   "reflets": true,
+   "variation": 0.16,
+   "melange": "hex"
+  },
+  "tomettes": {
+   "texture": "terracotta_floor_tiles",
+   "tuile": 2.08,
+   "teinte": [
+    2.25,
+    2.2,
+    2.25
+   ],
+   "rugosite": 0.8,
+   "reflets": 0.6,
+   "saturation": 0.72,
+   "carreaux": 9,
+   "variation": 0.1,
+   "melange": "carreaux",
+   "profondeur": 0.004
+  },
+  "marbre": {
+   "texture": "marble_01",
+   "tuile": 1.5,
+   "teinte": [
+    1.3,
+    1.35,
+    1.55
+   ],
+   "rugosite": 0.25,
+   "reflets": true,
+   "variation": 0.06,
+   "melange": "hex"
+  },
+  "pierre": {
+   "texture": "sandstone_blocks_05",
+   "tuile": 3.0,
+   "teinte": [
+    1.12,
+    1.15,
+    1.22
+   ],
+   "variation": 0.14,
+   "profondeur": 0.035
+  },
+  "brique": {
+   "texture": "castle_brick_02_white",
+   "tuile": 3.0,
+   "teinte": [
+    1.12,
+    1.08,
+    1.08
+   ],
+   "variation": 0.14,
+   "saturation": 0.9,
+   "profondeur": 0.022
+  },
+  "chaux": {
+   "texture": "painted_plaster_wall",
+   "tuile": 2.0,
+   "teinte": [
+    2.0,
+    2.12,
+    2.15
+   ],
+   "variation": 0.05,
+   "melange": "hex"
+  },
+  "enduit": {
+   "texture": "painted_plaster_wall",
+   "tuile": 2.0,
+   "teinte": [
+    1.92,
+    1.87,
+    1.76
+   ],
+   "variation": 0.06,
+   "melange": "hex"
+  },
+  "rouge": {
+   "texture": "painted_plaster_wall",
+   "tuile": 2.0,
+   "teinte": [
+    0.55,
+    0.1,
+    0.115
+   ],
+   "variation": 0.1,
+   "melange": "hex"
+  },
+  "bois": {
+   "texture": "wood_table_worn",
+   "tuile": 0.55,
+   "teinte": [
+    1.4,
+    1.4,
+    1.4
+   ],
+   "profondeur": 0.004
+  },
+  "lambris": {
+   "texture": "wood_table_worn",
+   "tuile": 0.55,
+   "teinte": [
+    0.62,
+    0.55,
+    0.5
+   ],
+   "rugosite": 0.55,
+   "reflets": 0.35,
+   "profondeur": 0.004
+  },
+  "bois_plafond": {
+   "texture": "hinoki_planks",
+   "tuile": 1.89,
+   "teinte": [
+    1.15,
+    1.12,
+    1.08
+   ]
+  },
+  "blanc": {
+   "couleur": [
+    0.84,
+    0.83,
+    0.81
+   ]
+  },
+  "plafond": {
+   "couleur": [
+    0.86,
+    0.86,
+    0.85
+   ]
+  },
+  "plinthe": {
+   "couleur": [
+    0.8,
+    0.8,
+    0.79
+   ]
+  },
+  "plinthe_bois": {
+   "couleur": [
+    0.05,
+    0.032,
+    0.022
+   ]
+  },
+  "corniche": {
+   "couleur": [
+    0.84,
+    0.82,
+    0.78
+   ]
+  },
+  "chene": {
+   "texture": "oak_wood_planks",
+   "tuile": 1.2,
+   "teinte": [
+    1,
+    1,
+    1
+   ],
+   "rugosite": 0.55,
+   "reflets": 0.4
+  },
+  "cadre": {
+   "couleur": [
+    0.02,
+    0.019,
+    0.018
+   ],
+   "rugosite": 0.38,
+   "reflets": 0.35
+  },
+  "passe-partout": {
+   "couleur": [
+    0.88,
+    0.875,
+    0.86
+   ]
+  },
+  "noir": {
+   "couleur": [
+    0.015,
+    0.015,
+    0.015
+   ],
+   "rugosite": 0.4,
+   "reflets": 0.4
+  },
+  "lettres": {
+   "couleur": [
+    0.012,
+    0.012,
+    0.012
+   ]
+  },
+  "verriere": {
+   "lumineux": [
+    0.94,
+    0.965,
+    1.0
+   ],
+   "force": 2.6
+  },
+  "jour": {
+   "lumineux": [
+    0.95,
+    0.97,
+    1.0
+   ],
+   "force": 2.4
+  },
+  "vue": {
+   "photo": "projet_perso_montagne_Montagne-42",
+   "force": 2.2
+  }
+ },
+ "format_matieres": ".webp",
+ "obstacles": [
+  [
+   -0.9,
+   0.9,
+   0.27,
+   0.73
+  ],
+  [
+   -0.9,
+   0.9,
+   -11.23,
+   -10.77
+  ]
+ ],
+ "lumieres": {
+  "banc_hall": "lumiere/banc_hall.png",
+  "banc_montagne": "lumiere/banc_montagne.png",
+  "couvent__dalles": "lumiere/couvent__dalles.png",
+  "couvent__pierre": "lumiere/couvent__pierre.png",
+  "garde__chaux": "lumiere/garde__chaux.png",
+  "garde__plafond": "lumiere/garde__plafond.png",
+  "garde__tomettes": "lumiere/garde__tomettes.png",
+  "hall__blanc": "lumiere/hall__blanc.png",
+  "hall__corniche": "lumiere/hall__corniche.png",
+  "hall__enduit": "lumiere/hall__enduit.png",
+  "hall__parquet": "lumiere/hall__parquet.png",
+  "hall__plafond": "lumiere/hall__plafond.png",
+  "hall__plinthe": "lumiere/hall__plinthe.png",
+  "messe__corniche": "lumiere/messe__corniche.png",
+  "messe__lambris": "lumiere/messe__lambris.png",
+  "messe__marbre": "lumiere/messe__marbre.png",
+  "messe__plafond": "lumiere/messe__plafond.png",
+  "messe__plinthe_bois": "lumiere/messe__plinthe_bois.png",
+  "messe__rouge": "lumiere/messe__rouge.png",
+  "montagne__blanc": "lumiere/montagne__blanc.png",
+  "montagne__bois_plafond": "lumiere/montagne__bois_plafond.png",
+  "montagne__parquet_clair": "lumiere/montagne__parquet_clair.png",
+  "montagne__plinthe": "lumiere/montagne__plinthe.png",
+  "toulouse__beton": "lumiere/toulouse__beton.png",
+  "toulouse__bois": "lumiere/toulouse__bois.png",
+  "toulouse__brique": "lumiere/toulouse__brique.png",
+  "toulouse__chaux": "lumiere/toulouse__chaux.png"
+ },
+ "soleil": {
+  "salle": "garde",
+  "vers_soleil": [
+   0.62751,
+   0.57358,
+   0.52654
+  ],
+  "x": 12.3,
+  "y": [
+   3.0,
+   4.15
+  ],
+  "z": [
+   -3.675,
+   -2.475
+  ]
+ },
+ "ciel": "ciel.jpg",
+ "projecteurs": [
+  {
+   "salle": "hall",
+   "position": [
+    -3.4947,
+    4.6106,
+    0.0
+   ],
+   "cible": [
+    -5.0,
+    1.6,
+    0.0
+   ],
+   "angle": 0.3246,
+   "flou": 0.85,
+   "puissance": 774.0,
+   "couleur": [
+    1,
+    0.97,
+    0.93
+   ]
+  },
+  {
+   "salle": "hall",
+   "position": [
+    3.4947,
+    4.6106,
+    0.0
+   ],
+   "cible": [
+    5.0,
+    1.6,
+    0.0
+   ],
+   "angle": 0.3246,
+   "flou": 0.85,
+   "puissance": 774.0,
+   "couleur": [
+    1,
+    0.97,
+    0.93
+   ]
+  },
+  {
+   "salle": "hall",
+   "position": [
+    -3.3,
+    4.6106,
+    4.4947
+   ],
+   "cible": [
+    -3.3,
+    1.6,
+    6.0
+   ],
+   "angle": 0.3246,
+   "flou": 0.85,
+   "puissance": 774.0,
+   "couleur": [
+    1,
+    0.97,
+    0.93
+   ]
+  },
+  {
+   "salle": "hall",
+   "position": [
+    3.3,
+    4.6106,
+    4.4947
+   ],
+   "cible": [
+    3.3,
+    1.6,
+    6.0
+   ],
+   "angle": 0.3246,
+   "flou": 0.85,
+   "puissance": 774.0,
+   "couleur": [
+    1,
+    0.97,
+    0.93
+   ]
+  },
+  {
+   "salle": "hall",
+   "position": [
+    -3.3,
+    4.6106,
+    -4.4947
+   ],
+   "cible": [
+    -3.3,
+    1.6,
+    -6.0
+   ],
+   "angle": 0.3246,
+   "flou": 0.85,
+   "puissance": 774.0,
+   "couleur": [
+    1,
+    0.97,
+    0.93
+   ]
+  },
+  {
+   "salle": "hall",
+   "position": [
+    3.3,
+    4.6106,
+    -4.4947
+   ],
+   "cible": [
+    3.3,
+    1.6,
+    -6.0
+   ],
+   "angle": 0.3246,
+   "flou": 0.85,
+   "puissance": 774.0,
+   "couleur": [
+    1,
+    0.97,
+    0.93
+   ]
+  },
+  {
+   "salle": "couvent",
+   "position": [
+    -10.8103,
+    3.6202,
+    -3.075
+   ],
+   "cible": [
+    -12.3,
+    1.65,
+    -3.075
+   ],
+   "angle": 0.5349,
+   "flou": 0.85,
+   "puissance": 967.5,
+   "couleur": [
+    1,
+    0.9,
+    0.76
+   ]
+  },
+  {
+   "salle": "couvent",
+   "position": [
+    -11.1333,
+    3.4611,
+    -4.5124
+   ],
+   "cible": [
+    -11.1333,
+    1.6,
+    -6.0
+   ],
+   "angle": 0.4275,
+   "flou": 0.85,
+   "puissance": 774.0,
+   "couleur": [
+    1,
+    0.9,
+    0.76
+   ]
+  },
+  {
+   "salle": "couvent",
+   "position": [
+    -6.4667,
+    3.4611,
+    -4.5124
+   ],
+   "cible": [
+    -6.4667,
+    1.6,
+    -6.0
+   ],
+   "angle": 0.4275,
+   "flou": 0.85,
+   "puissance": 774.0,
+   "couleur": [
+    1,
+    0.9,
+    0.76
+   ]
+  },
+  {
+   "salle": "couvent",
+   "position": [
+    -8.8,
+    3.4611,
+    -1.6376
+   ],
+   "cible": [
+    -8.8,
+    1.6,
+    -0.15
+   ],
+   "angle": 0.4275,
+   "flou": 0.85,
+   "puissance": 774.0,
+   "couleur": [
+    1,
+    0.9,
+    0.76
+   ]
+  },
+  {
+   "salle": "toulouse",
+   "position": [
+    -10.8099,
+    3.64,
+    3.075
+   ],
+   "cible": [
+    -12.3,
+    1.65,
+    3.075
+   ],
+   "angle": 0.5668,
+   "flou": 0.85,
+   "puissance": 1051.9,
+   "couleur": [
+    1,
+    0.97,
+    0.93
+   ]
+  },
+  {
+   "salle": "toulouse",
+   "position": [
+    -10.4,
+    3.6393,
+    1.641
+   ],
+   "cible": [
+    -10.4,
+    1.6,
+    0.15
+   ],
+   "angle": 0.4215,
+   "flou": 0.85,
+   "puissance": 967.5,
+   "couleur": [
+    1,
+    0.97,
+    0.93
+   ]
+  },
+  {
+   "salle": "toulouse",
+   "position": [
+    -7.4,
+    3.6393,
+    1.641
+   ],
+   "cible": [
+    -7.4,
+    1.6,
+    0.15
+   ],
+   "angle": 0.4215,
+   "flou": 0.85,
+   "puissance": 967.5,
+   "couleur": [
+    1,
+    0.97,
+    0.93
+   ]
+  },
+  {
+   "salle": "toulouse",
+   "position": [
+    -8.8,
+    3.6393,
+    4.509
+   ],
+   "cible": [
+    -8.8,
+    1.6,
+    6.0
+   ],
+   "angle": 0.4215,
+   "flou": 0.85,
+   "puissance": 967.5,
+   "couleur": [
+    1,
+    0.97,
+    0.93
+   ]
+  },
+  {
+   "salle": "garde",
+   "position": [
+    10.7991,
+    4.2129,
+    -3.075
+   ],
+   "cible": [
+    12.3,
+    1.55,
+    -3.075
+   ],
+   "angle": 0.4339,
+   "flou": 0.85,
+   "puissance": 625.1,
+   "couleur": [
+    1,
+    0.97,
+    0.93
+   ]
+  },
+  {
+   "salle": "garde",
+   "position": [
+    7.3,
+    4.2133,
+    -4.4998
+   ],
+   "cible": [
+    7.3,
+    1.6,
+    -6.0
+   ],
+   "angle": 0.3868,
+   "flou": 0.85,
+   "puissance": 625.1,
+   "couleur": [
+    1,
+    0.97,
+    0.93
+   ]
+  },
+  {
+   "salle": "garde",
+   "position": [
+    10.4,
+    4.2133,
+    -4.4998
+   ],
+   "cible": [
+    10.4,
+    1.6,
+    -6.0
+   ],
+   "angle": 0.3596,
+   "flou": 0.85,
+   "puissance": 625.1,
+   "couleur": [
+    1,
+    0.97,
+    0.93
+   ]
+  },
+  {
+   "salle": "garde",
+   "position": [
+    8.8,
+    4.2133,
+    -1.6502
+   ],
+   "cible": [
+    8.8,
+    1.6,
+    -0.15
+   ],
+   "angle": 0.3596,
+   "flou": 0.85,
+   "puissance": 625.1,
+   "couleur": [
+    1,
+    0.97,
+    0.93
+   ]
+  },
+  {
+   "salle": "messe",
+   "position": [
+    10.8113,
+    3.821,
+    3.075
+   ],
+   "cible": [
+    12.3,
+    1.9,
+    3.075
+   ],
+   "angle": 0.4981,
+   "flou": 0.85,
+   "puissance": 1041.9,
+   "couleur": [
+    1,
+    0.88,
+    0.7
+   ]
+  },
+  {
+   "salle": "messe",
+   "position": [
+    7.3,
+    3.8184,
+    1.6422
+   ],
+   "cible": [
+    7.3,
+    1.71,
+    0.15
+   ],
+   "angle": 0.3978,
+   "flou": 0.85,
+   "puissance": 1041.9,
+   "couleur": [
+    1,
+    0.88,
+    0.7
+   ]
+  },
+  {
+   "salle": "messe",
+   "position": [
+    10.4,
+    3.8184,
+    1.6422
+   ],
+   "cible": [
+    10.4,
+    1.71,
+    0.15
+   ],
+   "angle": 0.3978,
+   "flou": 0.85,
+   "puissance": 1041.9,
+   "couleur": [
+    1,
+    0.88,
+    0.7
+   ]
+  },
+  {
+   "salle": "messe",
+   "position": [
+    10.9,
+    3.8184,
+    4.5078
+   ],
+   "cible": [
+    10.9,
+    1.71,
+    6.0
+   ],
+   "angle": 0.3978,
+   "flou": 0.85,
+   "puissance": 1041.9,
+   "couleur": [
+    1,
+    0.88,
+    0.7
+   ]
+  },
+  {
+   "salle": "messe",
+   "position": [
+    8.8,
+    3.8184,
+    4.5078
+   ],
+   "cible": [
+    8.8,
+    1.71,
+    6.0
+   ],
+   "angle": 0.3978,
+   "flou": 0.85,
+   "puissance": 1041.9,
+   "couleur": [
+    1,
+    0.88,
+    0.7
+   ]
+  },
+  {
+   "salle": "messe",
+   "position": [
+    6.7,
+    3.8184,
+    4.5078
+   ],
+   "cible": [
+    6.7,
+    1.71,
+    6.0
+   ],
+   "angle": 0.3978,
+   "flou": 0.85,
+   "puissance": 1041.9,
+   "couleur": [
+    1,
+    0.88,
+    0.7
+   ]
+  },
+  {
+   "salle": "montagne",
+   "position": [
+    -3.5005,
+    4.2137,
+    -10.3
+   ],
+   "cible": [
+    -5.0,
+    1.65,
+    -10.3
+   ],
+   "angle": 0.4895,
+   "flou": 0.85,
+   "puissance": 672.7,
+   "couleur": [
+    1,
+    0.97,
+    0.93
+   ]
+  },
+  {
+   "salle": "montagne",
+   "position": [
+    3.4998,
+    4.2133,
+    -8.6
+   ],
+   "cible": [
+    5.0,
+    1.6,
+    -8.6
+   ],
+   "angle": 0.3868,
+   "flou": 0.85,
+   "puissance": 893.0,
+   "couleur": [
+    1,
+    0.97,
+    0.93
+   ]
+  },
+  {
+   "salle": "montagne",
+   "position": [
+    3.4998,
+    4.2133,
+    -12.0
+   ],
+   "cible": [
+    5.0,
+    1.6,
+    -12.0
+   ],
+   "angle": 0.3868,
+   "flou": 0.85,
+   "puissance": 893.0,
+   "couleur": [
+    1,
+    0.97,
+    0.93
+   ]
+  },
+  {
+   "salle": "montagne",
+   "position": [
+    3.3,
+    4.2133,
+    -7.8002
+   ],
+   "cible": [
+    3.3,
+    1.6,
+    -6.3
+   ],
+   "angle": 0.3868,
+   "flou": 0.85,
+   "puissance": 893.0,
+   "couleur": [
+    1,
+    0.97,
+    0.93
+   ]
+  }
+ ]
+}

@@ -18,11 +18,13 @@ from PIL import Image
 from playwright.sync_api import sync_playwright
 from album_list import load_albums
 from build import variant_key
+from prints import PRINTS_ONLINE
 from site_metadata import photo_descriptions
 
 PAGES = ['index.html', 'rugby/index.html', 'rugby/contact.html', 'rugby/tarifs.html', 'instants-de-vie/index.html',
          'instants-de-vie/prestations.html', 'instants-de-vie/contact.html', 'concerts/index.html',
-         'concerts/contact.html', 'regards/index.html', 'regards/tirages.html', 'mentions.html', '404.html']
+         'concerts/contact.html', 'regards/index.html', *(['regards/tirages.html'] if PRINTS_ONLINE else []),
+         'mentions.html', '404.html']
 WIDTHS = [320, 390, 768, 1440]
 ENDPOINT = 'https://formspree.io/f/xblwgnop'
 CORS = {'Access-Control-Allow-Origin': '*'}
@@ -261,27 +263,27 @@ class BrowserTests(unittest.TestCase):
     # Projets personnels
 
     def test_personal_projects_slideshow(self):
-        """Une image à la fois, visionneuse au clavier, ouverture d'une série et retours."""
+        """Une image à la fois, flèches et clavier, ouverture d'une série et retour sur cette même série."""
         page = self.open('regards/index.html', 390, 844)
         art_count, photos = self.art_count, len(self.individual_photos)
+
+        def shown(position):
+            """Une seule image à l'écran : la n-ième (en partant de 0)."""
+            expect(page.locator('.art-slide:visible')).to_have_count(1)
+            expect(page.locator('.art-slide').nth(position)).to_be_visible()
+
         expect(page.locator('.art-series-work')).to_have_count(len(self.art_albums))
         expect(page.locator('.art-work')).to_have_count(photos)
-        expect(page.locator('.art-photo-link')).to_have_count(photos)
-        expect(page.locator('.art-slide:visible')).to_have_count(1)
         expect(page.locator('.art-controls')).to_be_visible()
-        expect(page.locator('.art-progress')).to_have_text(f'01 / {art_count:02d}')
+        shown(0)
         page.locator('.art-prev').click()
-        expect(page.locator('.art-progress')).to_have_text(f'{art_count:02d} / {art_count:02d}')
-        page.locator('.art-photo-link').last.click()
-        expect(page.get_by_role('dialog')).to_be_visible()
-        expect(page.locator('#photo-counter')).to_have_text(f'{photos} / {photos}')
+        shown(art_count - 1)
+        # Une photo seule est déjà montrée en grand : la toucher n'ouvre pas de seconde visionneuse.
+        page.locator('.art-slide:visible img').click()
+        expect(page.locator('dialog[open]')).to_have_count(0)
+        shown(art_count - 1)
         page.keyboard.press('ArrowRight')
-        expect(page.locator('#photo-counter')).to_have_text(f'1 / {photos}')
-        expect(page.locator('.art-progress')).to_have_text(f'{art_count:02d} / {art_count:02d}')
-        page.keyboard.press('Escape')
-        expect(page.locator('.art-photo-link').last).to_be_focused()
-        page.keyboard.press('ArrowRight')
-        expect(page.locator('.art-progress')).to_have_text(f'01 / {art_count:02d}')
+        shown(0)
         page.keyboard.press('ArrowRight')
         page.locator('.art-series-link').nth(1).click()
         page.wait_for_url('**/albums/' + self.art_albums[1]['id'] + '.html')
@@ -291,7 +293,8 @@ class BrowserTests(unittest.TestCase):
         expect(page.get_by_role('dialog')).to_be_visible()
         page.keyboard.press('Escape')
         page.locator('.art-return').click()
-        page.wait_for_url('**/regards/index.html')
+        page.wait_for_url('**/regards/index.html#serie-' + self.art_albums[1]['id'])
+        shown(1)
         page.locator('.art-return').click()
         page.wait_for_url('**/index.html#haut')
         assert page.evaluate('scrollY') <= 1, 'Le retour montre le haut de l’accueil'

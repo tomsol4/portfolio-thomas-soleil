@@ -6,27 +6,28 @@
     const slides = [...rail.querySelectorAll('.art-slide')];
     if (!slides.length) return;
     const controls = carousel.querySelector('.art-controls');
-    const progress = carousel.querySelector('.art-progress');
     const announcement = carousel.querySelector('.art-announcement');
     let current = 0, touch = null, suppressClickUntil = 0;
 
     function show(index, manual = false) {
-        const focusedImage = slides[current].contains(document.activeElement);
+        const hadFocus = slides[current].contains(document.activeElement);
         current = (index + slides.length) % slides.length;
-        slides.forEach((slide, i) => { slide.hidden = i !== current; });
-        slides[current].querySelector('img').loading = 'eager';
+        const slide = slides[current];
+        slides.forEach((other, i) => { other.hidden = i !== current; });
+        slide.querySelector('img').loading = 'eager';
         slides[(current + 1) % slides.length].querySelector('img').loading = 'eager';
-        progress.textContent = `${String(current + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
         if (manual) {
-            const kind = slides[current].dataset.kind === 'series' ? 'Série' : 'Photographie individuelle';
-            announcement.textContent = `${kind} : ${slides[current].dataset.title}. ${current + 1} sur ${slides.length}.`;
-            if (focusedImage) slides[current].querySelector('.art-image-link').focus({ preventScroll: true });
+            // L'adresse suit la photo montrée : le retour depuis une série, ou un rechargement, rouvre la même.
+            history.replaceState(history.state, '', '#' + slide.id);
+            const label = slide.dataset.kind === 'series' ? `Série : ${slide.dataset.title}` : slide.querySelector('img').alt;
+            announcement.textContent = `${label}. ${current + 1} sur ${slides.length}.`;
+            // Une photo seule n'a pas de lien : la main passe alors au diaporama lui-même.
+            if (hadFocus) (slide.querySelector('a') || rail).focus({ preventScroll: true });
         }
     }
     carousel.classList.add('is-ready');
-    rail.removeAttribute('tabindex');
+    rail.tabIndex = -1;
     controls.hidden = slides.length < 2;
-    progress.hidden = slides.length < 2;
     controls.querySelector('.art-prev').addEventListener('click', () => show(current - 1, true));
     controls.querySelector('.art-next').addEventListener('click', () => show(current + 1, true));
     document.addEventListener('keydown', event => {
@@ -54,5 +55,15 @@
             event.stopPropagation();
         }
     }, true);
-    show(0);
+    // Photo demandée par l'adresse (#serie-messe, #photo-03…) ; -1 si elle n'en demande aucune.
+    function requested() {
+        let wanted = '';
+        try { wanted = decodeURIComponent(location.hash.slice(1)); } catch { /* adresse mal formée */ }
+        return slides.findIndex(slide => slide.id === wanted);
+    }
+    window.addEventListener('hashchange', () => {
+        const index = requested();
+        if (index >= 0 && index !== current) show(index, true);
+    });
+    show(Math.max(0, requested()));
 })();

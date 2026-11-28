@@ -76,13 +76,16 @@ def contrast_ratio(first, second):
 
 
 def unlock_album(page):
-    """Ouvre un album protégé avec son mot de passe (gardé sur cet ordinateur) ; ne fait rien pour un album public."""
-    payload = page.locator('#album-encrypted-data')
-    if not payload.count():
+    """Ouvre un album protégé avec son mot de passe (gardé sur cet ordinateur) ; ne fait rien pour un album public.
+
+    Un album déjà ouvert dans le même onglet s'ouvre tout seul : on attend alors seulement qu'il soit prêt."""
+    if not page.locator('#album-encrypted-data, #contenu[data-album-ready]').count():
         return
-    album_id = payload.evaluate('(el) => JSON.parse(el.textContent).id')
-    page.locator('#album-password').fill(password_for(album_id))
-    page.locator('#album-access-form [type=submit]').click()
+    page.wait_for_function('document.querySelector("#contenu[data-album-ready], #album-access-dialog[open]") !== null')
+    if page.locator('#album-access-dialog[open]').count():
+        album_id = page.locator('#album-encrypted-data').evaluate('(el) => JSON.parse(el.textContent).id')
+        page.locator('#album-password').fill(password_for(album_id))
+        page.locator('#album-access-form [type=submit]').click()
     expect(page.locator('.photo-grid')).to_be_visible()
     expect(page.locator('#contenu')).to_have_attribute('data-album-ready', 'true')
 

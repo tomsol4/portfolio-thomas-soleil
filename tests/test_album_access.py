@@ -101,7 +101,6 @@ class AlbumAccess(unittest.TestCase):
                 expect(page.locator('.photo-link')).to_have_count(len(album['photos']))
                 assert page.evaluate('window.albumDialogs') == 0, 'La page de l’album ne redemande pas le mot de passe'
                 assert not page.evaluate('window.albumGateSeen'), 'La page fermée ne s’affiche pas avant l’album'
-                assert page.evaluate('sessionStorage.getItem("album-access-key")') is None, 'La clé ne sert qu’une fois'
                 expect(page.locator('html')).not_to_have_class(re.compile(r'\balbum-opening\b'))
                 encrypted_image = page.locator('.photo-link').nth(1).get_attribute('href')
                 assert encrypted_image.endswith('.bin'), 'Les photos de l’album sont publiées chiffrées'
@@ -125,8 +124,18 @@ class AlbumAccess(unittest.TestCase):
                 page.locator('.back-to-top').click()
                 expect(page.locator('#contenu')).to_be_focused()
                 assert password not in page.url
-                # Page rechargée ou lien direct : la page de l'album demande elle-même le mot de passe.
+                # Page rechargée dans le même onglet : l'onglet a retenu l'album, il s'ouvre sans redemander le mot de passe.
                 page.reload()
+                expect(page.locator('.photo-link')).to_have_count(len(album['photos']))
+                expect(page.locator('#contenu')).to_have_attribute('data-album-ready', 'true')
+                assert page.evaluate('window.albumDialogs') == 0, 'Recharger la page ne redemande pas le mot de passe'
+                assert not page.evaluate('window.albumGateSeen'), 'La page fermée ne s’affiche pas avant l’album'
+                # Lien direct dans un autre onglet : la page de l'album demande elle-même le mot de passe.
+                page = context.new_page()
+                page.on('pageerror', lambda error: errors.append(str(error)))
+                page.on('request', lambda request: posts.append(request.url) if request.method == 'POST' else None)
+                page.goto(self.base + 'albums/noel.html')
+                dialog = page.locator('#album-access-dialog')
                 expect(dialog).to_be_visible()
                 expect(page.locator('#album-password')).to_be_focused()
                 expect(page.locator('.photo-link')).to_have_count(0)
@@ -153,7 +162,8 @@ class AlbumAccess(unittest.TestCase):
                 assert not errors, errors
 
     def test_wedding_list_asks_for_the_password(self):
-        """Les deux liens du baptême demandent le mot de passe ; le bouton Précédent referme la fenêtre."""
+        """Les deux liens du baptême demandent le mot de passe ; le bouton Précédent referme la fenêtre ;
+        ensuite, l'onglet rouvre l'album sans le redemander."""
         wedding = next((a for a in self.albums if a['id'] == 'bapteme'), None)
         if not (wedding and has_password('bapteme')):
             self.skipTest('mot de passe du baptême absent de cet ordinateur')
@@ -185,7 +195,10 @@ class AlbumAccess(unittest.TestCase):
                 page.go_back()
                 page.wait_for_url(listing)
                 expect(page.locator('#album-access-dialog')).not_to_be_visible()
-                assert page.evaluate('sessionStorage.getItem("album-access-key")') is None
+                button.click()
+                page.wait_for_url('**/albums/bapteme.html')
+                expect(page.locator('.photo-link')).to_have_count(len(wedding['photos']))
+                assert page.evaluate('window.albumDialogs') == 0, 'Un album déjà ouvert dans l’onglet ne redemande pas le mot de passe'
                 context.close()
                 assert not errors, errors
 

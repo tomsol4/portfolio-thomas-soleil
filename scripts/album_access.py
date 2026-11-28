@@ -65,10 +65,13 @@ def access_dialog(title, on_arrival):
             '<button class="album-access-cancel" type="button">Annuler</button></form>\n</dialog>')
 
 
-# Album ouvert depuis une liste avec le bon mot de passe : la page d'accès reste cachée pendant que l'album se déchiffre
-# (album-access.js retire la classe ; au bout de 4 s, elle s'enlève d'elle-même si le script n'a pas pu se charger).
-OPENING_SCRIPT = ('<script>try{if(sessionStorage.getItem("album-access-key")){document.documentElement.classList.add("album-opening");'
-                  'setTimeout(function(){document.documentElement.classList.remove("album-opening")},4000)}}catch(_){}</script>')
+def opening_script(album_id):
+    """Album déjà ouvert dans cet onglet (sa clé est retenue) : la page d'accès reste cachée pendant qu'il se déchiffre.
+
+    album-access.js retire la classe ; au bout de 4 s, elle s'enlève d'elle-même si le script n'a pas pu se charger."""
+    return ('<script>try{if((JSON.parse(sessionStorage.getItem("album-access-keys"))||{})[' + json.dumps(album_id) + ']){'
+            'document.documentElement.classList.add("album-opening");'
+            'setTimeout(function(){document.documentElement.classList.remove("album-opening")},4000)}}catch(_){}</script>')
 
 
 def decrypt_markup(payload, password):
@@ -186,7 +189,7 @@ def protect_page(page, album, cover, previous='', assets=None):
     page = page[:start] + gate + page[end:]
     page = page.replace('<script src="../js/masonry.js" defer></script>', '')
     page = page.replace('<script src="../js/gallery.js" defer></script>', '<script src="../js/album-access.js" defer></script>')
-    return page.replace('</head>', f'<meta name="robots" content="noindex, follow"><link rel="stylesheet" href="../css/album-access.css">{OPENING_SCRIPT}</head>', 1)
+    return page.replace('</head>', f'<meta name="robots" content="noindex, follow"><link rel="stylesheet" href="../css/album-access.css">{opening_script(album["id"])}</head>', 1)
 
 
 if __name__ == '__main__':

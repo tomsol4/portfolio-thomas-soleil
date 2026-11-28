@@ -10,8 +10,7 @@ from pathlib import Path
 import re
 from urllib.parse import quote
 from site_metadata import structured_data, public_url, offers, BASE, INSTAGRAM
-from gallery_markup import lightbox_markup
-from prints import build_prints
+from prints import build_prints, PRINTS_ONLINE
 from album_access import lock_badge, locked_link, access_dialog
 from contact_form import contact_aside, contact_form, contact_page, home_contact, LIFE_PROJECTS
 from prices import PRICES, WEDDING_FROM, euros
@@ -64,16 +63,49 @@ def portal_navigation():
 <div class="nav-links" id="navigation"><a class="portal-link" href="#a-propos">À propos</a><a class="portal-link" href="#contact">Contact</a><a class="portal-instagram" href="{INSTAGRAM}" target="_blank" rel="noopener noreferrer" aria-label="Instagram de Thomas Soleil (nouvel onglet)">{INSTAGRAM_ICON}</a></div></header>'''
 
 
+# Diapositive de chaque série dans le diaporama des projets personnels, notée en fabriquant ce diaporama (avant les
+# pages d'albums) : le retour depuis une série rouvre le diaporama sur elle, pas sur la première.
+SLIDE_ANCHORS = {}
+
+
+def personal_projects_href(album_id=None):
+    """Adresse du diaporama des projets personnels, ouvert sur la série qu'on quitte s'il la montre."""
+    anchor = SLIDE_ANCHORS.get(album_id)
+    return 'regards/index.html' + (f'#{anchor}' if anchor else '')
+
+
+# Visite en 3D des projets personnels : une page à part (regards/galerie/), faite par
+# scripts/musee_3d.py (dans Blender) ; le bouton n'apparaît que si elle existe.
+GALLERY = 'regards/galerie/index.html'
+
+
+def gallery_rooms():
+    """Album → salle de la visite en 3D (d'après regards/galerie/plan.json) : depuis un album, on entre dans sa salle."""
+    try:
+        rooms = json.loads((ROOT / 'regards/galerie/plan.json').read_text(encoding='utf-8'))['salles']
+    except (OSError, ValueError, KeyError):
+        return {}
+    return {room['lien'].rsplit('/', 1)[-1].removesuffix('.html'): name for name, room in rooms.items() if room.get('lien')}
+
+
 def art_navigation(path, prefix):
-    """Projets personnels : un retour (vers l'accueil ou vers les projets) et le lien des tirages."""
+    """Projets personnels : un retour (vers l'accueil ou vers les projets), le bouton de la visite en 3D
+    et, si la page Tirages est en ligne, son lien."""
     exhibition, prints = path == 'regards/index.html', path == 'regards/tirages.html'
-    destination = 'index.html#haut' if exhibition else 'regards/index.html'
+    album_id = path.removeprefix('albums/').removesuffix('.html') if path.startswith('albums/') else None
+    destination = 'index.html#haut' if exhibition else personal_projects_href(album_id)
     label = 'Thomas Soleil — Accueil' if exhibition else 'Thomas Soleil — Retour aux projets personnels'
     css = 'art-navigation art-navigation-exhibition' if exhibition else 'art-navigation'
     shop_href = '#demande' if prints else prefix + 'regards/tirages.html'
+    shop = (f'<a class="art-shop-link" href="{shop_href}">{"Votre demande" if prints else "Tirages photo"}'
+            '<span aria-hidden="true">↗</span></a>') if PRINTS_ONLINE else ''
+    room = gallery_rooms().get(album_id)
+    visit = (f'<a class="art-visit-link" href="{prefix}{GALLERY}{"#" + room if room else ""}">Visite en 3D</a>'
+             if (ROOT / GALLERY).is_file() and not prints else '')
+    links = f'<div class="art-links">{visit}{shop}</div>' if visit or shop else ''
     return (f'<nav class="{css}" aria-label="Navigation principale"><a class="art-return art-logo" href="{prefix}{destination}" '
             f'aria-label="{label}"><img src="{prefix}{LOGO}" width="56" height="56" alt=""><span>{"Les univers" if exhibition else "Les projets"}</span></a>'
-            f'<a class="art-shop-link" href="{shop_href}">{"Votre demande" if prints else "Tirages photo"}<span aria-hidden="true">↗</span></a></nav>')
+            f'{links}</nav>')
 
 
 def footer(prefix):
@@ -95,7 +127,7 @@ def stylesheets(universe, path, prefix, locked):
         names.append('tarifs')
     if path == 'instants-de-vie/prestations.html':
         names.append('life-services')
-    if path.startswith('albums/') or universe == 'regards':
+    if path.startswith('albums/') or (universe == 'regards' and path != 'regards/index.html'):
         names.append('gallery')
     if path.endswith('contact.html') or universe == 'portal' or path == 'regards/tirages.html':
         names.append('contact')
@@ -358,29 +390,40 @@ def build_universes(albums, picture, write, home_cover, asset):
     artistic_albums = [a for a in albums if a['category'] in ('Argentique', 'Autres regards')]
     series = [a for a in artistic_albums if a.get('presentation') != 'individual']
     individual_photos = [src for a in artistic_albums if a.get('presentation') == 'individual' for src in a['photos']]
+    total = len(series) + len(individual_photos)
+
+    def slide_sizes(src):
+        """Largeur réellement affichée : une photo en hauteur est limitée par la hauteur de l'écran, pas par sa largeur.
+
+        Hauteurs retirées (en-tête, marges, titre), un peu arrondies vers le bas : le navigateur ne choisit jamais
+        une version trop petite."""
+        photo = asset(src, large=True)
+        ratio = photo['width'] / photo['height']
+        return (f'(max-width: 760px) min(100vw, calc((100vh - 160px) * {ratio:.3f})), '
+                f'min(calc(100vw - 160px), calc((100vh - 175px) * {ratio:.3f}))')
+
     series_markup = []
     for index, album in enumerate(series):
         featured = index == 0
         title = album['title'].removeprefix('Argentique — ')
         image = picture(album['cover'], album['title'], '../',
                         loading='eager' if featured else 'lazy',
-                        sizes='(max-width: 760px) calc(100vw - 40px), calc(100vw - 176px)', hero=featured, large=True)
+                        sizes=slide_sizes(album['cover']), hero=featured, large=True)
         href = '../albums/' + album['id'] + '.html'
-        series_markup.append(f'''<figure class="art-slide art-series-work{' art-feature' if featured else ''}" data-kind="series" data-title="{escape(title, quote=True)}" role="group" aria-roledescription="diapositive" aria-label="{index + 1} sur {len(series) + len(individual_photos)}"><a class="art-image-link art-series-link" href="{href}" aria-label="Voir la série : {escape(title, quote=True)}">{image}</a><figcaption><a href="{href}"><span class="art-series-title">{escape(title)}</span><span class="art-open">Voir la série <span aria-hidden="true">↗</span></span></a></figcaption></figure>''')
+        SLIDE_ANCHORS[album['id']] = anchor = 'serie-' + album['id']
+        series_markup.append(f'''<figure class="art-slide art-series-work{' art-feature' if featured else ''}" id="{escape(anchor, quote=True)}" data-kind="series" data-title="{escape(title, quote=True)}" role="group" aria-roledescription="diapositive" aria-label="{index + 1} sur {total}"><a class="art-image-link art-series-link" href="{href}" aria-label="Voir la série : {escape(title, quote=True)}">{image}</a><figcaption><a href="{href}"><span class="art-series-title">{escape(title)}</span><span class="art-open">Voir la série <span aria-hidden="true">↗</span></span></a></figcaption></figure>''')
+    # Photos seules : déjà montrées en grand, sans lien ni visionneuse ; leur ligne de titre reste vide pour que
+    # toutes les photos gardent la même place (et, sur téléphone, les flèches leur place sous la photo).
     photographs = []
     for index, src in enumerate(individual_photos, 1):
         image = picture(src, f'Photographie personnelle {index}', '../', loading='lazy',
-                        sizes='(max-width: 760px) calc(100vw - 40px), calc(100vw - 176px)', large=True)
-        candidates = asset(src, large=True)['variants']
-        srcset = ', '.join(f'../{path} {width}w' for path, width in candidates)
-        photographs.append(f'''<figure class="art-slide art-work" data-kind="photo" data-title="Photographie {index:02d}" role="group" aria-roledescription="diapositive" aria-label="{len(series) + index} sur {len(series) + len(individual_photos)}"><a class="art-image-link art-photo-link photo-link" href="../{candidates[-1][0]}" data-viewer-src="../{candidates[-1][0]}" data-viewer-srcset="{escape(srcset, quote=True)}" aria-label="Agrandir la photographie individuelle {index:02d}">{image}</a><figcaption><span class="art-series-title">Photographie {index:02d}</span></figcaption></figure>''')
+                        sizes=slide_sizes(src), large=True)
+        photographs.append(f'''<figure class="art-slide art-work" id="photo-{index:02d}" data-kind="photo" role="group" aria-roledescription="diapositive" aria-label="{len(series) + index} sur {total}"><div class="art-image-link">{image}</div><figcaption></figcaption></figure>''')
     body = (ROOT / 'templates/regards.html').read_text(encoding='utf-8')
     body = body.replace('{{SLIDES}}', ''.join(series_markup + photographs))
-    if individual_photos:
-        body += lightbox_markup()
     write('regards/index.html', shell(body, 'Projets personnels | Thomas Soleil',
-          'Les projets personnels de Thomas Soleil : séries argentiques, montagne et photos isolées.',
-          'regards/index.html', 'regards', '../', 'images/optimized/og-Argentique.jpg', ('regards.js', 'gallery.js')))
+          'Les projets personnels de Thomas Soleil : séries argentiques, montagne, monastère de La Garde, messe et photos isolées.',
+          'regards/index.html', 'regards', '../', 'images/optimized/og-Argentique.jpg', ('regards.js',)))
     return print_references
 
 

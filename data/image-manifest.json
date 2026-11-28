@@ -5,7 +5,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2080": 82
   }
  },
  "images/argentique/argentique_couvent/argentiqueNB-14.jpg": {
@@ -14,7 +15,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2080": 82
   }
  },
  "images/argentique/argentique_couvent/argentiqueNB-15.jpg": {
@@ -23,7 +25,9 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "1871": 82,
+   "160": 80
   }
  },
  "images/argentique/argentique_couvent/argentiqueNB-16.jpg": {
@@ -32,7 +36,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2016": 82
   }
  },
  "images/argentique/argentique_couvent/argentiqueNB-17.jpg": {
@@ -41,7 +46,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2016": 82
   }
  },
  "images/argentique/argentique_couvent/argentiqueNB-4.jpg": {
@@ -50,7 +56,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2560": 82
   }
  },
  "images/argentique/argentique_couvent/argentiqueNB-5.jpg": {
@@ -59,7 +66,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2560": 82
   }
  },
  "images/argentique/argentique_couvent/argentiqueNB-6.jpg": {
@@ -68,7 +76,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2560": 82
   }
  },
  "images/argentique/argentique_couvent/argentiqueNB-7.jpg": {
@@ -77,7 +86,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2560": 82
   }
  },
  "images/argentique/argentique_couvent/argentiqueNB-8.jpg": {
@@ -86,7 +96,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2560": 82
   }
  },
  "images/argentique/argentique_toulouse/argentiqueNB-10.jpg": {
@@ -95,7 +106,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2560": 82
   }
  },
  "images/argentique/argentique_toulouse/argentiqueNB-11.jpg": {
@@ -104,7 +116,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2560": 82
   }
  },
  "images/argentique/argentique_toulouse/argentiqueNB-22.jpg": {
@@ -113,7 +126,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2056": 82
   }
  },
  "images/argentique/argentique_toulouse/argentiqueNB-23.jpg": {
@@ -122,7 +136,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2056": 82
   }
  },
  "images/argentique/argentique_toulouse/argentiqueNB-9.jpg": {
@@ -131,7 +146,9 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2560": 82,
+   "160": 80
   }
  },
  "images/bapteme/Aribastire-8289.jpg": {
@@ -140,7 +157,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2560": 82
   }
  },
  "images/bapteme/Aribastire-8443.jpg": {
@@ -3435,7 +3453,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "1952": 82
   }
  },
@@ -3445,7 +3463,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "2224": 82
   }
  },
@@ -3464,7 +3482,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "2167": 82
   }
  },
@@ -3474,7 +3492,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "2227": 82
   }
  },
@@ -3484,7 +3502,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "2046": 82
   }
  },
@@ -3494,8 +3512,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
-   "2560": 80
+   "1600": 82,
+   "2560": 82
   }
  },
  "images/mariage/mariage_argentique (17).jpg": {
@@ -3504,7 +3522,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "2266": 82
   }
  },
@@ -3514,7 +3532,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "2225": 82
   }
  },
@@ -3524,7 +3542,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "2084": 82
   }
  },
@@ -3551,7 +3569,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "1992": 82
   }
  },
@@ -3561,7 +3579,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "1992": 82
   }
  },
@@ -3571,7 +3589,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "1842": 82
   }
  },
@@ -3599,7 +3617,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "1842": 82
   }
  },
@@ -3609,7 +3627,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "1842": 82
   }
  },
@@ -3637,7 +3655,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "2229": 82
   }
  },
@@ -3647,7 +3665,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "1842": 82
   }
  },
@@ -3675,7 +3693,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "1842": 82
   }
  },
@@ -3685,7 +3703,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "2224": 82
   }
  },
@@ -3695,7 +3713,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "2224": 82
   }
  },
@@ -3705,7 +3723,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "2224": 82
   }
  },
@@ -3742,7 +3760,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "2219": 82
   }
  },
@@ -3761,7 +3779,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "1890": 82
   }
  },
@@ -3771,7 +3789,7 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80,
+   "1600": 82,
    "2208": 82
   }
  },
@@ -3790,7 +3808,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-15.webp": {
@@ -3799,7 +3818,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-16.webp": {
@@ -3817,7 +3837,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-18.webp": {
@@ -3826,7 +3847,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-19.webp": {
@@ -3835,7 +3857,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-20.webp": {
@@ -3844,7 +3867,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-21.webp": {
@@ -3853,7 +3877,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-22.webp": {
@@ -3862,7 +3887,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-23.webp": {
@@ -3871,7 +3897,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-24.webp": {
@@ -3925,7 +3952,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-30.webp": {
@@ -3943,7 +3971,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-32.webp": {
@@ -3952,7 +3981,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-33.webp": {
@@ -3961,7 +3991,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-34.webp": {
@@ -3970,7 +4001,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-35.webp": {
@@ -3979,7 +4011,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-36.webp": {
@@ -3988,7 +4021,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-37.webp": {
@@ -3997,7 +4031,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-38.webp": {
@@ -4006,7 +4041,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-39.webp": {
@@ -4015,7 +4051,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-40.webp": {
@@ -4024,7 +4061,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-41.webp": {
@@ -4033,7 +4071,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-42.webp": {
@@ -4042,7 +4081,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-43.webp": {
@@ -4060,7 +4100,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-45.webp": {
@@ -4069,7 +4110,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-46.webp": {
@@ -4078,7 +4120,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-47.webp": {
@@ -4096,7 +4139,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-49.webp": {
@@ -4123,7 +4167,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-51.webp": {
@@ -4141,7 +4186,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-53.webp": {
@@ -4159,7 +4205,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-55.webp": {
@@ -4168,7 +4215,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-56.webp": {
@@ -4177,7 +4225,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-57.webp": {
@@ -4204,7 +4253,9 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original",
+   "160": 80
   }
  },
  "images/montagne/Montagne-60.webp": {
@@ -4222,7 +4273,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-62.webp": {
@@ -4231,7 +4283,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-63.webp": {
@@ -4240,7 +4293,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-64.webp": {
@@ -4258,7 +4312,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-66.webp": {
@@ -4267,7 +4322,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-67.webp": {
@@ -4276,7 +4332,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-68.webp": {
@@ -4294,7 +4351,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-7.webp": {
@@ -4303,7 +4361,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/montagne/Montagne-9.webp": {
@@ -4312,7 +4371,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original"
   }
  },
  "images/portrait.jpg": {
@@ -4322,6 +4382,1142 @@
   "qualites": {
    "480": 80,
    "960": 80
+  }
+ },
+ "images/projet_perso/argentique/argentique_couvent/argentiqueNB-13.jpg": {
+  "width": 2080,
+  "height": 3367,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2080": 82
+  }
+ },
+ "images/projet_perso/argentique/argentique_couvent/argentiqueNB-14.jpg": {
+  "width": 2080,
+  "height": 3271,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2080": 82
+  }
+ },
+ "images/projet_perso/argentique/argentique_couvent/argentiqueNB-15.jpg": {
+  "width": 1871,
+  "height": 3001,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "1871": 82
+  }
+ },
+ "images/projet_perso/argentique/argentique_couvent/argentiqueNB-16.jpg": {
+  "width": 2016,
+  "height": 3352,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2016": 82
+  }
+ },
+ "images/projet_perso/argentique/argentique_couvent/argentiqueNB-17.jpg": {
+  "width": 2016,
+  "height": 3367,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2016": 82
+  }
+ },
+ "images/projet_perso/argentique/argentique_couvent/argentiqueNB-4.jpg": {
+  "width": 3023,
+  "height": 1872,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/argentique/argentique_couvent/argentiqueNB-5.jpg": {
+  "width": 3343,
+  "height": 2016,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/argentique/argentique_couvent/argentiqueNB-6.jpg": {
+  "width": 3271,
+  "height": 2016,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/argentique/argentique_couvent/argentiqueNB-7.jpg": {
+  "width": 3019,
+  "height": 1861,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/argentique/argentique_couvent/argentiqueNB-8.jpg": {
+  "width": 3165,
+  "height": 1959,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/argentique/argentique_toulouse/argentiqueNB-10.jpg": {
+  "width": 3319,
+  "height": 2056,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/argentique/argentique_toulouse/argentiqueNB-11.jpg": {
+  "width": 3312,
+  "height": 2056,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/argentique/argentique_toulouse/argentiqueNB-22.jpg": {
+  "width": 2056,
+  "height": 3328,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2056": 82
+  }
+ },
+ "images/projet_perso/argentique/argentique_toulouse/argentiqueNB-23.jpg": {
+  "width": 2056,
+  "height": 3328,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2056": 82
+  }
+ },
+ "images/projet_perso/argentique/argentique_toulouse/argentiqueNB-9.jpg": {
+  "width": 3328,
+  "height": 2056,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-10.jpg": {
+  "width": 3967,
+  "height": 5951,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-11.jpg": {
+  "width": 2852,
+  "height": 4278,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-12.jpg": {
+  "width": 2383,
+  "height": 3574,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2383": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-121.jpg": {
+  "width": 3492,
+  "height": 4656,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-126.jpg": {
+  "width": 5930,
+  "height": 3953,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-13.jpg": {
+  "width": 3384,
+  "height": 5076,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-14.jpg": {
+  "width": 2697,
+  "height": 4045,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-15.jpg": {
+  "width": 5176,
+  "height": 3451,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-16.jpg": {
+  "width": 5879,
+  "height": 3919,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-20.jpg": {
+  "width": 3549,
+  "height": 5323,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-21.jpg": {
+  "width": 4000,
+  "height": 6000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-24.jpg": {
+  "width": 3407,
+  "height": 5110,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-25.jpg": {
+  "width": 3682,
+  "height": 2945,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-26.jpg": {
+  "width": 3191,
+  "height": 4787,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-29.jpg": {
+  "width": 3810,
+  "height": 5715,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-32.jpg": {
+  "width": 5762,
+  "height": 3841,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-39.jpg": {
+  "width": 4482,
+  "height": 2988,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-40.jpg": {
+  "width": 5564,
+  "height": 3709,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-49.jpg": {
+  "width": 6000,
+  "height": 4000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-56.jpg": {
+  "width": 2559,
+  "height": 3838,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2559": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-59.jpg": {
+  "width": 4000,
+  "height": 6000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-6.jpg": {
+  "width": 5879,
+  "height": 3919,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-61.jpg": {
+  "width": 6000,
+  "height": 4000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-64.jpg": {
+  "width": 4000,
+  "height": 3000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-65.jpg": {
+  "width": 4000,
+  "height": 3000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-67.jpg": {
+  "width": 4000,
+  "height": 3000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-68.jpg": {
+  "width": 4000,
+  "height": 3000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-7.jpg": {
+  "width": 3285,
+  "height": 4927,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-71.jpg": {
+  "width": 3555,
+  "height": 5332,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-73.jpg": {
+  "width": 5229,
+  "height": 3922,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-74.jpg": {
+  "width": 5086,
+  "height": 3815,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-8.jpg": {
+  "width": 3571,
+  "height": 5356,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/la_garde/2026_02_LaGarde-9.jpg": {
+  "width": 3571,
+  "height": 5357,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_01_Messe-40.jpg": {
+  "width": 4000,
+  "height": 6000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_01_Messe-43.jpg": {
+  "width": 4000,
+  "height": 6000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_03_JeudidiSaint-27.jpg": {
+  "width": 4000,
+  "height": 5333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_03_JeudidiSaint-32.jpg": {
+  "width": 4000,
+  "height": 5333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_03_VendrediSaint-13.jpg": {
+  "width": 3861,
+  "height": 5148,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_03_VendrediSaint-31.jpg": {
+  "width": 4000,
+  "height": 5333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_03_VendrediSaint-33.jpg": {
+  "width": 3371,
+  "height": 4495,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_03_VendrediSaint-34.jpg": {
+  "width": 2936,
+  "height": 3915,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_03_VendrediSaint-51.jpg": {
+  "width": 4000,
+  "height": 5333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_03_VendrediSaint-6.jpg": {
+  "width": 3328,
+  "height": 4438,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_08_MesseDeRentrée-5119.jpg": {
+  "width": 5801,
+  "height": 3867,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_08_MesseDeRentrée-5139.jpg": {
+  "width": 3491,
+  "height": 4655,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_08_MesseDeRentrée-5197.jpg": {
+  "width": 4000,
+  "height": 6000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_08_MesseDeRentrée-5203.jpg": {
+  "width": 3423,
+  "height": 5135,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_08_MesseDeRentrée-5223.jpg": {
+  "width": 4000,
+  "height": 6000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_08_MesseDeRentrée-5232.jpg": {
+  "width": 3719,
+  "height": 5579,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_08_MesseDeRentrée-5242.jpg": {
+  "width": 6000,
+  "height": 4000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_08_MesseDeRentrée-5270.jpg": {
+  "width": 3737,
+  "height": 5606,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_08_MesseDeRentrée-5304.jpg": {
+  "width": 3403,
+  "height": 5104,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_08_RentréeScoute-5489.jpg": {
+  "width": 3797,
+  "height": 5063,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_08_RentréeScoute-5511.jpg": {
+  "width": 3491,
+  "height": 5237,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_08_RentréeScoute-5546.jpg": {
+  "width": 2609,
+  "height": 3914,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_08_RentréeScoute-5582.jpg": {
+  "width": 3255,
+  "height": 4882,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/2026_08_RentréeScoute-5586.jpg": {
+  "width": 3179,
+  "height": 4770,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/IMG_8460.jpg": {
+  "width": 3999,
+  "height": 5333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/IMG_8463.jpg": {
+  "width": 2734,
+  "height": 4102,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/messe/IMG_8472.jpg": {
+  "width": 4000,
+  "height": 6000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2560": 82
+  }
+ },
+ "images/projet_perso/montagne/Montagne-18.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-19.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-21.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-22.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-23.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-24.webp": {
+  "width": 1333,
+  "height": 2000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1333": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-25.webp": {
+  "width": 1333,
+  "height": 2000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1333": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-28.webp": {
+  "width": 1333,
+  "height": 2000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1333": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-31.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-32.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-33.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-35.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-37.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-38.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-40.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-42.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-44.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-45.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-46.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-49.webp": {
+  "width": 1333,
+  "height": 2000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1333": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-5.webp": {
+  "width": 1600,
+  "height": 2000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-50.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-51.webp": {
+  "width": 1333,
+  "height": 2000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1333": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-52.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-54.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-56.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-57.webp": {
+  "width": 1333,
+  "height": 2000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1333": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-58.webp": {
+  "width": 1333,
+  "height": 2000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1333": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-59.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-62.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-63.webp": {
+  "width": 2000,
+  "height": 1333,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/montagne/Montagne-64.webp": {
+  "width": 1333,
+  "height": 2000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1333": "original"
+  }
+ },
+ "images/projet_perso/vrac/Concours.webp": {
+  "width": 1333,
+  "height": 2000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1333": "original"
+  }
+ },
+ "images/projet_perso/vrac/chartres-12.webp": {
+  "width": 2000,
+  "height": 2000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": "original"
+  }
+ },
+ "images/projet_perso/vrac/vrac-1.jpg": {
+  "width": 2000,
+  "height": 1334,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": 82
+  }
+ },
+ "images/projet_perso/vrac/vrac-14.jpg": {
+  "width": 1250,
+  "height": 2000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1250": 82
+  }
+ },
+ "images/projet_perso/vrac/vrac-18.jpg": {
+  "width": 1333,
+  "height": 2000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1333": 82
+  }
+ },
+ "images/projet_perso/vrac/vrac-2.jpg": {
+  "width": 1500,
+  "height": 2000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1500": 82
+  }
+ },
+ "images/projet_perso/vrac/vrac-3.jpg": {
+  "width": 1500,
+  "height": 2000,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1500": 82
+  }
+ },
+ "images/projet_perso/vrac/vrac-8.jpg": {
+  "width": 2000,
+  "height": 1123,
+  "qualites": {
+   "480": 80,
+   "960": 80,
+   "1600": 82,
+   "2000": 82
   }
  },
  "images/rugby/TouchCO-5783.jpg": {
@@ -6316,7 +7512,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1333": "original"
+   "1333": "original",
+   "160": 80
   }
  },
  "images/vrac/chartres-12.webp": {
@@ -6325,7 +7522,9 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": "original",
+   "160": 80
   }
  },
  "images/vrac/vrac-1.jpg": {
@@ -6334,7 +7533,9 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": 82,
+   "160": 80
   }
  },
  "images/vrac/vrac-14.jpg": {
@@ -6343,7 +7544,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1250": 82
+   "1250": 82,
+   "160": 80
   }
  },
  "images/vrac/vrac-18.jpg": {
@@ -6352,7 +7554,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1333": 82
+   "1333": 82,
+   "160": 80
   }
  },
  "images/vrac/vrac-2.jpg": {
@@ -6361,7 +7564,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1500": 82
+   "1500": 82,
+   "160": 80
   }
  },
  "images/vrac/vrac-3.jpg": {
@@ -6370,7 +7574,8 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1500": 82
+   "1500": 82,
+   "160": 80
   }
  },
  "images/vrac/vrac-8.jpg": {
@@ -6379,7 +7584,9 @@
   "qualites": {
    "480": 80,
    "960": 80,
-   "1600": 80
+   "1600": 82,
+   "2000": 82,
+   "160": 80
   }
  }
 }

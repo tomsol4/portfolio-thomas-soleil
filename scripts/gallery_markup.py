@@ -1,4 +1,4 @@
-"""Visionneuse accessible, partagée par les albums et les photos isolées des projets personnels."""
+"""Visionneuse accessible, partagée par les albums."""
 
 
 def lightbox_markup():

@@ -1,63 +1,71 @@
 {
  "albums/Argentique.html": {
-  "hash": "88da7f1e798316a6",
-  "date": "2026-11-23"
+  "hash": "06c889d4d432faf1",
+  "date": "2026-11-28"
  },
  "albums/argentique_toulouse.html": {
-  "hash": "2a7023f575d198d0",
-  "date": "2026-11-23"
+  "hash": "aa1c4fa7a79becfc",
+  "date": "2026-11-28"
  },
  "albums/autres.html": {
-  "hash": "4192c2dc120923cc",
-  "date": "2026-11-23"
+  "hash": "79c995116fbcf658",
+  "date": "2026-11-27"
  },
  "albums/co_mhr.html": {
-  "hash": "34ae2c25dd8e01a6",
-  "date": "2026-11-23"
+  "hash": "7088bc456eafa7d1",
+  "date": "2026-11-27"
  },
  "albums/co_rct.html": {
-  "hash": "9eec7129733ffa20",
-  "date": "2026-11-23"
+  "hash": "6addac76106f8b89",
+  "date": "2026-11-27"
  },
  "albums/concertsinfonia.html": {
-  "hash": "490e603a71fc7c98",
-  "date": "2026-11-24"
+  "hash": "fc8cd407326d02e8",
+  "date": "2026-11-27"
+ },
+ "albums/la_garde.html": {
+  "hash": "29c13cfd8df8ead7",
+  "date": "2026-11-28"
  },
  "albums/mariage.html": {
-  "hash": "c4dd4907f359778f",
-  "date": "2026-11-23"
+  "hash": "b731ee4f5e4552a1",
+  "date": "2026-11-27"
+ },
+ "albums/messe.html": {
+  "hash": "fe60d29372dd01cc",
+  "date": "2026-11-28"
  },
  "albums/montagne.html": {
-  "hash": "9dccff4de2f62bfc",
-  "date": "2026-11-23"
+  "hash": "d795b17ed7d45690",
+  "date": "2026-11-28"
  },
  "albums/repetition_bougie_sinfonia.html": {
-  "hash": "eb727ab9b0743236",
-  "date": "2026-11-24"
+  "hash": "9d7b1b4fb63f9788",
+  "date": "2026-11-27"
  },
  "albums/rugby.html": {
-  "hash": "8486ac9f520cf6c6",
-  "date": "2026-11-23"
+  "hash": "d9a873538ae9b572",
+  "date": "2026-11-27"
  },
  "concerts/contact.html": {
   "hash": "4e3f55b7ac166d89",
   "date": "2026-11-24"
  },
  "concerts/index.html": {
-  "hash": "5c5952998f00643d",
+  "hash": "bf7a5ec45b68ea08",
   "date": "2026-11-24"
  },
  "index.html": {
-  "hash": "47c10b73c6189233",
-  "date": "2026-11-23"
+  "hash": "0079733127b2e002",
+  "date": "2026-11-27"
  },
  "instants-de-vie/contact.html": {
   "hash": "f6163fef740572ca",
   "date": "2026-11-23"
  },
  "instants-de-vie/index.html": {
-  "hash": "5b16a32aec8c07f7",
-  "date": "2026-11-23"
+  "hash": "94a2c39674b8827f",
+  "date": "2026-11-24"
  },
  "instants-de-vie/prestations.html": {
   "hash": "1bc538aed0c871b3",
@@ -68,12 +76,8 @@
   "date": "2026-11-23"
  },
  "regards/index.html": {
-  "hash": "93bddded202bd358",
-  "date": "2026-11-23"
- },
- "regards/tirages.html": {
-  "hash": "8575d924a4f4085e",
-  "date": "2026-11-23"
+  "hash": "5fd03319faca07c0",
+  "date": "2026-11-27"
  },
  "rugby/contact.html": {
   "hash": "cafa5d8ceef53a8a",
