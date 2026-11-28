@@ -1,5 +1,5 @@
 {
- "version": 1795873553,
+ "version": 1795896156,
  "K": 6.0,
  "tonalite": {
   "ev": [
@@ -944,6 +944,18 @@
   "vue": {
    "photo": "projet_perso_montagne_Montagne-42",
    "force": 2.2
+  },
+  "seuil": {
+   "texture": "marble_01",
+   "tuile": 1.5,
+   "teinte": [
+    1.08,
+    1.1,
+    1.24
+   ],
+   "rugosite": 0.5,
+   "reflets": 0.3,
+   "variation": 0.08
   }
  },
  "format_matieres": ".webp",
@@ -953,6 +965,24 @@
    0.9,
    0.27,
    0.73
+  ],
+  [
+   -9.657,
+   -7.943,
+   -6,
+   -5.58
+  ],
+  [
+   -12.3,
+   -10.277,
+   -0.57,
+   -0.15
+  ],
+  [
+   -3.6,
+   3.6,
+   -14.3,
+   -13.8
   ],
   [
    -0.9,
@@ -966,8 +996,10 @@
   "banc_montagne": "lumiere/banc_montagne.png",
   "couvent__dalles": "lumiere/couvent__dalles.png",
   "couvent__pierre": "lumiere/couvent__pierre.png",
+  "garde__bois": "lumiere/garde__bois.png",
   "garde__chaux": "lumiere/garde__chaux.png",
   "garde__plafond": "lumiere/garde__plafond.png",
+  "garde__seuil": "lumiere/garde__seuil.png",
   "garde__tomettes": "lumiere/garde__tomettes.png",
   "hall__blanc": "lumiere/hall__blanc.png",
   "hall__corniche": "lumiere/hall__corniche.png",
@@ -975,6 +1007,7 @@
   "hall__parquet": "lumiere/hall__parquet.png",
   "hall__plafond": "lumiere/hall__plafond.png",
   "hall__plinthe": "lumiere/hall__plinthe.png",
+  "hall__seuil": "lumiere/hall__seuil.png",
   "messe__corniche": "lumiere/messe__corniche.png",
   "messe__lambris": "lumiere/messe__lambris.png",
   "messe__marbre": "lumiere/messe__marbre.png",
@@ -983,12 +1016,15 @@
   "messe__rouge": "lumiere/messe__rouge.png",
   "montagne__blanc": "lumiere/montagne__blanc.png",
   "montagne__bois_plafond": "lumiere/montagne__bois_plafond.png",
+  "montagne__chene": "lumiere/montagne__chene.png",
   "montagne__parquet_clair": "lumiere/montagne__parquet_clair.png",
   "montagne__plinthe": "lumiere/montagne__plinthe.png",
+  "montagne__seuil": "lumiere/montagne__seuil.png",
   "toulouse__beton": "lumiere/toulouse__beton.png",
   "toulouse__bois": "lumiere/toulouse__bois.png",
   "toulouse__brique": "lumiere/toulouse__brique.png",
-  "toulouse__chaux": "lumiere/toulouse__chaux.png"
+  "toulouse__chaux": "lumiere/toulouse__chaux.png",
+  "toulouse__seuil": "lumiere/toulouse__seuil.png"
  },
  "soleil": {
   "salle": "garde",

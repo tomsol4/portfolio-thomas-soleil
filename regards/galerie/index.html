@@ -51,10 +51,10 @@ canvas.pointing{cursor:pointer}
 .viewer .prev{left:clamp(6px,2vw,28px)}.viewer .next{right:clamp(6px,2vw,28px)}
 .viewer .close{position:absolute;top:max(14px,env(safe-area-inset-top));right:16px;width:46px;height:46px;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#fff;font:300 26px/1 Montserrat,system-ui,sans-serif;cursor:pointer}
 .viewer figure{touch-action:pan-y pinch-zoom}
-.stick{pointer-events:auto;position:absolute;left:max(22px,env(safe-area-inset-left));bottom:calc(max(18px,env(safe-area-inset-bottom)) + 84px);width:116px;height:116px;border-radius:50%;background:rgba(250,249,246,.28);border:1px solid rgba(255,255,255,.6);box-shadow:0 6px 22px rgba(0,0,0,.12);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);touch-action:none;-webkit-user-select:none;user-select:none}
+.stick{position:absolute;left:calc(max(22px,env(safe-area-inset-left)) + 56px);top:calc(100% - max(18px,env(safe-area-inset-bottom)) - 150px);width:112px;height:112px;margin:-56px 0 0 -56px;border-radius:50%;background:rgba(250,249,246,.14);border:1px solid rgba(255,255,255,.45);pointer-events:none;opacity:.6;transition:opacity .2s}
+.stick.on{opacity:1;background:rgba(250,249,246,.24)}
 .stick[hidden]{display:none}
-.stick i{position:absolute;left:50%;top:50%;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;background:rgba(250,249,246,.92);box-shadow:0 4px 14px rgba(0,0,0,.22);transition:transform .18s ease-out}
-.stick.on i{transition:none}
+.stick i{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(250,249,246,.9);box-shadow:0 4px 14px rgba(0,0,0,.22)}
 .crosshair{position:fixed;left:50%;top:50%;width:18px;height:18px;margin:-9px 0 0 -9px;display:none;pointer-events:none;transition:transform .12s}
 .crosshair::before,.crosshair::after{content:"";position:absolute;border-radius:1px;background:rgba(255,255,255,.92);box-shadow:0 0 0 1px rgba(0,0,0,.35)}
 .crosshair::before{left:8px;top:0;width:2px;height:18px}
@@ -97,6 +97,6 @@ if (location.protocol === 'file:') document.addEventListener('DOMContentLoaded',
     + 'Lancez apercu.bat, puis <a href="http://localhost:8765/regards/galerie/index.html" style="color:inherit">ouvrez la galerie ici</a>.</span>';
 });
 </script>
-<script type="module" src="galerie.js?v=14"></script>
+<script type="module" src="galerie.js?v=16"></script>
 </body>
 </html>

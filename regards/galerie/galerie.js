@@ -608,7 +608,6 @@ let glide = null, dirty = true, here = 'hall', currentArt = -1, bob = 0, bobAmou
 const keys = new Set();
 const forward = yaw => new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw));
 const right = yaw => new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw));
-const joy = { x: 0, y: 0, id: null };   // manette tactile : x à droite, y vers le bas (-1 à 1)
 
 function moveBy(dx, dz) {
   const p = pose.pos;
@@ -772,7 +771,7 @@ $('next').addEventListener('click', () => nextArt(1));
 
 // L'aide, selon l'appareil : souris et clavier, ou doigt et manette
 $('hint').textContent = touch
-  ? 'Manette pour marcher · glissez pour regarder · touchez une photo pour la voir en grand'
+  ? 'Pouce gauche pour marcher · glissez à droite pour regarder · touchez une photo pour la voir en grand'
   : 'Cliquez pour prendre la main · la souris regarde · ZQSD pour marcher (Maj : courir) · Échap pour lâcher';
 let hintTimer = setTimeout(hideHint, 12000);
 function hideHint() { $('hint').classList.add('gone'); clearTimeout(hintTimer); }
@@ -818,9 +817,46 @@ function shoot() {
   else if (hit?.object.userData.goto) goToRoom(hit.object.userData.goto);
 }
 
+// Téléphone, comme dans les jeux : le pouce gauche pose une manette là où il touche (moitié gauche de l'écran) et fait
+// marcher, la manette suit le pouce s'il va trop loin ; l'autre pouce glisse sur la moitié droite pour regarder.
+// Un simple toucher (sans glisser), où que ce soit, ouvre la photo touchée ou mène au point du sol touché.
+const stick = $('stick'), knob = stick.firstElementChild;
+const joy = { x: 0, y: 0, id: null, ox: 0, oy: 0, t: 0, moved: 0 };
+if (touch) stick.hidden = false;
+const placeStick = (x, y) => { stick.style.left = `${x}px`; stick.style.top = `${y}px`; };
+function restStick() {   // la manette revient au repos, en bas à gauche
+  joy.id = null; joy.x = joy.y = 0;
+  knob.style.transform = '';
+  stick.classList.remove('on');
+  stick.style.left = stick.style.top = '';
+}
+function tapAt(x, y) {
+  if (!ART) return;
+  const hit = pick(x, y);
+  const walk = () => {   // toucher le sol y mène
+    if (!(hit && hit.face && hit.point.y < 0.05)) return;
+    const p = hit.point.clone();
+    // un point juste devant le mur s'il faut, pour rester dans la salle
+    for (let i = 0; i < 20 && !free(p.x, p.z); i++) p.lerp(pose.pos, 0.15);
+    if (free(p.x, p.z)) { currentArt = -1; travel(p, null, -0.02); hideHint(); }
+  };
+  if (hit?.object.userData.art !== undefined) goToArt(hit.object.userData.art, true);
+  else if (hit?.object.userData.goto) goToRoom(hit.object.userData.goto);
+  else if (!touch) lockPointer(walk);   // ordinateur : le clic prend la main, comme dans un jeu
+  else walk();
+}
+
 let drag = null, hoverAt = 0;
 canvas.addEventListener('pointerdown', e => {
   if (locked) { if (e.button === 0) shoot(); return; }
+  if (touch && e.pointerType === 'touch' && joy.id === null && e.clientX < innerWidth * 0.45) {
+    Object.assign(joy, { id: e.pointerId, ox: e.clientX, oy: e.clientY, t: e.timeStamp, moved: 0 });
+    try { canvas.setPointerCapture(e.pointerId); } catch { /* doigt déjà levé */ }
+    placeStick(e.clientX, e.clientY);
+    stick.classList.add('on');
+    closeMenu();
+    return;
+  }
   drag = { x: e.clientX, y: e.clientY, moved: 0 };
   canvas.setPointerCapture(e.pointerId);
   closeMenu();
@@ -832,6 +868,21 @@ canvas.addEventListener('pointermove', e => {
     if (Math.abs(e.movementX) + Math.abs(e.movementY) > 2) stopGlide();
     look.yaw -= clamp(e.movementX) * k;
     look.pitch = THREE.MathUtils.clamp(look.pitch - clamp(e.movementY) * k, -1.35, 1.35);
+    return;
+  }
+  if (e.pointerId === joy.id) {
+    const R = 50;
+    let dx = e.clientX - joy.ox, dy = e.clientY - joy.oy;
+    joy.moved = Math.max(joy.moved, Math.hypot(dx, dy));
+    const d = Math.hypot(dx, dy);
+    if (d > R) {   // trop loin : la manette suit le pouce
+      joy.ox += dx * (1 - R / d); joy.oy += dy * (1 - R / d);
+      dx *= R / d; dy *= R / d;
+      placeStick(joy.ox, joy.oy);
+    }
+    knob.style.transform = `translate(${dx}px, ${dy}px)`;
+    joy.x = dx / R; joy.y = dy / R;
+    if (joy.moved > 8) { stopGlide(); hideHint(); }
     return;
   }
   if (!drag) {
@@ -853,24 +904,20 @@ canvas.addEventListener('pointermove', e => {
   look.pitch = THREE.MathUtils.clamp(look.pitch + dy * k, -0.7, 0.6);
 });
 canvas.addEventListener('pointerup', e => {
-  canvas.classList.remove('dragging');
-  if (drag && drag.moved < 6 && ART) {
-    const hit = pick(e.clientX, e.clientY);
-    const walk = () => {   // toucher le sol y mène
-      if (!(hit && hit.face && hit.point.y < 0.05)) return;
-      const p = hit.point.clone();
-      // un point juste devant le mur s'il faut, pour rester dans la salle
-      for (let i = 0; i < 20 && !free(p.x, p.z); i++) p.lerp(pose.pos, 0.15);
-      if (free(p.x, p.z)) { currentArt = -1; travel(p, null, -0.02); hideHint(); }
-    };
-    if (hit?.object.userData.art !== undefined) goToArt(hit.object.userData.art, true);
-    else if (hit?.object.userData.goto) goToRoom(hit.object.userData.goto);
-    else if (!touch) lockPointer(walk);   // ordinateur : le clic prend la main, comme dans un jeu
-    else walk();
+  if (e.pointerId === joy.id) {
+    const tap = joy.moved < 8 && e.timeStamp - joy.t < 300;
+    restStick();
+    if (tap) tapAt(e.clientX, e.clientY);
+    return;
   }
+  canvas.classList.remove('dragging');
+  if (drag && drag.moved < 6) tapAt(e.clientX, e.clientY);
   drag = null;
 });
-canvas.addEventListener('pointercancel', () => { drag = null; canvas.classList.remove('dragging'); });
+canvas.addEventListener('pointercancel', e => {
+  if (e.pointerId === joy.id) return restStick();
+  drag = null; canvas.classList.remove('dragging');
+});
 // La molette avance ou recule, avec élan
 canvas.addEventListener('wheel', e => {
   e.preventDefault();
@@ -897,33 +944,6 @@ addEventListener('keydown', e => {
 addEventListener('keyup', e => keys.delete(e.code));
 addEventListener('blur', () => keys.clear());
 
-// Manette tactile (téléphone, tablette) : le pouce gauche fait marcher, l'autre main regarde en glissant
-const stick = $('stick'), knob = stick.firstElementChild;
-if (touch) stick.hidden = false;
-function moveStick(e) {
-  const r = stick.getBoundingClientRect(), R = r.width / 2, max = R - 12;
-  let dx = e.clientX - r.left - R, dy = e.clientY - r.top - R;
-  const d = Math.hypot(dx, dy);
-  if (d > max) { dx *= max / d; dy *= max / d; }
-  knob.style.transform = `translate(${dx}px, ${dy}px)`;
-  joy.x = dx / max; joy.y = dy / max;
-}
-stick.addEventListener('pointerdown', e => {
-  joy.id = e.pointerId;
-  try { stick.setPointerCapture(e.pointerId); } catch { /* doigt déjà levé */ }
-  stick.classList.add('on');
-  stopGlide(); hideHint(); closeMenu();
-  moveStick(e);
-});
-stick.addEventListener('pointermove', e => { if (e.pointerId === joy.id) moveStick(e); });
-const releaseStick = e => {
-  if (e.pointerId !== joy.id) return;
-  joy.id = null; joy.x = joy.y = 0;
-  knob.style.transform = '';
-  stick.classList.remove('on');
-};
-stick.addEventListener('pointerup', releaseStick);
-stick.addEventListener('pointercancel', releaseStick);
 
 function resize() {
   camera.aspect = innerWidth / innerHeight;

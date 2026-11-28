@@ -13,11 +13,11 @@ import { Q } from './qualite.js';
 
 // Réglages, modifiables en direct pour essayer : window.__galerie.effets.reglages (puis bouger un peu)
 export const REGLAGES = {
-  ombre: 1.2,        // force des ombres de contact (0 : aucune)
+  ombre: 2.5,        // force des ombres de contact (0 : aucune)
   rayon: 0.5,        // portée des ombres de contact (m)
   halo: 0.05,        // force du halo
-  seuil: 2.2,        // lumière à partir de laquelle le halo apparaît (valeur HDR ; murs éclairés ≈ 1 à 2)
-  cielHalo: 3,       // le ciel des fenêtres compte comme une lumière de cette force dans le halo
+  seuil: 3.5,        // lumière à partir de laquelle le halo apparaît (valeur HDR ; murs ≈ 0,1 à 5, blanc pur ≈ 9)
+  cielHalo: 6,       // le ciel des fenêtres compte comme une lumière de cette force dans le halo
   nettete: 0.3,      // netteté (0 : aucune, 1 : forte)
   vignette: 0.06,    // assombrissement des coins de l'image
   grain: 0.008,      // grain de pellicule (en part du blanc)
@@ -25,7 +25,9 @@ export const REGLAGES = {
 };
 
 // Effets à l'écran ? (galerie.js crée le moteur sans lissage quand les effets lissent eux-mêmes)
-export const EFFETS = Q.niveau !== 'bas' && new URLSearchParams(location.search).get('effets') !== '0';
+// index.html?effets=0 : sans effets ; ?effets=ombres : seulement les ombres de contact, en gris (pour les régler)
+const ASKED = new URLSearchParams(location.search).get('effets');
+export const EFFETS = Q.niveau !== 'bas' && ASKED !== '0';
 export const PIXELS = Q.pixels;
 
 // Les photos et le ciel s'inscrivent dans l'image HDR avec cette marque (dans la transparence) : « à montrer tel quel »
@@ -182,6 +184,7 @@ vec3 squeeze( vec3 c ) { return c / ( 1.0 + c ); }
 float hash( vec2 p ) { vec3 q = fract( vec3( p.xyx ) * 0.1031 ); q += dot( q, q.yzx + 33.33 ); return fract( ( q.x + q.y ) * q.z ); }
 void main() {
 	ivec2 p = ivec2( gl_FragCoord.xy ), size = textureSize( tHDR, 0 );
+	gl_FragDepth = texelFetch( tDepth, p, 0 ).r;   // la profondeur de la scène, pour le rayon de soleil dessiné après
 	vec4 c = texelFetch( tHDR, p, 0 );
 	float mark = clamp( ( 1.0 - c.a ) / ${1 - TEL_QUEL}.0, 0.0, 1.0 );
 	vec3 color = c.rgb;
@@ -215,9 +218,11 @@ void main() {
 			total += w;
 		}
 		float ao = sum / total;
-		// les sources de lumière (verrière, lampes) ne reçoivent pas d'ombre
-		ao = mix( ao, 1.0, smoothstep( 2.5, 4.0, max( color.r, max( color.g, color.b ) ) ) );
 		color *= mix( 1.0, ao, shadow );
+	#ifdef VOIR_OMBRES
+		gl_FragColor = vec4( vec3( ao ), 1.0 );
+		return;
+	#endif
 	}
 #endif
 #ifdef HALO
@@ -286,12 +291,17 @@ export function effets(renderer, scene, camera) {
   const defines = {};
   if (Q.ao) defines.AO = '';
   if (Q.halo) defines.HALO = '';
+  if (ASKED === 'ombres') defines.VOIR_OMBRES = '';
   const finalMat = pass(FINAL, {
     tHDR: { value: hdr.texture }, tDepth: { value: hdr.depthTexture }, tAO: { value: aoA.texture },
     tBloom: { value: bloom[0].texture }, clip,
     sharpen: { value: 0 }, shadow: { value: 0 }, bloom: { value: 0 }, vignette: { value: 0 }, grain: { value: 0 }, saturation: { value: 1 },
     time: { value: 0 },
-  }, { defines, toneMapped: true });
+  }, { defines, toneMapped: true, depthTest: true, depthWrite: true, depthFunc: THREE.AlwaysDepth });
+
+  // Les objets en mélange additif (le rayon de soleil de La Garde) sont réglés pour s'ajouter à l'image finale, en
+  // couleurs d'écran : ils sont dessinés après les effets, par-dessus, exactement comme avant (voir compile)
+  let overlays = [];
 
   // Un triangle qui couvre tout l'écran
   const geometry = new THREE.BufferGeometry();
@@ -323,8 +333,10 @@ export function effets(renderer, scene, camera) {
   let time = 0;
   function render() {
     const R = REGLAGES, autoClear = renderer.autoClear;
+    for (const o of overlays) o.visible = false;
     renderer.setRenderTarget(hdr);
     renderer.render(scene, camera);
+    for (const o of overlays) o.visible = true;
     renderer.autoClear = false;
     clip.value.set(camera.near, camera.far);
     const ao = Q.ao && R.ombre > 0, halo = Q.halo && R.halo > 0;
@@ -355,6 +367,7 @@ export function effets(renderer, scene, camera) {
     u.saturation.value = R.saturation;
     u.time.value = time = (time + 1) % 64;
     draw(finalMat, null);
+    for (const o of overlays) renderer.render(o, camera);
     renderer.autoClear = autoClear;
   }
 
@@ -363,6 +376,8 @@ export function effets(renderer, scene, camera) {
     render,
     // préparer les programmes de la scène pour l'image HDR (pas pour l'écran : ce ne sont pas les mêmes)
     compile() {
+      overlays = [];
+      scene.traverse(o => { if (o.isMesh && o.visible && o.material?.blending === THREE.AdditiveBlending) overlays.push(o); });
       renderer.setRenderTarget(hdr);
       renderer.compile(scene, camera);
       renderer.setRenderTarget(null);

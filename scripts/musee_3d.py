@@ -376,9 +376,11 @@ def floor(name, x0, x1, z0, z1, y, mat, up=True):
     return build(name, [corners], mat, uvs)
 
 
-def doorway(name, plane, axis, center, width, height, mat, sill_mat=None, bottom=0.0):
-    """Embrasure (porte ou fenêtre) entre deux plans de mur parallèles : axis = 'x' (murs x = constante) ou 'z'."""
-    a, b = plane
+def doorway(name, plane, axis, center, width, height, mat, sill_mat=None, bottom=0.0, sill=0.0):
+    """Embrasure (porte ou fenêtre) entre deux plans de mur parallèles : axis = 'x' (murs x = constante) ou 'z'.
+    sill : épaisseur d'un seuil (ou d'un appui de fenêtre) en pierre, un peu plus large que la baie, qui dépasse de
+    4 cm de chaque côté du mur ; sinon une simple face au sol."""
+    a, b = sorted(plane)
     c0, c1 = center - width / 2, center + width / 2
     y0, y1 = bottom, height
     if axis == 'x':
@@ -391,9 +393,80 @@ def doorway(name, plane, axis, center, width, height, mat, sill_mat=None, bottom
              face([P(a, y0, c1), P(b, y0, c1), P(b, y1, c1), P(a, y1, c1)], nz(-1)),
              face([P(a, y1, c0), P(b, y1, c0), P(b, y1, c1), P(a, y1, c1)], (0, -1, 0))]
     obj = build(name, sides, mat)
-    sill = [face([P(a, y0 + 0.002, c0), P(b, y0 + 0.002, c0), P(b, y0 + 0.002, c1), P(a, y0 + 0.002, c1)], (0, 1, 0))]
-    build(name + '_seuil', sill, sill_mat or mat)
+    if sill > 0:   # dessous caché pour une porte (posé sur le sol), visible pour un appui de fenêtre
+        block(name + '_seuil', P(a - 0.04, y0, c0 - 0.03), P(b + 0.04, y0 + sill, c1 + 0.03), sill_mat or mat,
+              hide=('-y',) if bottom == 0 else ())
+    else:
+        floor_sill = [face([P(a, y0 + 0.002, c0), P(b, y0 + 0.002, c0), P(b, y0 + 0.002, c1), P(a, y0 + 0.002, c1)], (0, 1, 0))]
+        build(name + '_seuil', floor_sill, sill_mat or mat)
     return obj
+
+
+FACES = {'+x': (0, 1), '-x': (0, -1), '+y': (1, 1), '-y': (1, -1), '+z': (2, 1), '-z': (2, -1)}
+
+
+def side(v):
+    """Nom de la face d'un pavé qui regarde dans la direction v (son axe principal) : '+x', '-z'…"""
+    axis = max(range(3), key=lambda k: abs(v[k]))
+    return ('+' if v[axis] > 0 else '-') + 'xyz'[axis]
+
+
+def block(name, lo, hi, mat, hide=(), shadow=True):
+    """Pavé entre deux coins opposés ; hide : les faces cachées (contre un mur, sous un plafond…), qu'on ne fabrique
+    pas : moins de triangles, et pas de place perdue dans les cartes de lumière."""
+    lo, hi = [min(p, q) for p, q in zip(lo, hi)], [max(p, q) for p, q in zip(lo, hi)]
+    faces = []
+    for key, (axis, sign) in FACES.items():
+        if key in hide:
+            continue
+        i, j = [k for k in range(3) if k != axis]
+        corners = []
+        for p, q in ((lo[i], lo[j]), (hi[i], lo[j]), (hi[i], hi[j]), (lo[i], hi[j])):
+            c = [0.0, 0.0, 0.0]
+            c[axis], c[i], c[j] = (hi if sign > 0 else lo)[axis], p, q
+            corners.append(tuple(c))
+        normal = [0, 0, 0]
+        normal[axis] = sign
+        faces.append(face(corners, tuple(normal)))
+    return build(name, faces, mat, shadow=shadow)
+
+
+def on_wall(name, axis, plane, out, a0, a1, o0, o1, y0, y1, mat, hide=('dos',)):
+    """Pavé contre un mur (x = plane si axis == 'x', sinon z = plane), côté `out` (±1) : de a0 à a1 le long du mur,
+    de o0 à o1 en saillie, de y0 à y1 en hauteur. hide : 'dos' (contre le mur), 'face', 'haut', 'bas', 'debut' (côté
+    a0), 'fin' (côté a1)."""
+    if axis == 'x':
+        lo, hi = (plane + out * o0, y0, a0), (plane + out * o1, y1, a1)
+        names = {'face': '+x' if out > 0 else '-x', 'dos': '-x' if out > 0 else '+x', 'debut': '-z', 'fin': '+z'}
+    else:
+        lo, hi = (a0, y0, plane + out * o0), (a1, y1, plane + out * o1)
+        names = {'face': '+z' if out > 0 else '-z', 'dos': '-z' if out > 0 else '+z', 'debut': '-x', 'fin': '+x'}
+    names.update(haut='+y', bas='-y')
+    return block(name, lo, hi, mat, hide=[names[h] for h in hide])
+
+
+def ring(name, x0, x1, z0, z1, y, bands, mat):
+    """Cadre en gradins sous un plafond (à la hauteur y), autour d'une ouverture x[x0, x1] z[z0, z1] (verrière, caisson) :
+    bands = [(de, à, retombée)], en mètres depuis le bord de l'ouverture, du plus profond au plus plat."""
+    for a, b, drop in bands:
+        inner = () if a == 0 else ('+z',)   # le côté intérieur d'un gradin plat est caché par le gradin plus profond
+        block(name, (x0 - b, y - drop, z0 - b), (x1 + b, y, z0 - a), mat, hide=('+y',) + inner)
+        block(name, (x0 - b, y - drop, z1 + a), (x1 + b, y, z1 + b), mat, hide=('+y',) + (() if a == 0 else ('-z',)))
+        block(name, (x0 - b, y - drop, z0 - a), (x0 - a, y, z1 + a), mat, hide=('+y', '-z', '+z') + (() if a == 0 else ('+x',)))
+        block(name, (x1 + a, y - drop, z0 - a), (x1 + b, y, z1 + a), mat, hide=('+y', '-z', '+z') + (() if a == 0 else ('-x',)))
+
+
+def rosace(name, center, pts, mat, seg=20):
+    """Rosace de plafond : le profil [(rayon, retombée)] tourné autour d'un axe vertical, du bord vers le centre."""
+    cx, cy, cz = center
+    p = lambda r, h, t: (cx + r * math.cos(t), cy - h, cz + r * math.sin(t))
+    faces = []
+    for (r0, h0), (r1, h1) in zip(pts, pts[1:]):
+        for k in range(seg):
+            t0, t1, tm = 2 * math.pi * k / seg, 2 * math.pi * (k + 1) / seg, 2 * math.pi * (k + 0.5) / seg
+            corners = [p(r0, h0, t0), p(r0, h0, t1)] + ([p(r1, h1, t1), p(r1, h1, t0)] if r1 > 1e-6 else [p(0, h1, 0)])
+            faces.append(face(corners, (math.cos(tm) * (h1 - h0), r1 - r0, math.sin(tm) * (h1 - h0))))
+    return build(name, faces, mat)
 
 
 def box(name, center, size, mat, shadow=True):
@@ -601,17 +674,55 @@ def bench(center, room='hall'):
         box('pied', (cx + dx, 0.2125, cz), (0.035, 0.425, 0.4), BLACK)['groupe'] = f'banc_{room}'
 
 
-def casing(name, axis, plane, side, center, width, height, mat, w=0.09, depth=0.022):
-    """Chambranle d'une porte, posé sur le mur `plane` (x = plane si axis == 'x', sinon z = plane), côté `side` (±1)."""
-    def at(along, y):
-        return (plane + side * depth / 2, y, along) if axis == 'x' else (along, y, plane + side * depth / 2)
+def casing_profile(kind, w, dep):
+    """Profil d'un chambranle (saillie, travers depuis le bord de la baie), large de w, épais de dep."""
+    if kind == 'pierre':    # pierre de taille, arête chanfreinée côté baie
+        return [(0, 0), (dep * 0.6, 0), (dep, dep * 0.5), (dep, w), (0, w)]
+    if kind == 'moderne':   # plat, arêtes adoucies
+        return [(0, 0), (dep - 0.006, 0), (dep, 0.006), (dep, w - 0.006), (dep - 0.006, w), (0, w)]
+    # moulure classique : baguette côté baie, champ plat en retrait, contre-profil qui remonte vers l'extérieur
+    return [(0, 0), (dep * 0.75, 0), (dep * 0.75, w * 0.1), (dep * 0.55, w * 0.18), (dep * 0.55, w * 0.55),
+            (dep * 0.8, w * 0.68), (dep, w * 0.8), (dep, w), (0, w)]
 
-    def size(a, h):
-        return (depth, h, a) if axis == 'x' else (a, h, depth)
 
-    for along in (center - width / 2 - w / 2, center + width / 2 + w / 2):
-        box(name, at(along, (height + w) / 2), size(w, height + w), mat)
-    box(name, at(center, height + w / 2), size(width + 2 * w, w), mat)
+def casing(name, axis, plane, side, center, width, height, mat, w=0.09, depth=0.022, cap=False, profile='moulure', bottom=0.0):
+    """Chambranle mouluré d'une porte, posé sur le mur `plane` (x = plane si axis == 'x', sinon z = plane), côté `side`
+    (±1) : deux montants et un linteau assemblés en onglet. cap : une petite corniche posée dessus (dessus-de-porte).
+    profile : 'moulure' (bois peint), 'pierre', 'moderne' ; bottom : bas des montants (au-dessus d'une banquette)."""
+    n = (side, 0, 0) if axis == 'x' else (0, 0, side)
+    along = V(0, 0, 1) if axis == 'x' else V(1, 0, 0)
+    at = lambda a, y: (plane, y, a) if axis == 'x' else (a, y, plane)
+    pts = casing_profile(profile, w, depth)
+    for edge, away in ((center - width / 2, -1), (center + width / 2, 1)):
+        extrude(name, at(edge, bottom), (0, 1, 0), height + w - bottom, n, tuple(along * away), pts, mat, caps=(False, False))
+    extrude(name, at(center - width / 2 - w, height), tuple(along), width + 2 * w, n, (0, 1, 0), pts, mat, caps=(False, False))
+    if cap:   # 1 mm au-dessus du linteau (pas de faces confondues), 4 cm plus large de chaque côté
+        k = depth
+        top = ([(0, 0), (k + 0.012, 0), (k + 0.012, 0.02)] + quarter(k + 0.012, 0.02, k + 0.045, 0.055, False, 2)
+               + [(k + 0.06, 0.055), (k + 0.06, 0.085), (0, 0.105)])
+        extrude(name, at(center - width / 2 - w - 0.04, height + w + 0.001), tuple(along), width + 2 * w + 0.08, n, (0, 1, 0), top, mat)
+
+
+def pilaster(name, axis, plane, side, center, width, top, mat, base_mat, cap_mat, depth=0.05):
+    """Pilastre plat contre un mur, du sol jusqu'à `top` (le dessous de la corniche) : socle peint, fût de la matière du
+    mur, chapiteau en deux gradins."""
+    c0, c1 = center - width / 2, center + width / 2
+    on_wall(name, axis, plane, side, c0 - 0.03, c1 + 0.03, 0, depth + 0.03, 0, 0.24, base_mat, hide=('dos', 'bas'))
+    on_wall(name, axis, plane, side, c0, c1, 0, depth, 0.24, top - 0.16, mat, hide=('dos', 'bas', 'haut'))
+    on_wall(name, axis, plane, side, c0 - 0.02, c1 + 0.02, 0, depth + 0.02, top - 0.16, top - 0.08, cap_mat, hide=('dos', 'haut'))
+    on_wall(name, axis, plane, side, c0 - 0.04, c1 + 0.04, 0, depth + 0.04, top - 0.08, top, cap_mat, hide=('dos', 'haut'))
+
+
+def stone_bench(name, axis, plane, side, a0, a1, mat, ends=(True, True)):
+    """Banc de pierre contre un mur, de a0 à a1 : une dalle de 7 cm sur un massif en retrait. ends : bouts visibles
+    (pas contre un mur). C'est un obstacle pour la page 3D, comme les bancs du hall."""
+    hidden = [h for h, keep in zip(('debut', 'fin'), ends) if not keep]
+    on_wall(name, axis, plane, side, a0, a1, 0, 0.42, 0.38, 0.45, mat, hide=['dos'] + hidden)
+    b0, b1 = (a0 + 0.04 if ends[0] else a0), (a1 - 0.04 if ends[1] else a1)
+    on_wall(name, axis, plane, side, b0, b1, 0, 0.36, 0, 0.38, mat, hide=['dos', 'haut', 'bas'] + hidden)
+    w0, w1 = sorted((plane, plane + side * 0.42))
+    OBSTACLES.append([round(a0, 3), round(a1, 3), round(w0, 3), round(w1, 3)] if axis == 'z' else
+                     [round(w0, 3), round(w1, 3), round(a0, 3), round(a1, 3)])
 
 
 def rails():
@@ -661,8 +772,12 @@ def arches(xs, X0, X1, Z0, Z1, S, R, mat, width=0.42, depth=0.14, steps=28):
                 add([(xs_, ia[1], ia[0]), (xs_, ib[1], ib[0]), (xs_, ob[1], ob[0]), (xs_, oa[1], oa[0])], (nx, 0, 0),
                     [(ia[0], ia[1]), (ib[0], ib[1]), (ob[0], ob[1]), (oa[0], oa[1])])
         build('couvent_arc', faces, mat, uvs)
-        for z in (Z0 + depth / 2, Z1 - depth / 2):
-            box('couvent_pilastre', (xc, S / 2, z), (width, S, depth), mat)
+        for z, out in ((Z0, 1), (Z1, -1)):
+            # pilastre sur une base plus large, coiffé d'une imposte en deux gradins où l'arc prend naissance
+            on_wall('couvent_pilastre', 'z', z, out, xa, xb, 0, depth, 0.34, S - 0.16, mat, hide=('dos', 'haut', 'bas'))
+            on_wall('couvent_pilastre', 'z', z, out, xa - 0.03, xb + 0.03, 0, depth + 0.03, 0, 0.34, mat, hide=('dos', 'bas'))
+            on_wall('couvent_pilastre', 'z', z, out, xa - 0.03, xb + 0.03, 0, depth + 0.03, S - 0.16, S - 0.08, mat, hide=('dos', 'haut'))
+            on_wall('couvent_pilastre', 'z', z, out, xa - 0.06, xb + 0.06, 0, depth + 0.06, S - 0.08, S, mat, hide=('dos', 'haut'))
 
 
 # ---------- Le musée ----------
@@ -686,22 +801,37 @@ def museum():
     red, marble, wood_ceiling = textured('rouge'), textured('marbre'), textured('bois_plafond')
     plaster, panelling = textured('enduit'), textured('lambris')
     cornice = flat('corniche', (0.84, 0.82, 0.78), 0.6)
+    threshold = textured('seuil')   # seuils de pierre des portes
 
-    # --- Hall (photos isolées) : enduit blanc cassé, corniche, verrière à croisillons, plinthes et chambranles ---
+    # --- Hall (photos isolées) : enduit blanc cassé, corniche moulurée, verrière dans un plafond à gradins, pilastres,
+    # plinthes et chambranles moulurés ---
     H = 5.0
     floor('hall_sol', -5, 5, -6, 6, 0, parquet)
-    wall('hall_ouest', (-5, 0, -6), (0, 0, 1), (1, 0, 0), 12, H, plaster, [(1.9, 4.1, 3.2, 0), (7.9, 10.1, 3.2, 0)], plinth=trim, cornice=cornice)
-    wall('hall_est', (5, 0, -6), (0, 0, 1), (-1, 0, 0), 12, H, plaster, [(1.9, 4.1, 3.2, 0), (7.9, 10.1, 3.2, 0)], plinth=trim, cornice=cornice)
-    wall('hall_nord', (-5, 0, -6), (1, 0, 0), (0, 0, 1), 10, H, plaster, [(3.4, 6.6, 3.4, 0)], plinth=trim, cornice=cornice)
-    wall('hall_sud', (-5, 0, 6), (1, 0, 0), (0, 0, -1), 10, H, plaster, [(3.5, 6.5, 3.0, 0)], plinth=trim, cornice=cornice)
+    moulures = dict(plinth=(trim, PLINTHE), cornice=(cornice, CORNICHE), trim=0.12)
+    wall('hall_ouest', (-5, 0, -6), (0, 0, 1), (1, 0, 0), 12, H, plaster, [(1.9, 4.1, 3.2, 0), (7.9, 10.1, 3.2, 0)], **moulures)
+    wall('hall_est', (5, 0, -6), (0, 0, 1), (-1, 0, 0), 12, H, plaster, [(1.9, 4.1, 3.2, 0), (7.9, 10.1, 3.2, 0)], **moulures)
+    wall('hall_nord', (-5, 0, -6), (1, 0, 0), (0, 0, 1), 10, H, plaster, [(3.4, 6.6, 3.4, 0)], **moulures)
+    wall('hall_sud', (-5, 0, 6), (1, 0, 0), (0, 0, -1), 10, H, plaster, [(3.5, 6.5, 3.0, 0)], **dict(moulures, trim=0.16))
+    # chambranles moulurés, coiffés d'un dessus-de-porte (sous le nom de la salle) ; la porte d'entrée, plus large
     for z in (-3, 3):
-        casing('hall_chambranle', 'x', -5, 1, z, 2.2, 3.2, trim)
-        casing('hall_chambranle', 'x', 5, -1, z, 2.2, 3.2, trim)
-    casing('hall_chambranle', 'z', -6, 1, 0, 3.2, 3.4, trim)
-    casing('hall_chambranle', 'z', 6, -1, 0, 3.0, 3.0, trim)
+        casing('hall_chambranle', 'x', -5, 1, z, 2.2, 3.2, trim, w=0.12, depth=0.03, cap=True)
+        casing('hall_chambranle', 'x', 5, -1, z, 2.2, 3.2, trim, w=0.12, depth=0.03, cap=True)
+    casing('hall_chambranle', 'z', -6, 1, 0, 3.2, 3.4, trim, w=0.12, depth=0.03, cap=True)
+    casing('hall_chambranle', 'z', 6, -1, 0, 3.0, 3.0, trim, w=0.16, depth=0.035, cap=True)
+    # pilastres entre chaque porte et la photo du milieu (murs ouest et est), jusque sous la corniche
+    for x, out in ((-5, 1), (5, -1)):
+        for z in (-1.33, 1.33):
+            pilaster('hall_pilastre', 'x', x, out, z, 0.36, H - 0.34, plaster, trim, cornice)
     # plafond percé de la verrière x[-3,3] z[-4,4] : un puits blanc, un verre dépoli lumineux, des croisillons d'acier
     for (x0, x1, z0, z1) in [(-5, 5, -6, -4), (-5, 5, 4, 6), (-5, -3, -4, 4), (3, 5, -4, 4)]:
         floor('hall_plafond', x0, x1, z0, z1, H, ceiling, up=False)
+    # autour de la verrière, un cadre en deux gradins ; plus loin, une baguette dessine un grand caisson (loin des rails)
+    ring('hall_caisson', -3, 3, -4, 4, H, [(0, 0.14, 0.1), (0.14, 0.34, 0.04)], cornice)
+    baguette = [(0, 0), (0.008, 0.006), (0.016, 0.02), (0.016, 0.05), (0.008, 0.064), (0, 0.07)]
+    for z in (-5.4, 5.4):
+        extrude('hall_baguette', (-4.435, H, z - 0.035), (1, 0, 0), 8.87, (0, -1, 0), (0, 0, 1), baguette, cornice, caps=(False, False))
+    for x in (-4.4, 4.4):
+        extrude('hall_baguette', (x - 0.035, H, -5.435), (0, 0, 1), 10.87, (0, -1, 0), (1, 0, 0), baguette, cornice, caps=(False, False))
     for (start, d, n, length) in [((-3, H, -4), (1, 0, 0), (0, 0, 1), 6), ((-3, H, 4), (1, 0, 0), (0, 0, -1), 6),
                                   ((-3, H, -4), (0, 0, 1), (1, 0, 0), 8), ((3, H, -4), (0, 0, 1), (-1, 0, 0), 8)]:
         w_obj = wall('puits', (start[0], 0, start[2]), d, n, length, 0.7, white)
@@ -715,7 +845,7 @@ def museum():
     # porte d'entrée vitrée (la lumière du jour), avec ses montants
     floor_glow = glow('jour', (0.95, 0.97, 1.0), 2.4)
     build('entree', [face([(-1.6, 0, 6.35), (1.6, 0, 6.35), (1.6, 3.1, 6.35), (-1.6, 3.1, 6.35)], (0, 0, -1))], floor_glow)['groupe'] = 'lumineux_entree'
-    doorway('entree_embrasure', (6, 6.3), 'z', 0, 3.0, 3.0, white, parquet)
+    doorway('entree_embrasure', (6, 6.3), 'z', 0, 3.0, 3.0, white, threshold, sill=0.02)
     for xm in (-1.475, 0, 1.475):
         box('entree_barre', (xm, 1.5, 6.32), (0.05, 3.0, 0.05), BLACK, shadow=False)['groupe'] = 'deco_hall'
     box('entree_barre', (0, 2.35, 6.32), (3.0, 0.05, 0.05), BLACK, shadow=False)['groupe'] = 'deco_hall'
@@ -737,14 +867,22 @@ def museum():
     # Les quatre murs montent jusqu'au toit : le vide au-dessus de la voûte est fermé, le ciel n'y entre plus
     # (sinon le haut caché des murs du fond, éclairé, déteint sur l'arc : un trait clair le long de la voûte)
     top = S + R + 0.02
-    wall('couvent_ouest', (X0, 0, Z0), (0, 0, 1), (1, 0, 0), Z1 - Z0, top, stone)
-    wall('couvent_est', (X1, 0, Z0), (0, 0, 1), (-1, 0, 0), Z1 - Z0, top, stone, [(1.9, 4.1, 3.2, 0)])
-    wall('couvent_nord', (X0, 0, Z0), (1, 0, 0), (0, 0, 1), X1 - X0, top, stone)
-    wall('couvent_sud', (X0, 0, Z1), (1, 0, 0), (0, 0, -1), X1 - X0, top, stone)
+    # soubassement de pierre au pied des murs, cordon mouluré à la naissance de la voûte (coupés à la porte)
+    pierre = dict(plinth=(stone, SOCLE), bands=[('cordon', stone, CORDON)])
+    wall('couvent_ouest', (X0, 0, Z0), (0, 0, 1), (1, 0, 0), Z1 - Z0, top, stone, **pierre)
+    wall('couvent_est', (X1, 0, Z0), (0, 0, 1), (-1, 0, 0), Z1 - Z0, top, stone, [(1.9, 4.1, 3.2, 0)], trim=0.28, **pierre)
+    wall('couvent_nord', (X0, 0, Z0), (1, 0, 0), (0, 0, 1), X1 - X0, top, stone, **pierre)
+    wall('couvent_sud', (X0, 0, Z1), (1, 0, 0), (0, 0, -1), X1 - X0, top, stone, **pierre)
     vault('couvent_voute', X0, X1, Z0, Z1, S, R, stone)
     arches([X0 + (X1 - X0) * k / 3 for k in (1, 2)], X0, X1, Z0, Z1, S, R, stone)   # trois travées
     floor('couvent_toit', X0, X1, Z0, Z1, top, BLACK, up=False)['groupe'] = 'deco_couvent'
-    doorway('couvent_porte', (-5.3, -5), 'x', -3, 2.2, 3.2, stone, slabs)
+    doorway('couvent_porte', (-5.3, -5), 'x', -3, 2.2, 3.2, stone, stone, sill=0.025)   # seuil de pierre
+    # encadrement de pierre de la porte, côté salle (montants et linteau chanfreinés)
+    casing('couvent_chambranle', 'x', X1, -1, -3, 2.2, 3.2, stone, w=0.28, depth=0.05, profile='pierre')
+    # bancs de pierre le long des murs, dans les travées sans photo (pilastres à ±0,21 m du milieu des arcs)
+    arcs = [X0 + (X1 - X0) * k / 3 for k in (1, 2)]
+    stone_bench('couvent_banc', 'z', Z0, 1, arcs[0] + 0.31, arcs[1] - 0.31, stone)
+    stone_bench('couvent_banc', 'z', Z1, -1, X0, arcs[0] - 0.31, stone, ends=(False, True))
     # hauteur de la voûte au-dessus d'un point : les projecteurs y sont suspendus par leur tige
     half, zc = (Z1 - Z0) / 2, (Z0 + Z1) / 2
     radius = (half ** 2 + R ** 2) / (2 * R)
@@ -768,7 +906,19 @@ def museum():
     wall('toulouse_sud', (X0, 0, Z1), (1, 0, 0), (0, 0, -1), X1 - X0, Hh, brick)
     for i in range(12):
         box('toulouse_solive', (X0 + 0.3 + i * (X1 - X0 - 0.6) / 11, Hh - 0.09, (Z0 + Z1) / 2), (0.12, 0.18, Z1 - Z0), wood)
-    doorway('toulouse_porte', (-5.3, -5), 'x', 3, 2.2, 3.2, brick, concrete)
+    # sablières : deux poutres le long des murs nord et sud, où reposent les bouts des solives
+    for z, out in ((Z0, 1), (Z1, -1)):
+        on_wall('toulouse_sabliere', 'z', z, out, X0, X1, 0, 0.16, Hh - 0.36, Hh - 0.18, wood, hide=('dos', 'haut', 'debut', 'fin'))
+    # deux tirants de fer d'un mur à l'autre, au-dessus des têtes, avec platine et écrou ; placés entre les faisceaux
+    # des projecteurs (x = -10,4, -8,8, -7,4) pour ne pas faire d'ombre sur les photos
+    for x in (-9.6, -8.0):
+        box('tirant', (x, 3.45, (Z0 + Z1) / 2), (0.026, 0.026, Z1 - Z0), BLACK)['groupe'] = 'deco_toulouse'
+        for z, out in ((Z0, 1), (Z1, -1)):
+            box('platine', (x, 3.45, z + out * 0.01), (0.14, 0.14, 0.02), BLACK)['groupe'] = 'deco_toulouse'
+            box('ecrou', (x, 3.45, z + out * 0.035), (0.05, 0.05, 0.03), BLACK)['groupe'] = 'deco_toulouse'
+    doorway('toulouse_porte', (-5.3, -5), 'x', 3, 2.2, 3.2, brick, threshold, sill=0.02)
+    # linteau de bois au-dessus de la porte, côté salle
+    on_wall('toulouse_linteau', 'x', X1, -1, 1.6, 4.4, 0, 0.035, 3.2, 3.44, wood)
     beams = Hh - 0.18   # les projecteurs pendent sous les solives
     hang('projet_perso_argentique_argentique_toulouse_argentiqueNB-9', (X0, 1.6, 3.075), (1, 0, 0), 1.55, beams, 780, room='toulouse')
     hang('projet_perso_argentique_argentique_toulouse_argentiqueNB-10', (-10.4, 1.55, Z0), (0, 0, 1), 1.0, beams, 650, room='toulouse')
@@ -784,8 +934,17 @@ def museum():
     wall('garde_est', (X1, 0, Z0), (0, 0, 1), (-1, 0, 0), Z1 - Z0, Hh, lime, [(2.325, 3.525, 4.15, 3.0)])
     wall('garde_nord', (X0, 0, Z0), (1, 0, 0), (0, 0, 1), X1 - X0, Hh, lime)
     wall('garde_sud', (X0, 0, Z1), (1, 0, 0), (0, 0, -1), X1 - X0, Hh, lime)
-    doorway('garde_porte', (5, 5.3), 'x', -3, 2.2, 3.2, lime, terracotta)
-    doorway('garde_fenetre', (12.3, 12.75), 'x', -3.075, 1.2, 4.15, lime, lime, bottom=3.0)   # mur épais de monastère
+    doorway('garde_porte', (5, 5.3), 'x', -3, 2.2, 3.2, lime, threshold, sill=0.02)
+    # mur épais de monastère ; appui de pierre de 4 cm, qui dépasse à peine dans la salle (le soleil passe au-dessus)
+    doorway('garde_fenetre', (12.3, 12.75), 'x', -3.075, 1.2, 4.15, lime, threshold, bottom=3.0, sill=0.04)
+    # trois poutres de bois sous le plafond, posées sur des corbeaux ; les rails des projecteurs y sont fixés (ils
+    # passent au-dessus, à 4,58 m). Le rayon de soleil entre par le haut de la fenêtre (4,15 m) et descend : il passe
+    # sous les poutres et sous les corbeaux (dessous à 4,22 m)
+    for z in (-4.45, -3.075, -1.7):
+        block('garde_poutre', (X0, Hh - 0.22, z - 0.1), (X1, Hh, z + 0.1), wood, hide=('-x', '+x', '+y'))
+        for x, out in ((X0, 1), (X1, -1)):
+            extrude('garde_corbeau', (x, 0, z - 0.08), (0, 0, 1), 0.16, (out, 0, 0), (0, 1, 0),
+                    [(0, Hh - 0.38), (0.07, Hh - 0.38), (0.18, Hh - 0.27), (0.18, Hh - 0.22)], wood)
     # croisée de bois sombre : son ombre se dessine dans la tache de soleil
     for z in (-3.65, -3.075, -2.5):
         box('croisee', (12.62, 3.575, z), (0.05, 1.15, 0.05), BLACK)['groupe'] = 'deco_garde'
@@ -816,13 +975,35 @@ def museum():
     dark_trim = flat('plinthe_bois', (0.05, 0.032, 0.022), 0.5)
     dado = (0.78, panelling, dark_trim)   # les cadres commencent au-dessus (voir les hauteurs d'accrochage)
     floor('messe_sol', X0, X1, Z0, Z1, 0, marble)
-    floor('messe_plafond', X0, X1, Z0, Z1, Hh, ceiling, up=False)
-    wall('messe_ouest', (X0, 0, Z0), (0, 0, 1), (1, 0, 0), Z1 - Z0, Hh, red, [(1.75, 3.95, 3.2, 0)], cornice=cornice, dado=dado)
-    wall('messe_est', (X1, 0, Z0), (0, 0, 1), (-1, 0, 0), Z1 - Z0, Hh, red, cornice=cornice, dado=dado)
-    wall('messe_nord', (X0, 0, Z0), (1, 0, 0), (0, 0, 1), X1 - X0, Hh, red, cornice=cornice, dado=dado)
-    wall('messe_sud', (X0, 0, Z1), (1, 0, 0), (0, 0, -1), X1 - X0, Hh, red, cornice=cornice, dado=dado)
-    doorway('messe_porte', (5, 5.3), 'x', 3, 2.2, 3.2, red, marble)
-    casing('messe_chambranle', 'x', X0, 1, 3, 2.2, 3.2, dark_trim)
+    # plafond : un caisson au milieu, 15 cm plus haut, bordé d'une moulure en gradins, avec une rosace ; entre les rails
+    # des projecteurs (z = 1,7 et 4,45 ; x = 10,75), centré sur la salle
+    cx0, cx1, cz0, cz1, rise = 7.15, 10.45, 2.1, 4.05, 0.15
+    for (a, b, c, e) in [(X0, X1, Z0, cz0), (X0, X1, cz1, Z1), (X0, cx0, cz0, cz1), (cx1, X1, cz0, cz1)]:
+        floor('messe_plafond', a, b, c, e, Hh, ceiling, up=False)
+    floor('messe_plafond', cx0, cx1, cz0, cz1, Hh + rise, ceiling, up=False)
+    build('messe_caisson', [face([(cx0, Hh, cz0), (cx0, Hh, cz1), (cx0, Hh + rise, cz1), (cx0, Hh + rise, cz0)], (1, 0, 0)),
+                            face([(cx1, Hh, cz0), (cx1, Hh, cz1), (cx1, Hh + rise, cz1), (cx1, Hh + rise, cz0)], (-1, 0, 0)),
+                            face([(cx0, Hh, cz0), (cx1, Hh, cz0), (cx1, Hh + rise, cz0), (cx0, Hh + rise, cz0)], (0, 0, 1)),
+                            face([(cx0, Hh, cz1), (cx1, Hh, cz1), (cx1, Hh + rise, cz1), (cx0, Hh + rise, cz1)], (0, 0, -1))], ceiling)
+    ring('messe_caisson', cx0, cx1, cz0, cz1, Hh, [(0, 0.08, 0.05), (0.08, 0.2, 0.02)], cornice)
+    rosace('messe_rosace', (8.8, Hh + rise, 3.075), ROSACE, cornice)
+    # voussure entre les murs et le plafond ; lambris à panneaux, cimaise et plinthe de bois sombre
+    moulures = dict(cornice=(cornice, VOUSSURE), dado=dado)
+    wall('messe_ouest', (X0, 0, Z0), (0, 0, 1), (1, 0, 0), Z1 - Z0, Hh, red, [(1.75, 3.95, 3.2, 0)], trim=0.1, **moulures)
+    wall('messe_est', (X1, 0, Z0), (0, 0, 1), (-1, 0, 0), Z1 - Z0, Hh, red, **moulures)
+    wall('messe_nord', (X0, 0, Z0), (1, 0, 0), (0, 0, 1), X1 - X0, Hh, red, **moulures)
+    wall('messe_sud', (X0, 0, Z1), (1, 0, 0), (0, 0, -1), X1 - X0, Hh, red, **moulures)
+    doorway('messe_porte', (5, 5.3), 'x', 3, 2.2, 3.2, red, marble, sill=0.02)   # seuil de marbre
+    casing('messe_chambranle', 'x', X0, 1, 3, 2.2, 3.2, dark_trim, w=0.1, depth=0.035, cap=True)
+    # pilastres d'angle : socle de bois sombre à la hauteur du lambris, fût clair, chapiteau sous la voussure ; ceux
+    # de deux murs voisins se rejoignent en équerre dans l'angle (photos à 30 cm au moins)
+    for axis, plane, out, lo, hi in [('z', Z0, 1, X0, X1), ('z', Z1, -1, X0, X1), ('x', X0, 1, Z0, Z1), ('x', X1, -1, Z0, Z1)]:
+        for corner, a0, a1, grow in (('debut', lo, lo + 0.3, (1, 0)), ('fin', hi - 0.3, hi, (0, 1))):
+            wide = lambda e: (a0 - e * grow[1], a1 + e * grow[0])   # plus large du seul côté libre
+            on_wall('messe_pilastre', axis, plane, out, *wide(0.02), 0, 0.08, 0, 0.84, dark_trim, hide=('dos', 'bas', corner))
+            on_wall('messe_pilastre', axis, plane, out, a0, a1, 0, 0.06, 0.84, 3.7, cornice, hide=('dos', 'bas', 'haut', corner))
+            on_wall('messe_pilastre', axis, plane, out, *wide(0.015), 0, 0.075, 3.7, 3.79, cornice, hide=('dos', 'haut', corner))
+            on_wall('messe_pilastre', axis, plane, out, *wide(0.03), 0, 0.09, 3.79, Hh - 0.32, cornice, hide=('dos', 'haut', corner))
     gold = (1, 0.88, 0.7)
     # Son choix (28/11) : une photo au fond, deux au nord, trois au sud (de gauche à droite pour qui les regarde).
     # Accrochées plus haut qu'ailleurs : le bas du plus grand cadre reste au-dessus de la cimaise (0,82 m)
@@ -839,12 +1020,21 @@ def museum():
     X0, X1, Z0, Z1, Hh = -5, 5, -14.3, -6.3, 4.6
     floor('montagne_sol', X0, X1, Z0, Z1, 0, light_parquet)
     floor('montagne_plafond', X0, X1, Z0, Z1, Hh, wood_ceiling, up=False)
-    wall('montagne_sud', (X0, 0, Z1), (1, 0, 0), (0, 0, -1), X1 - X0, Hh, white, [(3.4, 6.6, 3.4, 0)], plinth=trim)
-    wall('montagne_nord', (X0, 0, Z0), (1, 0, 0), (0, 0, 1), X1 - X0, Hh, white, [(1.5, 8.5, 3.8, 0.45)], plinth=trim)
-    wall('montagne_ouest', (X0, 0, Z0), (0, 0, 1), (1, 0, 0), Z1 - Z0, Hh, white, plinth=trim)
-    wall('montagne_est', (X1, 0, Z0), (0, 0, 1), (-1, 0, 0), Z1 - Z0, Hh, white, plinth=trim)
-    doorway('montagne_porte', (-6.3, -6), 'z', 0, 3.2, 3.4, white, light_parquet)
-    casing('montagne_chambranle', 'z', Z1, -1, 0, 3.2, 3.4, trim)
+    nette = (trim, PLINTHE_NETTE)
+    wall('montagne_sud', (X0, 0, Z1), (1, 0, 0), (0, 0, -1), X1 - X0, Hh, white, [(3.4, 6.6, 3.4, 0)], plinth=nette, trim=0.1)
+    wall('montagne_nord', (X0, 0, Z0), (1, 0, 0), (0, 0, 1), X1 - X0, Hh, white, [(1.5, 8.5, 3.8, 0.45)], plinth=nette)
+    wall('montagne_ouest', (X0, 0, Z0), (0, 0, 1), (1, 0, 0), Z1 - Z0, Hh, white, plinth=nette)
+    wall('montagne_est', (X1, 0, Z0), (0, 0, 1), (-1, 0, 0), Z1 - Z0, Hh, white, plinth=nette)
+    doorway('montagne_porte', (-6.3, -6), 'z', 0, 3.2, 3.4, white, threshold, sill=0.02)
+    casing('montagne_chambranle', 'z', Z1, -1, 0, 3.2, 3.4, trim, w=0.1, depth=0.025, profile='moderne')
+    # la baie dans un caisson de chêne de 25 cm (côtés, dessus), avec une banquette sous la fenêtre : dalle de chêne
+    # sur un socle blanc en retrait (un obstacle)
+    for a0, a1 in ((-3.54, -3.5), (3.5, 3.54)):
+        on_wall('montagne_baie', 'z', Z0, 1, a0, a1, 0, 0.25, 0.45, 3.8, OAK, hide=('dos', 'bas', 'haut'))
+    on_wall('montagne_baie', 'z', Z0, 1, -3.54, 3.54, 0, 0.25, 3.8, 3.84, OAK, hide=('dos', 'haut'))
+    on_wall('montagne_banquette', 'z', Z0, 1, -3.6, 3.6, 0, 0.5, 0.4, 0.45, OAK)
+    on_wall('montagne_banquette', 'z', Z0, 1, -3.55, 3.55, 0, 0.44, 0, 0.4, white, hide=('dos', 'haut', 'bas'))
+    OBSTACLES.append([-3.6, 3.6, Z0, round(Z0 + 0.5, 3)])
     for xm in (-3.5, -1.17, 1.17, 3.5):
         box('meneau', (xm, 2.125, Z0 + 0.03), (0.06, 3.35, 0.08), BLACK)['groupe'] = 'deco_montagne'
     for ym in (0.45, 3.8):
